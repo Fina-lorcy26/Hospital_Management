@@ -239,7 +239,8 @@ button {
     flex: 1;
 }
 
-.patient-actions button, .medecins-actions button{
+.patient-actions button, .medecins-actions button,
+.rdv-actions button{
     border: none;
     padding: 6px 12px;
     border-radius: 6px;
@@ -259,7 +260,8 @@ button {
 .btn-delete {
     background-color: #D4537E;
 }
-#page-patients h1, #page-medecins h1{
+#page-patients h1, #page-medecins h1, 
+#page-rdv h1{
     color: #2C2C2A;
 }
 table{
@@ -278,4 +280,73 @@ table{
     display: flex;
     align-items: center;
     padding: 14px 16px;
+}
+
+.rdv-list {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.rdv-header,
+.rdv-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 16px;
+}
+
+.rdv-header {
+    color: #5F5E5A;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.rdv-row {
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.col-patient,
+.col-medecin {
+    width: 80px;
+}
+
+.col-date,
+.col-heure {
+    width: 80px;
+}
+
+.col-statut {
+    width: 80px;
+}
+
+.rdv-actions {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.badge {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-confirme {
+    background-color: #EAF3DE;
+    color: #3b6d11;
+}
+
+.badge-attente {
+    background-color: #FAEEDA;
+    color: #854F0B;
+}
+
+.badge-annule {
+    background-color: #FBEAF0;
+    color: #993556;
 }

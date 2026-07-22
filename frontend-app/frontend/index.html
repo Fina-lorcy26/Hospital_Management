@@ -30,14 +30,14 @@
         </nav>
     
      <main class="content">
-        <div id="page-dashboard" class="page active">
-    <header class="topbar">
+        <header class="topbar">
         <span class="topbar-date">Mardi 21 juillet 2026</span>
         <div class="topbar-right">
             <i class="fa fa-bell"></i>
             <div class="topbar-avatar">A</div>
         </div>
     </header>
+        <div id="page-dashboard" class="page active">
         <section class="hero">
     <div class="hero-text">
         <h1>Bonjour, nom de l'ADMIN</h1>
@@ -184,10 +184,70 @@
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
-    </div>
-
-   
+    </div>  
 </div>
+
+
+<div id="page-rdv" class="page">
+    <h1>Rendez-vous</h1>
+
+    <div class="rdv-list">
+        <div class="rdv-header">
+            <span class="col-patient">Patient</span>
+            <span class="col-medecin">Médecin</span>
+            <span class="col-date">Date</span>
+            <span class="col-heure">Heure</span>
+            <span class="col-statut">Statut</span>
+            <span class="col-actions">Actions</span>
+        </div>
+
+        <div class="rdv-row">
+            <span class="col-patient">Lorcy</span>
+            <span class="col-medecin">Dr. Clara</span>
+            <span class="col-date">22/07/2026</span>
+            <span class="col-heure">09:30</span>
+            <span class="col-statut">
+                <span class="badge badge-confirme">Confirmé</span>
+            </span>
+            <div class="col-actions rdv-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="rdv-row">
+            <span class="col-patient">Rudy</span>
+            <span class="col-medecin">Dr. Iris</span>
+            <span class="col-date">22/07/2026</span>
+            <span class="col-heure">11:00</span>
+            <span class="col-statut">
+                <span class="badge badge-attente">En attente</span>
+            </span>
+            <div class="col-actions rdv-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="rdv-row">
+            <span class="col-patient">Alix</span>
+            <span class="col-medecin">Dr. Clara</span>
+            <span class="col-date">21/07/2026</span>
+            <span class="col-heure">15:45</span>
+            <span class="col-statut">
+                <span class="badge badge-annule">Annulé</span>
+            </span>
+            <div class="col-actions rdv-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </main> 
 </body>
 </html>
