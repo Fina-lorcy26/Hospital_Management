@@ -4,23 +4,190 @@
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Hospital Management</title>
-    <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="./src/assets/fonts/FontAwesome/font-awesome.css" /> 
+<link rel="stylesheet" href="style.css" />
+<script type="module" src="navigation.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-image"></div>
-        <div class="login-form">
-            <h1>Connexion</h1>
-            <form id="loginForm">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="nom@exemple.com" required />
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fa fa-hospital-o"></i>
+                <p>HOSPITAL MANAGEMENT</p>
+            </div>
 
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" placeholder="••••••••" required />
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-page="dashboard"><i class="fa fa-home"></i>Tableau de bord</a></li>
+                <li><a href="#" data-page="patients"><i class="fa fa-users"></i>Mes patients</a></li>
+                <li><a href="#" data-page="medecins"><i class="fa fa-stethoscope"></i>Mes médecins</a></li>
+                <li><a href="#" data-page="rdv"><i class="fa fa-calendar"></i>Rendez-vous</a></li>
+            </ul>
 
-                <button type="submit">Se connecter</button>
-            </form>
+        <div class="sidebar-footer">
+            <p>ADMIN : Son nom et prenom</p>
+            <button><i class="fa fa-sign-out"></i>Déconnexion</button>
+        </div>
+        </nav>
+    
+     <main class="content">
+        <div id="page-dashboard" class="page active">
+    <header class="topbar">
+        <span class="topbar-date">Mardi 21 juillet 2026</span>
+        <div class="topbar-right">
+            <i class="fa fa-bell"></i>
+            <div class="topbar-avatar">A</div>
+        </div>
+    </header>
+        <section class="hero">
+    <div class="hero-text">
+        <h1>Bonjour, nom de l'ADMIN</h1>
+        <p>Bienvenue sur votre tableau de bord</p>
+    </div>
+    <div class="hero-stat">
+        <span class="stat-number" id="total-consultation-attente">23</span>
+        <span class="stat-label">Nombre total de consultations en attente pour auj</span>
+    </div>
+        </section>
+
+       <section class="dashboard-cards">
+    <div class="stat-card">
+        <i class="fa fa-users"></i>
+        <span class="stat-value" id="total-patients">24</span>
+        <span class="stat-title">Nombre total de Patients</span>
+    </div>
+    <div class="stat-card">
+        <i class="fa fa-stethoscope"></i>
+        <span class="stat-value" id="total-medecins">9</span>
+        <span class="stat-title">Nombre total de Medecins</span>
+    </div>
+    <div class="stat-card">
+        <i class="fa fa-calendar"></i>
+        <span class="stat-value" id="total-rdv-jour">16</span>
+        <span class="stat-title">Nombre total de Rendez-vous du jour</span>
+    </div>
+    <div class="stat-card">
+        <i class="fa fa-clock-o"></i>
+        <span class="stat-value" id="total-rdv-program">21</span>
+        <span class="stat-title">Nombre total de Rendez-vous programmés</span>
+    </div>
+    <div class="stat-card">
+        <i class="fa fa-check-circle"></i>
+        <span class="stat-value" id="total-consultation">50</span>
+        <span class="stat-title">Nombre total de Consultations réalisées</span>
+    </div>
+
+
+    <div class="chart-card">
+        <!-- Mes graphiques  -->
+    </div>
+        </section>
+     </div>
+ 
+<div id="page-patients" class="page">
+    <h1>Liste des patients</h1>
+
+    <div class="patients-list">
+        <div class="patients-header">
+            <span class="col-name">Nom</span>
+            <span class="col-specialty">Operations</span>
+            <span class="col-actions">Actions</span>
+        </div>
+
+        <div class="patient-row">
+            <span class="patient-name col-name">Lorcy</span>
+            <span class="patient-specialty col-specialty">Cardiologie</span>
+            <div class="patient-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="patient-row">
+            <span class="patient-name col-name">Rudy</span>
+            <span class="patient-specialty col-specialty">Pédiatrie</span>
+            <div class="patient-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="patient-row">
+            <span class="patient-name col-name">Alix</span>
+            <span class="patient-specialty col-specialty">Généraliste</span>
+            <div class="patient-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
         </div>
     </div>
+
+    <!--<table>
+    <tr><th>Nom</th><th>Operations</th><th>Actions</th></tr>
+    <tbody><tr><td>Lorcy</td><td>Cardiologie</td><td><div class="patient-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div></td></tr>
+    <tr><td>Rudy</td><td>Pediatrie</td><td><div class="patient-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div></td></tr>
+    <tr><td>Alix</td><td>Généraliste</td><td><div class="patient-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div></td></tr>
+    </tbody>
+</table>-->
+</div>
+
+<div id="page-medecins" class="page">
+    <h1>Liste des medecins</h1>
+
+    <div class="medecins-list">
+        <div class="medecins-header">
+            <span class="col-name">Nom</span>
+            <span class="col-specialty">Specialité</span>
+            <span class="col-actions">Actions</span>
+        </div>
+
+        <div class="medecins-row">
+            <span class="medecins col-name">Clara</span>
+            <span class="medecins-specialty col-specialty">Cardiologie</span>
+            <div class="medecins-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="medecins-row">
+            <span class="medecins col-name">Iris</span>
+            <span class="medecins-specialty col-specialty">Pédiatrie</span>
+            <div class="medecins-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+
+        <div class="medecins-row">
+            <span class="medecins col-name">Alix</span>
+            <span class="medecins-specialty col-specialty">Généraliste</span>
+            <div class="medecins-actions col-actions">
+                <button class="btn-modify">Modifier</button>
+                <button class="btn-view">Voir</button>
+                <button class="btn-delete">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+</main> 
 </body>
 </html>
