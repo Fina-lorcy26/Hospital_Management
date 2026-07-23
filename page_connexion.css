@@ -10,12 +10,13 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 35px;
-   background-color: #2450c9;
+   background-color: #378ADD;
 }
 input{
     padding: 5px;
-    border: #ccc;
+    border: 2px solid #ccc
     border-radius: 15px;
+    outline: none;
 }
 label {
     margin-bottom: 5px;
@@ -32,3 +33,12 @@ h1 {
     color: #fff;
     
 }
+p {
+    color: white;
+}
+    
+.button-container input[type="submit"]{
+    background-color: #fff;
+}
+
+

@@ -1,21 +1,35 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="page_connexion.css">
-    <title>Connexion</title>
-</head>
-<body>
-    <h1>Connexion</h1>
-    <form action="traitement_connexion.php" method="post">
-        <label for="username">Nom d'utilisateur :</label>
-        <input type="text" id="username" name="username" required>
-        <br><br>
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="password" required>
-        <br><br>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="connexion.css">
+        <title>login</title>
+    </head>
+    <body>
+      <span>
+         <div class="logo">
+        <img  src="image.png">
+        </div>
+        <div class="container">
+        <h1>Connexion</h1>
+        <P>Bienvenue a nouveau, veuillez vous connecter a votre compte</P>
+        <form action="traitement_connexion.php" method="post">
+        <input type="text" id="username" name="username" placeholder="Nom complet " required>
+       
+        <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+        <div class="checkbox">
+        <input type="checkbox" id="terms" name="terms" required> 
+        <label for="terms">souviens-toi de moi</label></div>
+        <div class="button-container">
         <input type="submit" value="Se connecter">
-    </form>
+        </div>
+        <p>vous n'avez pas de compte ? <a href="register.html"a>inscription </a> </p>
+
+        
+        </form>
+        </div>
+        </span>
 </body>
 </html>
+        
