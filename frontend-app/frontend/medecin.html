@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Hospital Management - Espace Médecin</title>
+    <link rel="stylesheet" href="./src/assets/fonts/FontAwesome/font-awesome.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="app-container">
+        <!-- Bandeau médecin, différent de l'admin -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fa fa-hospital-o"></i>
+                <p>HOSPITAL MANAGEMENT</p>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
+                <li><a href="#"data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <p>DR : Son nom et prenom</p>
+                <button><i class="fa fa-sign-out"></i>Déconnexion</button>
+            </div>
+        </nav>
+
+        <main class="content">
+            <div id="page-mes-rdv" class="page active">
+                <h1>Mes rendez-vous</h1>
+                
+            </div>
+
+            <div id="page-mes-consultations" class="page">
+                <h1>Mes consultations</h1>
+                
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="./src/navigation-medecin.js"></script>
+</body>
+</html>
