@@ -84,8 +84,12 @@
      </div>
  
 <div id="page-patients" class="page">
+    <div class="page-header">
     <h1>Liste des patients</h1>
-
+     <button class="btn-primary" onclick="openModal('modal-overlay-patient')">
+        <i class="fa fa-plus"></i> Ajouter un patient
+    </button>
+    </div>
     <div class="patients-list">
         <div class="patients-header">
             <span class="col-name">Nom</span>
@@ -97,8 +101,8 @@
             <span class="patient-name col-name">Lorcy</span>
             <span class="patient-specialty col-specialty">Cardiologie</span>
             <div class="patient-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -107,8 +111,8 @@
             <span class="patient-name col-name">Rudy</span>
             <span class="patient-specialty col-specialty">Pédiatrie</span>
             <div class="patient-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -117,8 +121,8 @@
             <span class="patient-name col-name">Alix</span>
             <span class="patient-specialty col-specialty">Généraliste</span>
             <div class="patient-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -146,8 +150,12 @@
 </div>
 
 <div id="page-medecins" class="page">
-    <h1>Liste des medecins</h1>
-
+    <div class="page-header">
+    <h1>Liste des médecins</h1>
+    <button class="btn-primary" onclick="openModal('modal-overlay-medecin')">
+        <i class="fa fa-plus"></i> Ajouter un médecin
+    </button>
+    </div>
     <div class="medecins-list">
         <div class="medecins-header">
             <span class="col-name">Nom</span>
@@ -159,8 +167,8 @@
             <span class="medecins col-name">Clara</span>
             <span class="medecins-specialty col-specialty">Cardiologie</span>
             <div class="medecins-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -169,8 +177,8 @@
             <span class="medecins col-name">Iris</span>
             <span class="medecins-specialty col-specialty">Pédiatrie</span>
             <div class="medecins-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -179,8 +187,8 @@
             <span class="medecins col-name">Alix</span>
             <span class="medecins-specialty col-specialty">Généraliste</span>
             <div class="medecins-actions col-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -189,8 +197,12 @@
 
 
 <div id="page-rdv" class="page">
+     <div class="page-header">
     <h1>Rendez-vous</h1>
-
+    <button class="btn-primary" onclick="openModal('modal-overlay-rdv')">
+        <i class="fa fa-plus"></i> Ajouter un rendez-vous
+    </button>
+    </div>
     <div class="rdv-list">
         <div class="rdv-header">
             <span class="col-patient">Patient</span>
@@ -210,8 +222,8 @@
                 <span class="badge badge-confirme">Confirmé</span>
             </span>
             <div class="col-actions rdv-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -225,8 +237,8 @@
                 <span class="badge badge-attente">En attente</span>
             </span>
             <div class="col-actions rdv-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
@@ -240,14 +252,330 @@
                 <span class="badge badge-annule">Annulé</span>
             </span>
             <div class="col-actions rdv-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
+                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
+                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
                 <button class="btn-delete">Supprimer</button>
             </div>
         </div>
     </div>
 </div>
 
+<div id="page-profil-patient" class="page">
+    <div class="page-header">
+        <h1>Profil du patient</h1>
+        <button class="btn-secondary" onclick="navigateBack('patients')">
+            <i class="fa fa-arrow-left"></i> Retour à la liste
+        </button>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">L</div>
+            <div class="profile-title">
+                <h2>Lorcy</h2>
+                <span class="badge badge-confirme">Actif</span>
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label">Prenom</span>
+                <span class="detail-value">Fifi</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Sexe</span>
+                <span class="detail-value">F</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Date de naissance</span>
+                <span class="detail-value">18/08/2002</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Téléphone</span>
+                <span class="detail-value">692623146</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Adresse</span>
+                <span class="detail-value">Rue des manguiers</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Motif</span>
+                <span class="detail-value">Mal de ventre</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page-profil-medecin" class="page">
+    <div class="page-header">
+        <h1>Profil du médecin</h1>
+        <button class="btn-secondary" onclick="navigateBack('medecins')">
+            <i class="fa fa-arrow-left"></i> Retour à la liste
+        </button>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">C</div>
+            <div class="profile-title">
+                <h2>Dr. Clara</h2>
+                <span class="badge badge-confirme">En service</span>
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label">Matricule</span>
+                <span class="detail-value">MED-2024-018</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Prénom</span>
+                <span class="detail-value">Clara</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Spécialité</span>
+                <span class="detail-value">Cardiologie</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Téléphone</span>
+                <span class="detail-value">692643784</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">clara@hopital.com</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page-profil-rdv" class="page">
+    <div class="page-header">
+        <h1>Détails du rendez-vous</h1>
+        <button class="btn-secondary" onclick="navigateBack('rdv')">
+            <i class="fa fa-arrow-left"></i> Retour à la liste
+        </button>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar"><i class="fa fa-calendar"></i></div>
+            <div class="profile-title">
+                <h2>Lorcy — Dr. Clara</h2>
+                <span class="badge badge-confirme">Confirmé</span>
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="detail-label">Patient</span>
+                <span class="detail-value">Lorcy</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Médecin</span>
+                <span class="detail-value">Dr. Clara</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">22/07/2026</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Heure</span>
+                <span class="detail-value">09:30</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Motif</span>
+                <span class="detail-value">Douleurs thoraciques</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Statut</span>
+                <span class="detail-value">Confirmé</span>
+            </div>
+        </div>
+    </div>
+</div>
 </main> 
+<div id="modal-overlay-patient" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Ajouter un patient</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-patient')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="patient-nom">Nom</label>
+            <input type="text" id="patient-nom" placeholder="Nom du patient" required />
+
+            <label for="patient-prenom">Prénom</label>
+            <input type="text" id="patient-prenom" placeholder="Prénom du patient" required />
+
+            <label for="patient-sexe">Sexe</label>
+            <input type="text" id="patient-sexe" placeholder="Ex: F" required />
+
+             <label for="patient-tel">Telephone</label>
+            <input type="text" id="patient-tel" placeholder="Ex: 69262314612" required />
+
+             <label for="date_Naiss_patient">Date de Naissance </label>
+            <input type="text" id="date_Naiss_patient" placeholder="Ex: 18/08/2002" required />
+
+            <label for="adresse_patient">Adresse </label>
+            <input type="text" id="adresse_patient" placeholder="Ex: Rue des manguiers" required />
+
+            <label for="motif_patient">Motif </label>
+            <input type="text" id="motif_patient" placeholder="Ex: mal de ventre" required />
+
+            <button type="submit" class="btn-primary">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-overlay-medecin" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Ajouter un medecin</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-medecin')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="mat-medecin">Matricule Medecin</label>
+            <input type="text" id="mat-medecin" placeholder=" Matricule medecin" required />
+
+            <label for="medecin-nom">Nom</label>
+            <input type="text" id="medecin-nom" placeholder="Nom du medecin" required />
+
+            <label for="medecin-prenom">Prénom</label>
+            <input type="text" id="medecin-prenom" placeholder="Prénom du medecin" required />
+
+            <label for="medecin-specialite">Spécialité </label>
+            <input type="text" id="medecin-specialite" placeholder="Ex: Cardiologie" required />
+
+            <label for="medecin-telephone">Telephone</label>
+            <input type="text" id="medecin-telephone" placeholder=" 69264378489" required />
+
+            <label for="medecin-email">Email</label>
+            <input type="email" id="medecin-email" placeholder="email du medecin" required />
+
+            <button type="submit" class="btn-primary">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-overlay-rdv" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Ajouter un rendez-vous</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-rdv')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="medecin-nom">Nom Medecin</label>
+            <input type="text" id="medecin-nom" placeholder="Nom du Medecin" required />
+
+            <label for="patient-nom">Nom Patient</label>
+            <input type="text" id="patient-nom" placeholder="Nom du patient" required />
+
+            <label for="rdv-motif"> Motif</label>
+            <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
+
+            <label for="rdv-date"> Date</label>
+            <input type="date" id="rdv-date" placeholder="Ex: 12/03/2027 " required />
+
+            <label for="rdv-heure"> Heure</label>
+            <input type="time" id="rdv-heure" placeholder="Ex: 09H45 " required />
+
+            <button type="submit" class="btn-primary">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-overlay-modif-patient" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Modifier le patient</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-modif-patient')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="modif-patient-nom">Nom</label>
+            <input type="text" id="modif-patient-nom" placeholder="Nom du patient" required />
+
+            <label for="modif-patient-prenom">Prénom</label>
+            <input type="text" id="modif-patient-prenom" placeholder="Prénom du patient" required />
+
+            <label for="modif-patient-sexe">Sexe</label>
+            <input type="text" id="modif-patient-sexe" placeholder="Ex: F" required />
+
+            <label for="modif-patient-tel">Téléphone</label>
+            <input type="text" id="modif-patient-tel" placeholder="Ex: 692623146" required />
+
+            <label for="modif-date-naiss-patient">Date de naissance</label>
+            <input type="text" id="modif-date-naiss-patient" placeholder="Ex: 18/08/2002" required />
+
+            <label for="modif-adresse-patient">Adresse</label>
+            <input type="text" id="modif-adresse-patient" placeholder="Ex: Rue des manguiers" required />
+
+            <label for="modif-motif-patient">Motif</label>
+            <input type="text" id="modif-motif-patient" placeholder="Ex: mal de ventre" required />
+
+            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-overlay-modif-medecin" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Modifier le medecin</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-modif-medecin')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="modif-medecin-nom">Nom</label>
+            <input type="text" id="modif-medecin-nom" placeholder="Nom du medecin" required />
+
+            <label for="modif-medecin-prenom">Prénom</label>
+            <input type="text" id="modif-medecin-prenom" placeholder="Prénom du medecin" required />
+
+            <label for="modif-medecin-specialite">Specialite</label>
+            <input type="text" id="modif-medecin-specialite" placeholder="Ex: Chirugien" required />
+
+            <label for="modif-medecin-tel">Téléphone</label>
+            <input type="text" id="modif-medecin-tel" placeholder="Ex: 692623146" required />
+
+            <label for="modif-email-medecin">E-mail</label>
+            <input type="email" id="modif-email-medecin" placeholder="Ex: med@gmail.com" required />
+
+            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-overlay-modif-rdv" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Modifier le Rendez-vous</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-modif-rdv')">&times;</button>
+        </div>
+
+        <form class="modal-form">
+            <label for="modif-rdv-patient-nom_complet">Nom complet Patient</label>
+            <input type="text" id="modif-rdv-patient-nom" placeholder="Nom complet du patient" required />
+
+            <label for="modif-rdv-medecin-nom">Nom Medecin</label>
+            <input type="text" id="modif-rdv-medecin-nom" placeholder="Nom du Medecin" required />
+
+            <label for="modif-motif-rdv">Motif</label>
+            <input type="text" id="modif-motif-rdv" placeholder="Ex: yeux enflés" required />
+
+            <label for="modif-rdv-date">Date</label>
+            <input type="date" id="modif-rdv-date" placeholder="Ex: 24/09/2026" required />
+
+            <label for="modif-heure-rdv">Heure</label>
+            <input type="time" id="modif-heure-rdv" placeholder="Ex: 10h35" required />
+
+            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+        </form>
+    </div>
+</div>
 </body>
+
 </html>
