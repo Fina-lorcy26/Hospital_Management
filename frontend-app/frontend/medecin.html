@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Bandeau médecin, différent de l'admin -->
         <nav class="sidebar">
             <div class="sidebar-logo">
                 <i class="fa fa-hospital-o"></i>
@@ -17,9 +16,9 @@
 
             <ul class="sidebar-menu">
                 <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
-                <li><a href="#"data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
+                <li><a href="#" data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
             </ul>
-
+<li><a href="index.html">Test espace ADMIN</a></li>
             <div class="sidebar-footer">
                 <p>DR : Son nom et prenom</p>
                 <button><i class="fa fa-sign-out"></i>Déconnexion</button>
@@ -27,18 +26,24 @@
         </nav>
 
         <main class="content">
-            <div id="page-mes-rdv" class="page active">
-                <h1>Mes rendez-vous</h1>
-                
-            </div>
+    <header class="topbar">
+        <span class="topbar-date">Vendredi 24 juillet 2026</span>
+        <div class="topbar-right">
+            <i class="fa fa-bell"></i>
+            <div class="topbar-avatar">D</div>
+        </div>
+    </header>
 
-            <div id="page-mes-consultations" class="page">
-                <h1>Mes consultations</h1>
-                
-            </div>
-        </main>
+    <div id="page-mes-rdv" class="page active">
+        <h2>Mes rendez-vous</h2>
     </div>
 
-    <script type="module" src="./src/navigation-medecin.js"></script>
+    <div id="page-mes-consultations" class="page">
+        <h2>Mes consultations</h2>
+    </div>
+</main>
+    </div>
+    
+    <script type="module" src="navigation-medecin.js"></script>
 </body>
 </html>

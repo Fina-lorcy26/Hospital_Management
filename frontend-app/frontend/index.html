@@ -20,9 +20,9 @@
                 <li><a href="#" class="active" data-page="dashboard"><i class="fa fa-home"></i>Tableau de bord</a></li>
                 <li><a href="#" data-page="patients"><i class="fa fa-users"></i>Mes patients</a></li>
                 <li><a href="#" data-page="medecins"><i class="fa fa-stethoscope"></i>Mes médecins</a></li>
-                <li><a href="#" data-page="rdv"><i class="fa fa-calendar"></i>Rendez-vous</a></li>
+                <li><a href="#" data-page="rendez-vous"><i class="fa fa-calendar"></i>Rendez-vous</a></li>
             </ul>
-
+<li><a href="medecin.html">Test espace médecin</a></li>
         <div class="sidebar-footer">
             <p>ADMIN : Son nom et prenom</p>
             <button><i class="fa fa-sign-out"></i>Déconnexion</button>
@@ -31,7 +31,7 @@
     
      <main class="content">
         <header class="topbar">
-        <span class="topbar-date">Mardi 21 juillet 2026</span>
+        <span class="topbar-date">Vendredi 24 juillet 2026</span>
         <div class="topbar-right">
             <i class="fa fa-bell"></i>
             <div class="topbar-avatar">A</div>
@@ -96,57 +96,9 @@
             <span class="col-specialty">Operations</span>
             <span class="col-actions">Actions</span>
         </div>
-
-        <div class="patient-row">
-            <span class="patient-name col-name">Lorcy</span>
-            <span class="patient-specialty col-specialty">Cardiologie</span>
-            <div class="patient-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="patient-row">
-            <span class="patient-name col-name">Rudy</span>
-            <span class="patient-specialty col-specialty">Pédiatrie</span>
-            <div class="patient-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="patient-row">
-            <span class="patient-name col-name">Alix</span>
-            <span class="patient-specialty col-specialty">Généraliste</span>
-            <div class="patient-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-patient')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('patient')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
+     
     </div>
 
-    <!--<table>
-    <tr><th>Nom</th><th>Operations</th><th>Actions</th></tr>
-    <tbody><tr><td>Lorcy</td><td>Cardiologie</td><td><div class="patient-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div></td></tr>
-    <tr><td>Rudy</td><td>Pediatrie</td><td><div class="patient-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div></td></tr>
-    <tr><td>Alix</td><td>Généraliste</td><td><div class="patient-actions">
-                <button class="btn-modify">Modifier</button>
-                <button class="btn-view">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div></td></tr>
-    </tbody>
-</table>-->
 </div>
 
 <div id="page-medecins" class="page">
@@ -161,42 +113,11 @@
             <span class="col-name">Nom</span>
             <span class="col-specialty">Specialité</span>
             <span class="col-actions">Actions</span>
-        </div>
+        </div>        
+     </div>
 
-        <div class="medecins-row">
-            <span class="medecins col-name">Clara</span>
-            <span class="medecins-specialty col-specialty">Cardiologie</span>
-            <div class="medecins-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="medecins-row">
-            <span class="medecins col-name">Iris</span>
-            <span class="medecins-specialty col-specialty">Pédiatrie</span>
-            <div class="medecins-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="medecins-row">
-            <span class="medecins col-name">Alix</span>
-            <span class="medecins-specialty col-specialty">Généraliste</span>
-            <div class="medecins-actions col-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-medecin')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('medecin')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-    </div>  
 </div>
-
-
-<div id="page-rdv" class="page">
+<div id="page-rendez-vous" class="page">
      <div class="page-header">
     <h1>Rendez-vous</h1>
     <button class="btn-primary" onclick="openModal('modal-overlay-rdv')">
@@ -212,52 +133,6 @@
             <span class="col-statut">Statut</span>
             <span class="col-actions">Actions</span>
         </div>
-
-        <div class="rdv-row">
-            <span class="col-patient">Lorcy</span>
-            <span class="col-medecin">Dr. Clara</span>
-            <span class="col-date">22/07/2026</span>
-            <span class="col-heure">09:30</span>
-            <span class="col-statut">
-                <span class="badge badge-confirme">Confirmé</span>
-            </span>
-            <div class="col-actions rdv-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="rdv-row">
-            <span class="col-patient">Rudy</span>
-            <span class="col-medecin">Dr. Iris</span>
-            <span class="col-date">22/07/2026</span>
-            <span class="col-heure">11:00</span>
-            <span class="col-statut">
-                <span class="badge badge-attente">En attente</span>
-            </span>
-            <div class="col-actions rdv-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-
-        <div class="rdv-row">
-            <span class="col-patient">Alix</span>
-            <span class="col-medecin">Dr. Clara</span>
-            <span class="col-date">21/07/2026</span>
-            <span class="col-heure">15:45</span>
-            <span class="col-statut">
-                <span class="badge badge-annule">Annulé</span>
-            </span>
-            <div class="col-actions rdv-actions">
-                <button class="btn-modify" onclick="openModal('modal-overlay-modif-rdv')">Modifier</button>
-                <button class="btn-view" onclick="showProfile('rdv')">Voir</button>
-                <button class="btn-delete">Supprimer</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div id="page-profil-patient" class="page">
@@ -351,7 +226,7 @@
 <div id="page-profil-rdv" class="page">
     <div class="page-header">
         <h1>Détails du rendez-vous</h1>
-        <button class="btn-secondary" onclick="navigateBack('rdv')">
+        <button class="btn-secondary" onclick="navigateBack('rendez-vous')">
             <i class="fa fa-arrow-left"></i> Retour à la liste
         </button>
     </div>
