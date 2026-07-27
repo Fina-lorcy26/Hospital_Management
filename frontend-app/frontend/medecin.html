@@ -27,7 +27,7 @@
 
         <main class="content">
     <header class="topbar">
-        <span class="topbar-date">Vendredi 24 juillet 2026</span>
+        <span class="topbar-date"></span>
         <div class="topbar-right">
             <i class="fa fa-bell"></i>
             <div class="topbar-avatar">D</div>
@@ -36,6 +36,23 @@
 
     <div id="page-mes-rdv" class="page active">
         <h2>Mes rendez-vous</h2>
+        <div id="page-rendez-vous" class="page">
+     <div class="page-header">
+    <button class="btn-primary" onclick="openModal('modal-overlay-rdv')">
+        <i class="fa fa-plus"></i> Ajouter un rendez-vous
+    </button>
+    </div>
+    <div class="rdv-list">
+        <div class="rdv-header">
+            <span class="col-patient">Patient</span>
+            <span class="col-medecin">Médecin</span>
+            <span class="col-date">Date</span>
+            <span class="col-heure">Heure</span>
+            <span class="col-statut">Statut</span>
+            <span class="col-actions">Actions</span>
+        </div>
+    </div>
+</div>
     </div>
 
     <div id="page-mes-consultations" class="page">

@@ -31,7 +31,7 @@
     
      <main class="content">
         <header class="topbar">
-        <span class="topbar-date">Vendredi 24 juillet 2026</span>
+        <span class="topbar-date"></span>
         <div class="topbar-right">
             <i class="fa fa-bell"></i>
             <div class="topbar-avatar">A</div>
@@ -44,7 +44,7 @@
         <p>Bienvenue sur votre tableau de bord</p>
     </div>
     <div class="hero-stat">
-        <span class="stat-number" id="total-consultation-attente">23</span>
+        <span class="stat-number" id="total-consultation-attente"> </span>
         <span class="stat-label">Nombre total de consultations en attente pour auj</span>
     </div>
         </section>
@@ -52,27 +52,27 @@
        <section class="dashboard-cards">
     <div class="stat-card">
         <i class="fa fa-users"></i>
-        <span class="stat-value" id="total-patients">24</span>
+        <span class="stat-value" id="total-patients"> </span>
         <span class="stat-title">Nombre total de Patients</span>
     </div>
     <div class="stat-card">
         <i class="fa fa-stethoscope"></i>
-        <span class="stat-value" id="total-medecins">9</span>
+        <span class="stat-value" id="total-medecins"> </span>
         <span class="stat-title">Nombre total de Medecins</span>
     </div>
     <div class="stat-card">
         <i class="fa fa-calendar"></i>
-        <span class="stat-value" id="total-rdv-jour">16</span>
+        <span class="stat-value" id="total-rdv-jour"> </span>
         <span class="stat-title">Nombre total de Rendez-vous du jour</span>
     </div>
     <div class="stat-card">
         <i class="fa fa-clock-o"></i>
-        <span class="stat-value" id="total-rdv-program">21</span>
+        <span class="stat-value" id="total-rdv-program"> </span>
         <span class="stat-title">Nombre total de Rendez-vous programmés</span>
     </div>
     <div class="stat-card">
         <i class="fa fa-check-circle"></i>
-        <span class="stat-value" id="total-consultation">50</span>
+        <span class="stat-value" id="total-consultation"> 50</span>
         <span class="stat-title">Nombre total de Consultations réalisées</span>
     </div>
 
@@ -87,8 +87,9 @@
     <div class="page-header">
     <h1>Liste des patients</h1>
      <button class="btn-primary" onclick="openModal('modal-overlay-patient')">
-        <i class="fa fa-plus"></i> Ajouter un patient
-    </button>
+        <i class="fa fa-plus"></i>
+         Ajouter un patient
+     </button>
     </div>
     <div class="patients-list">
         <div class="patients-header">
@@ -96,7 +97,6 @@
             <span class="col-specialty">Operations</span>
             <span class="col-actions">Actions</span>
         </div>
-     
     </div>
 
 </div>
@@ -133,13 +133,16 @@
             <span class="col-statut">Statut</span>
             <span class="col-actions">Actions</span>
         </div>
+    </div>
 </div>
+
 
 <div id="page-profil-patient" class="page">
     <div class="page-header">
         <h1>Profil du patient</h1>
         <button class="btn-secondary" onclick="navigateBack('patients')">
-            <i class="fa fa-arrow-left"></i> Retour à la liste
+            <i class="fa fa-arrow-left"></i> 
+            Retour à la liste
         </button>
     </div>
 
@@ -147,7 +150,7 @@
         <div class="profile-header">
             <div class="profile-avatar">L</div>
             <div class="profile-title">
-                <h2>Lorcy</h2>
+                <h2></h2>
                 <span class="badge badge-confirme">Actif</span>
             </div>
         </div>
@@ -155,27 +158,27 @@
         <div class="profile-details">
             <div class="detail-item">
                 <span class="detail-label">Prenom</span>
-                <span class="detail-value">Fifi</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Sexe</span>
-                <span class="detail-value">F</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Date de naissance</span>
-                <span class="detail-value">18/08/2002</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Téléphone</span>
-                <span class="detail-value">692623146</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Adresse</span>
-                <span class="detail-value">Rue des manguiers</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Motif</span>
-                <span class="detail-value">Mal de ventre</span>
+                <span class="detail-value"></span>
             </div>
         </div>
     </div>
@@ -191,9 +194,9 @@
 
     <div class="profile-card">
         <div class="profile-header">
-            <div class="profile-avatar">C</div>
+            <div class="profile-avatar"></div>
             <div class="profile-title">
-                <h2>Dr. Clara</h2>
+                <h2></h2>
                 <span class="badge badge-confirme">En service</span>
             </div>
         </div>
@@ -201,23 +204,23 @@
         <div class="profile-details">
             <div class="detail-item">
                 <span class="detail-label">Matricule</span>
-                <span class="detail-value">MED-2024-018</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Prénom</span>
-                <span class="detail-value">Clara</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Spécialité</span>
-                <span class="detail-value">Cardiologie</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Téléphone</span>
-                <span class="detail-value">692643784</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Email</span>
-                <span class="detail-value">clara@hopital.com</span>
+                <span class="detail-value"></span>
             </div>
         </div>
     </div>
@@ -235,35 +238,35 @@
         <div class="profile-header">
             <div class="profile-avatar"><i class="fa fa-calendar"></i></div>
             <div class="profile-title">
-                <h2>Lorcy — Dr. Clara</h2>
-                <span class="badge badge-confirme">Confirmé</span>
+                <h2></h2>
+                <span class="badge badge-confirme"></span>
             </div>
         </div>
 
         <div class="profile-details">
             <div class="detail-item">
                 <span class="detail-label">Patient</span>
-                <span class="detail-value">Lorcy</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Médecin</span>
-                <span class="detail-value">Dr. Clara</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Date</span>
-                <span class="detail-value">22/07/2026</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Heure</span>
-                <span class="detail-value">09:30</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Motif</span>
-                <span class="detail-value">Douleurs thoraciques</span>
+                <span class="detail-value"></span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Statut</span>
-                <span class="detail-value">Confirmé</span>
+                <span class="detail-value"></span>
             </div>
         </div>
     </div>
@@ -276,7 +279,7 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-patient')">&times;</button>
         </div>
 
-        <form class="modal-form">
+        <form class="modal-form" id="form-add-patient">
             <label for="patient-nom">Nom</label>
             <input type="text" id="patient-nom" placeholder="Nom du patient" required />
 
@@ -310,7 +313,8 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-medecin')">&times;</button>
         </div>
 
-        <form class="modal-form">
+        <form class="modal-form" id="form-add-medecin">
+
             <label for="mat-medecin">Matricule Medecin</label>
             <input type="text" id="mat-medecin" placeholder=" Matricule medecin" required />
 
@@ -341,12 +345,13 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-rdv')">&times;</button>
         </div>
 
-        <form class="modal-form">
-            <label for="medecin-nom">Nom Medecin</label>
-            <input type="text" id="medecin-nom" placeholder="Nom du Medecin" required />
+        <form class="modal-form" id="form-add-rdv">
 
-            <label for="patient-nom">Nom Patient</label>
-            <input type="text" id="patient-nom" placeholder="Nom du patient" required />
+            <label for="rdv-medecin-nom">Nom Medecin</label>
+            <input type="text" id="rdv-medecin-nom" placeholder="Nom du Medecin" required />
+
+            <label for="rdv-patient-nom">Nom Patient</label>
+            <input type="text" id="rdv-patient-nom" placeholder="Nom du patient" required />
 
             <label for="rdv-motif"> Motif</label>
             <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
@@ -369,7 +374,7 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-modif-patient')">&times;</button>
         </div>
 
-        <form class="modal-form">
+        <form class="modal-form" id="form-modif-patient">
             <label for="modif-patient-nom">Nom</label>
             <input type="text" id="modif-patient-nom" placeholder="Nom du patient" required />
 
@@ -403,7 +408,7 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-modif-medecin')">&times;</button>
         </div>
 
-        <form class="modal-form">
+        <form class="modal-form" id="form-modif-medecin">
             <label for="modif-medecin-nom">Nom</label>
             <input type="text" id="modif-medecin-nom" placeholder="Nom du medecin" required />
 
@@ -431,7 +436,7 @@
             <button class="modal-close" onclick="closeModal('modal-overlay-modif-rdv')">&times;</button>
         </div>
 
-        <form class="modal-form">
+        <form class="modal-form" id="form-modif-rdv">
             <label for="modif-rdv-patient-nom_complet">Nom complet Patient</label>
             <input type="text" id="modif-rdv-patient-nom" placeholder="Nom complet du patient" required />
 

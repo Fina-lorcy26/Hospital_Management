@@ -13,4 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
             link.classList.add('active');
         });
     });
+    updateTopbarDate();
 });
+
+//---Gerer la date du Tableau de bord-----
+
+function updateTopbarDate() {
+    const dateElement = document.querySelector('.topbar-date');
+    if (!dateElement) return;
+    
+    const now = new Date();
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 
+                  'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    const jourSemaine = jours[now.getDay()];
+    const jour = now.getDate();
+    const moisNom = mois[now.getMonth()];
+    const annee = now.getFullYear();
+    
+    dateElement.textContent = `${jourSemaine} ${jour} ${moisNom} ${annee}`;
+}

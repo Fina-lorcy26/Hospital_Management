@@ -13,21 +13,21 @@ func initDatabase() {
 	var err error
 	db, err = sql.Open("sqlite", "hospital.db")
 	if err != nil {
-		log.Fatal("Erreur ouverture base de données:", err)
+		log.Fatal("Erreur ouverture base de donnees:", err)
 	}
 
-	createTable := `
+	createPatientsTable := `
 	CREATE TABLE IF NOT EXISTS patients (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		nom TEXT NOT NULL,
 		prenom TEXT,
-		specialite TEXT
-	);
-	`
-	_, err = db.Exec(createTable)
-	if err != nil {
-		log.Fatal("Erreur création table patients:", err)
-	}
+		sexe TEXT,
+		telephone TEXT,
+		date_naissance TEXT,
+		adresse TEXT,
+		motif TEXT
+	);`
+	db.Exec(createPatientsTable)
 
 	createMedecinsTable := `
 	CREATE TABLE IF NOT EXISTS medecins (
@@ -37,27 +37,20 @@ func initDatabase() {
 		specialite TEXT,
 		telephone TEXT,
 		email TEXT
-	);
-	`
-	_, err = db.Exec(createMedecinsTable)
-if err != nil {
-    log.Fatal("Erreur création table medecins:", err)
-}
+	);`
+	db.Exec(createMedecinsTable)
 
 	createRdvTable := `
 	CREATE TABLE IF NOT EXISTS rendez_vous (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		patient_nom TEXT,
 		medecin_nom TEXT,
+		motif TEXT,
 		date TEXT,
 		heure TEXT,
 		statut TEXT
-	);
-	`
-	_, err = db.Exec(createRdvTable)
-if err != nil {
-    log.Fatal("Erreur création table rendez_vous:", err)
-}
+	);`
+	db.Exec(createRdvTable)
 
 	var count int
 	db.QueryRow("SELECT COUNT(*) FROM patients").Scan(&count)
@@ -80,65 +73,42 @@ if err != nil {
 
 func insertSeedData() {
 	patients := []struct {
-		Nom        string
-		Prenom     string
-		Specialite string
+		Nom, Prenom, Sexe, Telephone, DateNaissance, Adresse, Motif string
 	}{
-		{"Lorcy", "Fifi", "Cardiologie"},
-		{"Rudy", "Jean", "Pédiatrie"},
-		{"Alix", "Marie", "Généraliste"},
+		{"Lorcy", "Fifi", "F", "692623146", "18/08/2002", "Rue des manguiers", "Mal de ventre"},
+		{"Rudy", "Jean", "M", "692111333", "02/03/1998", "Akwa", "Fievre"},
+		{"Alix", "Marie", "F", "692555666", "10/10/1990", "Bonaberi", "Controle"},
 	}
-
 	for _, p := range patients {
-		_, err := db.Exec(
-			"INSERT INTO patients (nom, prenom, specialite) VALUES (?, ?, ?)",
-			p.Nom, p.Prenom, p.Specialite,
-		)
-		if err != nil {
-			log.Println("Erreur insertion patient:", err)
-		}
+		db.Exec("INSERT INTO patients (nom, prenom, sexe, telephone, date_naissance, adresse, motif) VALUES (?, ?, ?, ?, ?, ?, ?)",
+			p.Nom, p.Prenom, p.Sexe, p.Telephone, p.DateNaissance, p.Adresse, p.Motif)
 	}
 }
 
 func insertSeedMedecins() {
 	medecins := []struct {
-		Matricule  string
-		Nom        string
-		Prenom     string
-		Specialite string
-		Telephone  string
-		Email      string
+		Matricule, Nom, Prenom, Specialite, Telephone, Email string
 	}{
 		{"MED-001", "Clara", "Sophie", "Cardiologie", "692643784", "clara@hopital.com"},
-		{"MED-002", "Iris", "Julie", "Pédiatrie", "692111222", "iris@hopital.com"},
-		{"MED-003", "Alix", "Marc", "Généraliste", "692333444", "alix@hopital.com"},
+		{"MED-002", "Iris", "Julie", "Pediatrie", "692111222", "iris@hopital.com"},
+		{"MED-003", "Alix", "Marc", "Generaliste", "692333444", "alix@hopital.com"},
 	}
-
 	for _, m := range medecins {
-		db.Exec(
-			"INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
-			m.Matricule, m.Nom, m.Prenom, m.Specialite, m.Telephone, m.Email,
-		)
+		db.Exec("INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
+			m.Matricule, m.Nom, m.Prenom, m.Specialite, m.Telephone, m.Email)
 	}
 }
 
 func insertSeedRdv() {
 	rdvs := []struct {
-		PatientNom string
-		MedecinNom string
-		Date       string
-		Heure      string
-		Statut     string
+		PatientNom, MedecinNom, Motif, Date, Heure, Statut string
 	}{
-		{"Lorcy", "Dr. Clara", "22/07/2026", "09:30", "Confirmé"},
-		{"Rudy", "Dr. Iris", "22/07/2026", "11:00", "En attente"},
-		{"Alix", "Dr. Clara", "21/07/2026", "15:45", "Annulé"},
+		{"Lorcy", "Dr. Clara", "Douleurs thoraciques", "22/07/2026", "09:30", "Confirmé"},
+		{"Rudy", "Dr. Iris", "Fievre", "22/07/2026", "11:00", "En attente"},
+		{"Alix", "Dr. Clara", "Controle", "21/07/2026", "15:45", "Annulé"},
 	}
-
 	for _, r := range rdvs {
-		db.Exec(
-			"INSERT INTO rendez_vous (patient_nom, medecin_nom, date, heure, statut) VALUES (?, ?, ?, ?, ?)",
-			r.PatientNom, r.MedecinNom, r.Date, r.Heure, r.Statut,
-		)
+		db.Exec("INSERT INTO rendez_vous (patient_nom, medecin_nom, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
+			r.PatientNom, r.MedecinNom, r.Motif, r.Date, r.Heure, r.Statut)
 	}
 }
