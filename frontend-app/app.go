@@ -47,6 +47,51 @@ type DashboardStats struct {
 	RdvConfirmes  int `json:"rdv_confirmes"`
 }
 
+type Consultation struct {
+	ID               int    `json:"id"`
+	RdvID            int    `json:"rdv_id"`
+	Diagnostic       string `json:"diagnostic"`
+	Traitement       string `json:"traitement"`
+	Observation      string `json:"observation"`
+	DateConsultation string `json:"date_consultation"`
+	Statut           string `json:"statut"`
+}
+
+
+type ConsultationDetail struct {
+	ID               int    `json:"id"`
+	RdvID            int    `json:"rdv_id"`
+	PatientNom       string `json:"patient_nom"`
+	DateRdv          string `json:"date_rdv"`
+	DateConsultation string `json:"date_consultation"`
+	Diagnostic       string `json:"diagnostic"`
+	Traitement       string `json:"traitement"`
+	Observation      string `json:"observation"`
+	Statut           string `json:"statut"`
+}
+
+func (a *App) GetConsultationsByMedecin(medecinNom string) []ConsultationDetail {
+	rows, err := db.Query(`
+		SELECT c.id, c.rdv_id, r.patient_nom, r.date, c.date_consultation, c.diagnostic, c.traitement, c.observation, c.statut
+		FROM consultations c
+		JOIN rendez_vous r ON c.rdv_id = r.id
+		WHERE r.medecin_nom = ?
+	`, medecinNom)
+	if err != nil {
+		fmt.Println("Erreur recuperation consultations detaillees:", err)
+		return []ConsultationDetail{}
+	}
+	defer rows.Close()
+
+	var list []ConsultationDetail
+	for rows.Next() {
+		var c ConsultationDetail
+		rows.Scan(&c.ID, &c.RdvID, &c.PatientNom, &c.DateRdv, &c.DateConsultation, &c.Diagnostic, &c.Traitement, &c.Observation, &c.Statut)
+		list = append(list, c)
+	}
+	return list
+}
+
 func NewApp() *App {
 	return &App{}
 }
@@ -217,4 +262,58 @@ func (a *App) GetDashboardStats() DashboardStats {
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE statut = ?", "En attente").Scan(&stats.RdvEnAttente)
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE statut = ?", "Confirmé").Scan(&stats.RdvConfirmes)
 	return stats
+}
+
+// ---------- CONSULTATIONS ----------
+
+func (a *App) GetConsultations() []Consultation {
+	rows, err := db.Query("SELECT id, rdv_id, diagnostic, traitement, observation, date_consultation, statut FROM consultations")
+	if err != nil {
+		fmt.Println("Erreur recuperation consultations:", err)
+		return []Consultation{}
+	}
+	defer rows.Close()
+
+	var consultations []Consultation
+	for rows.Next() {
+		var c Consultation
+		rows.Scan(&c.ID, &c.RdvID, &c.Diagnostic, &c.Traitement, &c.Observation, &c.DateConsultation, &c.Statut)
+		consultations = append(consultations, c)
+	}
+	return consultations
+}
+
+func (a *App) AddConsultation(rdvID int, diagnostic, traitement, observation, dateConsultation string) string {
+	_, err := db.Exec(
+		"INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation, statut) VALUES (?, ?, ?, ?, ?, ?)",
+		rdvID, diagnostic, traitement, observation, dateConsultation, "En cours",
+	)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
+}
+
+func (a *App) UpdateConsultationStatut(id int, statut string) string {
+	_, err := db.Exec("UPDATE consultations SET statut=? WHERE id=?", statut, id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
+}
+
+func (a *App) DeleteConsultation(id int) string {
+	_, err := db.Exec("DELETE FROM consultations WHERE id=?", id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
+}
+
+func (a *App) UpdateRendezVousStatut(id int, statut string) string {
+	_, err := db.Exec("UPDATE rendez_vous SET statut=? WHERE id=?", statut, id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
 }

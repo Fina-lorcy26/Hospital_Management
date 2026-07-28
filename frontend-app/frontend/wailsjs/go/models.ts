@@ -1,5 +1,57 @@
 export namespace main {
 	
+	export class Consultation {
+	    id: number;
+	    rdv_id: number;
+	    diagnostic: string;
+	    traitement: string;
+	    observation: string;
+	    date_consultation: string;
+	    statut: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Consultation(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.rdv_id = source["rdv_id"];
+	        this.diagnostic = source["diagnostic"];
+	        this.traitement = source["traitement"];
+	        this.observation = source["observation"];
+	        this.date_consultation = source["date_consultation"];
+	        this.statut = source["statut"];
+	    }
+	}
+	export class ConsultationDetail {
+	    id: number;
+	    rdv_id: number;
+	    patient_nom: string;
+	    date_rdv: string;
+	    date_consultation: string;
+	    diagnostic: string;
+	    traitement: string;
+	    observation: string;
+	    statut: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConsultationDetail(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.rdv_id = source["rdv_id"];
+	        this.patient_nom = source["patient_nom"];
+	        this.date_rdv = source["date_rdv"];
+	        this.date_consultation = source["date_consultation"];
+	        this.diagnostic = source["diagnostic"];
+	        this.traitement = source["traitement"];
+	        this.observation = source["observation"];
+	        this.statut = source["statut"];
+	    }
+	}
 	export class DashboardStats {
 	    total_patients: number;
 	    total_medecins: number;

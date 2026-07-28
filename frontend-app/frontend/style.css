@@ -525,3 +525,43 @@ table{
 .page h2{
     color: #2C2C2A;
 }
+.consultations-list {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.consultations-header,
+.consultation-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 16px;
+}
+
+.consultations-header {
+    color: #5F5E5A;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.consultation-row {
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.consultations-header .col-patient,
+.consultation-row .col-patient { width: 160px; }
+.consultations-header .col-date-rdv,
+.consultation-row .col-date-rdv { width: 140px; }
+.consultations-header .col-date,
+.consultation-row .col-date { width: 140px; }
+
+.consultations-effectuees-list {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+

@@ -52,6 +52,18 @@ func initDatabase() {
 	);`
 	db.Exec(createRdvTable)
 
+	createConsultationsTable := `
+	CREATE TABLE IF NOT EXISTS consultations (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		rdv_id INTEGER,
+		diagnostic TEXT,
+		traitement TEXT,
+		observation TEXT,
+		date_consultation TEXT,
+		statut TEXT
+	);`
+	db.Exec(createConsultationsTable)
+
 	var count int
 	db.QueryRow("SELECT COUNT(*) FROM patients").Scan(&count)
 	if count == 0 {
@@ -68,6 +80,11 @@ func initDatabase() {
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous").Scan(&countRdv)
 	if countRdv == 0 {
 		insertSeedRdv()
+	}
+		var countConsultations int
+	db.QueryRow("SELECT COUNT(*) FROM consultations").Scan(&countConsultations)
+	if countConsultations == 0 {
+		insertSeedConsultations()
 	}
 }
 
@@ -110,5 +127,23 @@ func insertSeedRdv() {
 	for _, r := range rdvs {
 		db.Exec("INSERT INTO rendez_vous (patient_nom, medecin_nom, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
 			r.PatientNom, r.MedecinNom, r.Motif, r.Date, r.Heure, r.Statut)
+	}
+}
+func insertSeedConsultations() {
+	consultations := []struct {
+		RdvID       int
+		Diagnostic  string
+		Traitement  string
+		Observation string
+		Date        string
+		Statut      string
+	}{
+		{1, "Angine de poitrine suspectée", "Repos, examens complementaires", "Patient stable", "22/07/2026", "Terminee"},
+	}
+	for _, c := range consultations {
+		db.Exec(
+			"INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation, statut) VALUES (?, ?, ?, ?, ?, ?)",
+			c.RdvID, c.Diagnostic, c.Traitement, c.Observation, c.Date, c.Statut,
+		)
 	}
 }

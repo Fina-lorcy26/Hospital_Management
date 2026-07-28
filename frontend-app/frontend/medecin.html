@@ -18,49 +18,78 @@
                 <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
                 <li><a href="#" data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
             </ul>
-<li><a href="index.html">Test espace ADMIN</a></li>
+   <li><a href="index.html">Test espace ADMIN</a></li>
             <div class="sidebar-footer">
-                <p>DR : Son nom et prenom</p>
+                <p>DR : Clara</p>
                 <button><i class="fa fa-sign-out"></i>Déconnexion</button>
             </div>
         </nav>
 
         <main class="content">
-    <header class="topbar">
-        <span class="topbar-date"></span>
-        <div class="topbar-right">
-            <i class="fa fa-bell"></i>
-            <div class="topbar-avatar">D</div>
-        </div>
-    </header>
+            <header class="topbar">
+                <span class="topbar-date">Vendredi 24 juillet 2026</span>
+                <div class="topbar-right">
+                    <i class="fa fa-bell"></i>
+                    <div class="topbar-avatar">C</div>
+                </div>
+            </header>
 
-    <div id="page-mes-rdv" class="page active">
-        <h2>Mes rendez-vous</h2>
-        <div id="page-rendez-vous" class="page">
-     <div class="page-header">
-    <button class="btn-primary" onclick="openModal('modal-overlay-rdv')">
-        <i class="fa fa-plus"></i> Ajouter un rendez-vous
-    </button>
-    </div>
-    <div class="rdv-list">
-        <div class="rdv-header">
-            <span class="col-patient">Patient</span>
-            <span class="col-medecin">Médecin</span>
-            <span class="col-date">Date</span>
-            <span class="col-heure">Heure</span>
-            <span class="col-statut">Statut</span>
-            <span class="col-actions">Actions</span>
-        </div>
-    </div>
-</div>
+            <div id="page-mes-rdv" class="page active">
+                <div class="page-header">
+                    <h1>Mes rendez-vous</h1>
+                </div>
+                <div class="rdv-list">
+                    <div class="rdv-header">
+                        <span class="col-patient">Patient</span>
+                        <span class="col-date">Date</span>
+                        <span class="col-heure">Heure</span>
+                        <span class="col-motif">Motif</span>
+                        <span class="col-statut">Statut</span>
+                        <span class="col-actions">Actions</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-mes-consultations" class="page">
+                <div class="page-header">
+                    <h1>Mes consultations</h1>
+                </div>
+                <div class="consultations-list">
+                    <div class="consultations-header">
+                        <span class="col-date">Date</span>
+                        <span class="col-diagnostic">Diagnostic</span>
+                        <span class="col-statut">Statut</span>
+                        <span class="col-actions">Actions</span>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div id="page-mes-consultations" class="page">
-        <h2>Mes consultations</h2>
+    <div id="modal-overlay-consultation" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Enregistrer une consultation</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-consultation')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-add-consultation">
+                <label for="consult-diagnostic">Diagnostic</label>
+                <input type="text" id="consult-diagnostic" placeholder="Ex: Angine de poitrine" required />
+
+                <label for="consult-traitement">Traitement prescrit</label>
+                <input type="text" id="consult-traitement" placeholder="Ex: Repos, examens" required />
+
+                <label for="consult-observation">Observation</label>
+                <input type="text" id="consult-observation" placeholder="Ex: Patient stable" required />
+
+                <label for="consult-date">Date de consultation</label>
+                <input type="date" id="consult-date" required />
+
+                <button type="submit" class="btn-primary">Enregistrer</button>
+            </form>
+        </div>
     </div>
-</main>
-    </div>
-    
-    <script type="module" src="navigation-medecin.js"></script>
+
+    <script type="module" src="./navigation-medecin.js"></script>
 </body>
 </html>

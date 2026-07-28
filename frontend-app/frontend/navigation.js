@@ -3,26 +3,29 @@ import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
          GetDashboardStats } from './wailsjs/go/main/App.js';
 
+
+ import { GetConsultations, AddConsultation, UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut, GetConsultationsByMedecin } from './wailsjs/go/main/App.js';
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar-menu a');
 
     links.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetPage = link.getAttribute('data-page');
+    link.addEventListener('click', (e) => {
+        const targetPage = link.getAttribute('data-page');
+        if (!targetPage) return; // laisse les liens onclick (médecin) gérer leur propre clic
 
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById('page-' + targetPage).classList.add('active');
+        e.preventDefault();
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById('page-' + targetPage).classList.add('active');
 
-            links.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
 
-            if (targetPage === 'patients') loadPatients();
-            if (targetPage === 'medecins') loadMedecins();
-            if (targetPage === 'rendez-vous') loadRendezVous();
-            if (targetPage === 'dashboard') loadDashboard();
-        });
+        if (targetPage === 'patients') loadPatients();
+        if (targetPage === 'medecins') loadMedecins();
+        if (targetPage === 'rendez-vous') loadRendezVous();
+        if (targetPage === 'dashboard') loadDashboard();
     });
+});
 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
@@ -131,6 +134,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+document.getElementById('form-add-consultation').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rdvId = parseInt(document.getElementById('consult-rdv-select').value);
+    const result = await AddConsultation(
+        rdvId,
+        document.getElementById('consult-diagnostic').value,
+        document.getElementById('consult-traitement').value,
+        document.getElementById('consult-observation').value,
+        document.getElementById('consult-date').value
+    );
+    if (result === 'ok') {
+        closeModal('modal-overlay-consultation');
+        e.target.reset();
+        loadMesConsultations();
+        alert('Consultation enregistrée');
+    } else {
+        alert(result);
+    }
+});
+
 document.getElementById('form-modif-rdv').addEventListener('submit', async (e) => {
     e.preventDefault();
     const result = await UpdateRendezVous(
@@ -155,6 +178,181 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
     loadDashboard();
     updateTopbarDate();
 });
+
+const MEDECIN_NOM_ACTUEL = 'Dr. Clara';
+let currentRdvIdForConsultation = null;
+
+function goToPage(targetPage) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById('page-' + targetPage).classList.add('active');
+
+    document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+    const activeLink = document.querySelector(`[data-page="${targetPage}"]`);
+    if (activeLink) activeLink.classList.add('active');
+
+    if (targetPage === 'mes-rdv') loadMesRdv();
+    if (targetPage === 'mes-consultations') loadMesConsultations();
+    if (targetPage === 'patients') loadPatients();
+    if (targetPage === 'medecins') loadMedecins();
+    if (targetPage === 'rendez-vous') loadRendezVous();
+    if (targetPage === 'dashboard') loadDashboard();
+    if (targetPage === 'consultations-effectuees') loadConsultationsEffectuees();
+}
+window.goToPage = goToPage;
+
+async function loadMesRdv() {
+    const allRdvs = await GetRendezVous();
+    const mesRdvs = allRdvs.filter(r => r.medecin_nom === MEDECIN_NOM_ACTUEL);
+    const container = document.querySelector('#page-mes-rdv .rdv-list');
+    document.querySelectorAll('#page-mes-rdv .rdv-row').forEach(row => row.remove());
+
+    const badgeClass = { 'Confirmé': 'badge-confirme', 'En attente': 'badge-attente', 'Annulé': 'badge-annule' };
+
+    mesRdvs.forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'rdv-row';
+        row.innerHTML = `
+            <span class="col-patient">${r.patient_nom}</span>
+            <span class="col-date">${r.date}</span>
+            <span class="col-heure">${r.heure}</span>
+            <span class="col-motif">${r.motif}</span>
+            <span class="col-statut"><span class="badge ${badgeClass[r.statut] || ''}">${r.statut}</span></span>
+            <div class="col-actions rdv-actions">
+                <button class="btn-view" onclick="confirmerRdv(${r.id})">Confirmer</button>
+                <button class="btn-modify" onclick="ouvrirConsultation(${r.id})">Consulter</button>
+                <button class="btn-delete" onclick="annulerRdv(${r.id})">Annuler</button>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+function switchToMedecin() {
+    document.getElementById('menu-admin').style.display = 'none';
+    document.getElementById('menu-medecin').style.display = 'block';
+    document.getElementById('footer-name').textContent = 'DR : Clara';
+    document.querySelector('.topbar-avatar').textContent = 'C';
+    goToPage('mes-rdv');
+}
+
+function switchToAdmin() {
+    document.getElementById('menu-admin').style.display = 'block';
+    document.getElementById('menu-medecin').style.display = 'none';
+    document.getElementById('footer-name').textContent = 'ADMIN : Son nom et prenom';
+    document.querySelector('.topbar-avatar').textContent = 'A';
+    goToPage('dashboard');
+}
+
+window.switchToMedecin = switchToMedecin;
+window.switchToAdmin = switchToAdmin;
+
+async function confirmerRdv(id) {
+    await UpdateRendezVousStatut(id, 'Confirmé');
+    loadMesRdv();
+}
+async function annulerRdv(id) {
+    if (confirm('Annuler ce rendez-vous ?')) {
+        await UpdateRendezVousStatut(id, 'Annulé');
+        loadMesRdv();
+    }
+}
+function ouvrirConsultation(rdvId) {
+    populateRdvSelect(rdvId);
+    openModal('modal-overlay-consultation');
+}
+window.ouvrirConsultation = ouvrirConsultation;
+
+async function openAjoutConsultation() {
+    await populateRdvSelect(null);
+    openModal('modal-overlay-consultation');
+}
+window.openAjoutConsultation = openAjoutConsultation;
+
+async function populateRdvSelect(preselectId) {
+    const allRdvs = await GetRendezVous();
+    const consultations = await GetConsultations();
+    const rdvIdsAvecConsultation = consultations.map(c => c.rdv_id);
+    const disponibles = allRdvs.filter(r =>
+        r.medecin_nom === MEDECIN_NOM_ACTUEL &&
+        r.statut === 'Confirmé' &&
+        (!rdvIdsAvecConsultation.includes(r.id) || r.id === preselectId)
+    );
+    const select = document.getElementById('consult-rdv-select');
+    select.innerHTML = '';
+    disponibles.forEach(r => {
+        const option = document.createElement('option');
+        option.value = r.id;
+        option.textContent = r.patient_nom + ' - ' + r.date;
+        select.appendChild(option);
+    });
+    if (preselectId) select.value = preselectId;
+}
+
+async function loadMesConsultations() {
+    const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
+    const aFaire = all.filter(c => c.statut !== 'Terminee');
+    const container = document.querySelector('#page-mes-consultations .consultations-list');
+    document.querySelectorAll('#page-mes-consultations .consultation-row').forEach(row => row.remove());
+
+    aFaire.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'consultation-row';
+        row.innerHTML = `
+            <span class="col-patient">${c.patient_nom}</span>
+            <span class="col-date-rdv">${c.date_rdv}</span>
+            <span class="col-date">${c.date_consultation}</span>
+            <div class="col-actions">
+                <button class="btn-view" onclick='showConsultationDetail(${JSON.stringify(c)})'>Voir</button>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+async function loadConsultationsEffectuees() {
+    const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
+    const terminees = all.filter(c => c.statut === 'Terminee');
+    const container = document.querySelector('#page-consultations-effectuees .consultations-effectuees-list');
+    document.querySelectorAll('#page-consultations-effectuees .consultation-row').forEach(row => row.remove());
+
+    terminees.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'consultation-row';
+        row.innerHTML = `
+            <span class="col-patient">${c.patient_nom}</span>
+            <span class="col-date">${c.date_consultation}</span>
+            <div class="col-actions">
+                <button class="btn-view" onclick='showConsultationDetail(${JSON.stringify(c)})'>Voir</button>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function showConsultationDetail(c) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById('page-profil-consultation').classList.add('active');
+    document.getElementById('consult-detail-patient').textContent = c.patient_nom;
+    document.getElementById('consult-detail-statut').textContent = c.statut;
+    document.getElementById('consult-detail-date-rdv').textContent = c.date_rdv;
+    document.getElementById('consult-detail-date').textContent = c.date_consultation;
+    document.getElementById('consult-detail-diagnostic').textContent = c.diagnostic;
+    document.getElementById('consult-detail-traitement').textContent = c.traitement;
+    document.getElementById('consult-detail-observation').textContent = c.observation;
+}
+window.showConsultationDetail = showConsultationDetail;
+
+async function supprimerConsultation(id) {
+    if (confirm('Supprimer cette consultation ?')) {
+        await DeleteConsultation(id);
+        loadMesConsultations();
+    }
+}
+async function terminerConsultation(id) {
+    await UpdateConsultationStatut(id, 'Terminee');
+    loadMesConsultations();
+}
+window.terminerConsultation = terminerConsultation;
+window.supprimerConsultation = supprimerConsultation;
 
 function openModal(modalId) {
     document.getElementById(modalId).classList.add('active');
@@ -324,6 +522,7 @@ async function loadRendezVous() {
     });
 }
 async function loadDashboard() {
+     
     const stats = await GetDashboardStats();
     document.getElementById('total-patients').textContent = stats.total_patients;
     document.getElementById('total-medecins').textContent = stats.total_medecins;
@@ -423,4 +622,7 @@ function updateTopbarDate() {
     
     dateElement.textContent = `${jourSemaine} ${jour} ${moisNom} ${annee}`;
 }
+
+
+
 
