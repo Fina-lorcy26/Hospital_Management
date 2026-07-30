@@ -1,32 +1,39 @@
+//---Import des fonctions depuis App----
+
 import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
          GetDashboardStats } from './wailsjs/go/main/App.js';
 
-
  import { GetConsultations, AddConsultation, UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut, GetConsultationsByMedecin } from './wailsjs/go/main/App.js';
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar-menu a');
 
+// Ecouteurs d'evenement pour afficher et cacher chaque page en fonction du lien selectionné 
     links.forEach(link => {
     link.addEventListener('click', (e) => {
         const targetPage = link.getAttribute('data-page');
-        if (!targetPage) return; // laisse les liens onclick (médecin) gérer leur propre clic
-
+        if (!targetPage) return; 
         e.preventDefault();
+
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.getElementById('page-' + targetPage).classList.add('active');
 
+// Active le lien cliqué et desactive les autres 
         links.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
+// Afiiche les données en fonction de la page selectionnée
         if (targetPage === 'patients') loadPatients();
         if (targetPage === 'medecins') loadMedecins();
         if (targetPage === 'rendez-vous') loadRendezVous();
         if (targetPage === 'dashboard') loadDashboard();
+
+        loadCharts(); // mises a jour des graphiques
     });
 });
 
+// code du clic en dehors de la modale pour la retirer 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
@@ -36,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Ajouter Patient ----------
+
     document.getElementById('form-add-patient').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddPatient(
@@ -57,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Ajouter Médecin ----------
+
     document.getElementById('form-add-medecin').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddMedecin(
@@ -77,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Ajouter Rendez-vous ----------
+
     document.getElementById('form-add-rdv').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddRendezVous(
@@ -96,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Modifier Patient ----------
+
     document.getElementById('form-modif-patient').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await UpdatePatient(
@@ -116,6 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ---------- Formulaire Modifier Medecin ----------
+
     document.getElementById('form-modif-medecin').addEventListener('submit', async (e) => {
     e.preventDefault();
     const result = await UpdateMedecin(
@@ -133,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(result);
     }
 });
+
+// ----------Ajouter une consultation-------------
 
 document.getElementById('form-add-consultation').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -154,6 +169,8 @@ document.getElementById('form-add-consultation').addEventListener('submit', asyn
     }
 });
 
+// -----------------Modifier un rendez-vous---------------
+
 document.getElementById('form-modif-rdv').addEventListener('submit', async (e) => {
     e.preventDefault();
     const result = await UpdateRendezVous(
@@ -171,7 +188,7 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
         alert(result);
     }
 });
-
+// Chargement de toutes les données des le demarrage de l'appli
     loadPatients();
     loadMedecins();
     loadRendezVous();
@@ -179,17 +196,27 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
     updateTopbarDate();
 });
 
-const MEDECIN_NOM_ACTUEL = 'Dr. Clara';
-let currentRdvIdForConsultation = null;
+// filtre sur le medecin connecté actu
+const MEDECIN_NOM_ACTUEL = 'STEEVE';
+const badgeClass = {
+    "Confirmé": "badge-confirme",
+    "En attente": "badge-attente",
+    "Annulé": "badge-annule"
+};
+
+
+// Redirection vers la page de medecin, en masquant toutes les autres   
 
 function goToPage(targetPage) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById('page-' + targetPage).classList.add('active');
 
+// Pour la surbrillance laterale 
     document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
     const activeLink = document.querySelector(`[data-page="${targetPage}"]`);
     if (activeLink) activeLink.classList.add('active');
 
+// Rechargement des données pour la page du docteur 
     if (targetPage === 'mes-rdv') loadMesRdv();
     if (targetPage === 'mes-consultations') loadMesConsultations();
     if (targetPage === 'patients') loadPatients();
@@ -199,14 +226,12 @@ function goToPage(targetPage) {
     if (targetPage === 'consultations-effectuees') loadConsultationsEffectuees();
 }
 window.goToPage = goToPage;
-
+// fonction qui charge les rdv du medecin connecté 
 async function loadMesRdv() {
     const allRdvs = await GetRendezVous();
     const mesRdvs = allRdvs.filter(r => r.medecin_nom === MEDECIN_NOM_ACTUEL);
     const container = document.querySelector('#page-mes-rdv .rdv-list');
     document.querySelectorAll('#page-mes-rdv .rdv-row').forEach(row => row.remove());
-
-    const badgeClass = { 'Confirmé': 'badge-confirme', 'En attente': 'badge-attente', 'Annulé': 'badge-annule' };
 
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
@@ -226,14 +251,16 @@ async function loadMesRdv() {
         container.appendChild(row);
     });
 }
+
+// La fonction qui change l'interface admin en medecin 
 function switchToMedecin() {
     document.getElementById('menu-admin').style.display = 'none';
     document.getElementById('menu-medecin').style.display = 'block';
-    document.getElementById('footer-name').textContent = 'DR : Clara';
+    document.getElementById('footer-name').textContent = 'DR : STEEVE' ;
     document.querySelector('.topbar-avatar').textContent = 'C';
     goToPage('mes-rdv');
 }
-
+// La fonction qui change l'interface medecin en admin  
 function switchToAdmin() {
     document.getElementById('menu-admin').style.display = 'block';
     document.getElementById('menu-medecin').style.display = 'none';
@@ -267,10 +294,13 @@ async function openAjoutConsultation() {
 }
 window.openAjoutConsultation = openAjoutConsultation;
 
+// Remplit la liste déroulante des RDV(confirmés et non consultés)
 async function populateRdvSelect(preselectId) {
     const allRdvs = await GetRendezVous();
     const consultations = await GetConsultations();
     const rdvIdsAvecConsultation = consultations.map(c => c.rdv_id);
+
+    //Les rdv du medecin n'ayant pas encore de eu de consultations
     const disponibles = allRdvs.filter(r =>
         r.medecin_nom === MEDECIN_NOM_ACTUEL &&
         r.statut === 'Confirmé' &&
@@ -287,6 +317,7 @@ async function populateRdvSelect(preselectId) {
     if (preselectId) select.value = preselectId;
 }
 
+// Fonction pour charger les consultations en cours d'un medecin
 async function loadMesConsultations() {
     const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
     const aFaire = all.filter(c => c.statut !== 'Terminee');
@@ -308,6 +339,7 @@ async function loadMesConsultations() {
     });
 }
 
+// charge les consultations déja éffectuées  
 async function loadConsultationsEffectuees() {
     const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
     const terminees = all.filter(c => c.statut === 'Terminee');
@@ -328,6 +360,7 @@ async function loadConsultationsEffectuees() {
     });
 }
 
+// Fonction pour avoir le compte rendu d'une consultation(voir)
 function showConsultationDetail(c) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById('page-profil-consultation').classList.add('active');
@@ -341,19 +374,9 @@ function showConsultationDetail(c) {
 }
 window.showConsultationDetail = showConsultationDetail;
 
-async function supprimerConsultation(id) {
-    if (confirm('Supprimer cette consultation ?')) {
-        await DeleteConsultation(id);
-        loadMesConsultations();
-    }
-}
-async function terminerConsultation(id) {
-    await UpdateConsultationStatut(id, 'Terminee');
-    loadMesConsultations();
-}
-window.terminerConsultation = terminerConsultation;
-window.supprimerConsultation = supprimerConsultation;
 
+
+// Gestion des ouvertures et fermetures des modals
 function openModal(modalId) {
     document.getElementById(modalId).classList.add('active');
 }
@@ -365,21 +388,18 @@ function closeModal(modalId) {
 window.openModal = openModal;
 window.closeModal = closeModal;
 
-// ----AFFICHER LES PROFILS-----
-function showProfile(type) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('page-profil-' + type).classList.add('active');
-}
+// ----AFFICHER LES DIFFERENTS PROFILS-----
 
-window.showProfile = showProfile;
 function showPatientProfile(patient) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById('page-profil-patient').classList.add('active');
 
+    //La petite carte au dessus avec avatar et nom dans "voir"
     const card = document.querySelector('#page-profil-patient .profile-card');
     card.querySelector('.profile-avatar').textContent = patient.nom.charAt(0);
     card.querySelector('.profile-title h2').textContent = patient.nom;
 
+// Remplissage de la fiche
     const details = card.querySelectorAll('.detail-value');
     details[0].textContent = patient.prenom;
     details[1].textContent = patient.sexe;
@@ -390,6 +410,8 @@ function showPatientProfile(patient) {
 }
 
 window.showPatientProfile = showPatientProfile;
+
+// Affiche et rempli les informations sur le profil d'un medecin 
 
 function showMedecinProfile(medecin) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -408,6 +430,8 @@ function showMedecinProfile(medecin) {
 }
 
 window.showMedecinProfile = showMedecinProfile;
+
+// Affiche te rempli les informations sur un rendez-vous 
 
 function showRdvProfile(rdv) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -443,16 +467,16 @@ function navigateBack(targetPage) {
     document.querySelector(`[data-page="${targetPage}"]`).classList.add('active');
 }
 
-window.showProfile = showProfile;
 window.navigateBack = navigateBack;
 
 // ---------- CHARGEMENT DES LISTES ----------
-
+//recupere les patients
 async function loadPatients() {
     const patients = await GetPatients();
     const container = document.querySelector('.patients-list');
     document.querySelectorAll('.patient-row').forEach(row => row.remove());
 
+    // injecte tous les patients dans la liste
     patients.forEach(p => {
         const row = document.createElement('div');
         row.className = 'patient-row';
@@ -469,6 +493,7 @@ async function loadPatients() {
     });
 }
 
+// recupere et injecte tous les medecins dans la liste 
 async function loadMedecins() {
     const medecins = await GetMedecins();
     const container = document.querySelector('.medecins-list');
@@ -490,16 +515,44 @@ async function loadMedecins() {
     });
 }
 
+//Fonction pour le select patient dans rendez-vous 
+async function remplirListePatients(selectId) {
+    const patients = await GetPatients();
+    const select = document.getElementById(selectId);
+
+    select.innerHTML = "";
+
+    patients.forEach(patient => {
+        const option = document.createElement("option");
+        option.value = patient.nom;
+        option.textContent = `${patient.nom} ${patient.prenom}`;
+        select.appendChild(option);
+    });
+}
+// fonction pour le select medecin dans rendez-vous 
+async function remplirListeMedecins(selectId) {
+    const medecins = await GetMedecins();
+    const select = document.getElementById(selectId);
+
+    select.innerHTML = "";
+
+    medecins.forEach(medecin => {
+        const option = document.createElement("option");
+
+        // valeur enregistrée dans la base
+        option.value = medecin.nom;
+
+        // texte affiché à l'utilisateur
+        option.textContent = `Dr. ${medecin.nom} ${medecin.prenom}`;
+
+        select.appendChild(option);
+    });
+}
+// recupere et injecte tous les rendez-vous dans leur liste
 async function loadRendezVous() {
     const rdvs = await GetRendezVous();
     const container = document.querySelector('.rdv-list');
     document.querySelectorAll('.rdv-row').forEach(row => row.remove());
-
-    const badgeClass = {
-        'Confirmé': 'badge-confirme',
-        'En attente': 'badge-attente',
-        'Annulé': 'badge-annule'
-    };
 
     rdvs.forEach(r => {
         const row = document.createElement('div');
@@ -521,6 +574,16 @@ async function loadRendezVous() {
         container.appendChild(row);
     });
 }
+
+async function openAjoutRdv() {
+    await remplirListePatients("rdv-patient-nom");
+    await remplirListeMedecins("rdv-medecin-nom");
+
+    openModal("modal-overlay-rdv");
+}
+
+window.openAjoutRdv = openAjoutRdv;
+// Recuperations des informations en generale pour remplir les cartes du tableau de bord 
 async function loadDashboard() {
      
     const stats = await GetDashboardStats();
@@ -528,7 +591,8 @@ async function loadDashboard() {
     document.getElementById('total-medecins').textContent = stats.total_medecins;
     document.getElementById('total-rdv-jour').textContent = stats.total_rdv;
     document.getElementById('total-rdv-program').textContent = stats.rdv_en_attente;
-    document.getElementById('total-consultation-attente').textContent = stats.rdv_en_attente;
+    document.getElementById('total-rdv-confirme').textContent = stats.rdv_confirmes;
+    document.getElementById('total-consultation-attente').textContent = stats.consultation_attente;
 }
 
 // ---------- SUPPRESSION ----------
@@ -561,7 +625,7 @@ window.deleteRdvHandler = deleteRdvHandler;
 // ---------- MODIFIER PATIENT ----------
 
 let currentEditPatientId = null;
-
+//injection des données existantes pour la modification
 function openEditPatient(patient) {
     currentEditPatientId = patient.id;
     document.getElementById('modif-patient-nom').value = patient.nom;
@@ -577,7 +641,7 @@ function openEditPatient(patient) {
 window.openEditPatient = openEditPatient;
 
 let currentEditMedecinMatricule = null;
-
+// injection des données existantes 
 function openEditMedecin(medecin) {
     currentEditMedecinMatricule = medecin.matricule;
     document.getElementById('modif-medecin-nom').value = medecin.nom;
@@ -592,10 +656,10 @@ window.openEditMedecin = openEditMedecin;
 
 let currentEditRdvId = null;
 
-function openEditRdv(rdv) {
+async function openEditRdv(rdv) {
     currentEditRdvId = rdv.id;
-    document.getElementById('modif-rdv-patient-nom').value = rdv.patient_nom;
-    document.getElementById('modif-rdv-medecin-nom').value = rdv.medecin_nom;
+    await remplirListePatients("modif-rdv-patient-nom");
+    await remplirListeMedecins("modif-rdv-medecin-nom");
     document.getElementById('modif-motif-rdv').value = rdv.motif;
     document.getElementById('modif-rdv-date').value = rdv.date;
     document.getElementById('modif-heure-rdv').value = rdv.heure;
@@ -623,6 +687,132 @@ function updateTopbarDate() {
     dateElement.textContent = `${jourSemaine} ${jour} ${moisNom} ${annee}`;
 }
 
+// ============================================
+// GRAPHIQUES SIMPLES
+// ============================================
 
+let chartPatients = null;
+let chartSemaine = null;
+
+function parseDateFr(dateString) {
+    if (!dateString) return null;
+
+    // Format français : jj/mm/aaaa
+    if (dateString.includes("/")) {
+        const [jour, mois, annee] = dateString.split("/");
+        return new Date(annee, mois - 1, jour);
+    }
+
+    // Format HTML : aaaa-mm-jj
+    return new Date(dateString);
+}
+
+async function loadCharts() {
+    try {
+        const [patients, rdvs] = await Promise.all([
+            GetPatients(),
+            GetRendezVous()
+        ]);
+
+        // 1. Graphique : Évolution des patients (par mois)
+        createPatientChart(patients);
+        
+        // 2. Graphique : Activité de la semaine
+        createSemaineChart(rdvs);
+        
+    } catch (error) {
+        console.error('Erreur chargement graphiques:', error);
+    }
+}
+
+// --------------------------------------------
+// Graphique 1 : Évolution des patients (courbe)
+// --------------------------------------------
+function createPatientChart(patients) {
+    const ctx = document.getElementById('chart-patients');
+    if (!ctx) return;
+
+    // Compter les patients par mois
+    const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const counts = new Array(12).fill(0);
+    
+    patients.forEach(p => {
+        if (p.date_naissance) {
+            const date = parseDateFr(p.date_naissance);
+            const month = date.getMonth();
+            counts[month]++;
+        }
+    });
+
+    if (chartPatients) chartPatients.destroy();
+
+    chartPatients = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: mois,
+            datasets: [{
+                label: 'Patients',
+                data: counts,
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                tension: 0.3,
+                fill: true,
+                pointBackgroundColor: '#3498db'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+}
+
+// --------------------------------------------
+// Graphique 2 : Activité de la semaine (barres)
+// --------------------------------------------
+function createSemaineChart(rdvs) {
+    const ctx = document.getElementById('chart-semaine');
+    if (!ctx) return;
+
+    const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    const counts = new Array(7).fill(0);
+    
+    rdvs.forEach(rdv => {
+        if (rdv.date) {
+            const date = parseDateFr(rdv.date);
+            if (!date || isNaN(date.getTime())) return;
+            const day = date.getDay();
+            const index = day === 0 ? 6 : day - 1;
+            counts[index]++;
+        }
+    });
+
+    if (chartSemaine) chartSemaine.destroy();
+
+    chartSemaine = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: jours,
+            datasets: [{
+                label: 'Rendez-vous',
+                data: counts,
+                backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                borderColor: '#2ecc71',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+}
 
 

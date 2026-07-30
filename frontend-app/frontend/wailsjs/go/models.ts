@@ -58,6 +58,7 @@ export namespace main {
 	    total_rdv: number;
 	    rdv_en_attente: number;
 	    rdv_confirmes: number;
+	    consultation_attente: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new DashboardStats(source);
@@ -70,6 +71,7 @@ export namespace main {
 	        this.total_rdv = source["total_rdv"];
 	        this.rdv_en_attente = source["rdv_en_attente"];
 	        this.rdv_confirmes = source["rdv_confirmes"];
+	        this.consultation_attente = source["consultation_attente"];
 	    }
 	}
 	export class Medecin {

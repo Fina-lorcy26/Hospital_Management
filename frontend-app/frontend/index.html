@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Hospital Management</title>
 <link rel="stylesheet" href="./src/assets/fonts/FontAwesome/font-awesome.css" /> 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="style.css" />
 <script type="module" src="navigation.js"></script>
 </head>
@@ -70,8 +71,8 @@
     </div>
     <div class="stat-card">
         <i class="fa fa-calendar"></i>
-        <span class="stat-value" id="total-rdv-jour"> </span>
-        <span class="stat-title">Nombre total de Rendez-vous du jour</span>
+        <span class="stat-value" id="total-rdv"> </span>
+        <span class="stat-title">Nombre total de Rendez-vous </span>
     </div>
     <div class="stat-card">
         <i class="fa fa-clock-o"></i>
@@ -81,13 +82,22 @@
     <div class="stat-card">
         <i class="fa fa-check-circle"></i>
         <span class="stat-value" id="total-consultation"> </span>
-        <span class="stat-title">Nombre total de Consultations réalisées</span>
+        <span class="stat-title">Nombre total de Consultations</span>
     </div>
 
-
-    <div class="chart-card">
-        <!-- Mes graphiques  -->
+    <div class="chart-grid">
+    <!-- Graphique 1 : Évolution des patients -->
+    <div class="chart-container">
+        <h3>📈 Évolution des patients</h3>
+        <canvas id="chart-patients"></canvas>
     </div>
+    
+    <!-- Graphique 2 : Activité de la semaine -->
+    <div class="chart-container">
+        <h3>📅 Rendez-vous de la semaine</h3>
+        <canvas id="chart-semaine"></canvas>
+    </div>
+</div>
         </section>
      </div>
  
@@ -128,7 +138,7 @@
 <div id="page-rendez-vous" class="page">
      <div class="page-header">
     <h1>Rendez-vous</h1>
-    <button class="btn-primary" onclick="openModal('modal-overlay-rdv')">
+    <button class="btn-primary" onclick="openAjoutRdv()">
         <i class="fa fa-plus"></i> Ajouter un rendez-vous
     </button>
     </div>
@@ -428,10 +438,10 @@
         <form class="modal-form" id="form-add-rdv">
 
             <label for="rdv-medecin-nom">Nom Medecin</label>
-            <input type="text" id="rdv-medecin-nom" placeholder="Nom du Medecin" required />
+            <select id="rdv-medecin-nom"></select>
 
             <label for="rdv-patient-nom">Nom Patient</label>
-            <input type="text" id="rdv-patient-nom" placeholder="Nom du patient" required />
+            <select id="rdv-patient-nom"></select>
 
             <label for="rdv-motif"> Motif</label>
             <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
@@ -517,11 +527,11 @@
         </div>
 
         <form class="modal-form" id="form-modif-rdv">
-            <label for="modif-rdv-patient-nom">Nom complet Patient</label>
-            <input type="text" id="modif-rdv-patient-nom" placeholder="Nom complet du patient" required />
+            <label for="modif-rdv-patient-nom">Patient</label>
+            <select id="modif-rdv-patient-nom" required></select>
 
-            <label for="modif-rdv-medecin-nom">Nom Medecin</label>
-            <input type="text" id="modif-rdv-medecin-nom" placeholder="Nom du Medecin" required />
+            <label for="modif-rdv-medecin-nom">Médecin</label>
+            <select id="modif-rdv-medecin-nom" required></select>
 
             <label for="modif-motif-rdv">Motif</label>
             <input type="text" id="modif-motif-rdv" placeholder="Ex: yeux enflés" required />

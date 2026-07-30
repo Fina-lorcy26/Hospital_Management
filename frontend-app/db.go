@@ -1,9 +1,7 @@
 package main
-
 import (
 	"database/sql"
 	"log"
-
 	_ "modernc.org/sqlite"
 )
 
