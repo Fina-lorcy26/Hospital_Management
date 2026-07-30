@@ -55,10 +55,10 @@ export namespace main {
 	export class DashboardStats {
 	    total_patients: number;
 	    total_medecins: number;
-	    total_rdv: number;
+	    rdv_du_jour: number;
 	    rdv_en_attente: number;
-	    rdv_confirmes: number;
-	    consultation_attente: number;
+	    rdv_programmes: number;
+	    consultations_terminees: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new DashboardStats(source);
@@ -68,10 +68,10 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.total_patients = source["total_patients"];
 	        this.total_medecins = source["total_medecins"];
-	        this.total_rdv = source["total_rdv"];
+	        this.rdv_du_jour = source["rdv_du_jour"];
 	        this.rdv_en_attente = source["rdv_en_attente"];
-	        this.rdv_confirmes = source["rdv_confirmes"];
-	        this.consultation_attente = source["consultation_attente"];
+	        this.rdv_programmes = source["rdv_programmes"];
+	        this.consultations_terminees = source["consultations_terminees"];
 	    }
 	}
 	export class Medecin {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"regexp"
 )
 
 // L'appli principale, conserve le contexte d'execution de wails
@@ -43,10 +44,10 @@ type RendezVous struct {
 type DashboardStats struct {
 	TotalPatients         int `json:"total_patients"`
 	TotalMedecins         int `json:"total_medecins"`
-	TotalRdv              int `json:"total_rdv"`
+	RdvDujour              int `json:"rdv_du_jour"`
 	RdvEnAttente          int `json:"rdv_en_attente"`
-	RdvConfirmes          int `json:"rdv_confirmes"`
-	ConsultationEnAttente int `json:"consultation_attente"`
+	RdvProgrammes          int `json:"rdv_programmes"`
+	ConsultationsTerminees int `json:"consultations_terminees"`
 }
 
 type Consultation struct {
@@ -111,6 +112,12 @@ func (a *App) GetPatients() []Patient {
 
 // Insertion d'un nouveau patient
 func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, motif string) string {
+
+		matched, _ := regexp.MatchString(`^\d{9}$`, telephone)
+
+	if !matched {
+		return "Le numéro de téléphone doit contenir exactement 9 chiffres."
+	}
 	_, err := db.Exec(
 		"INSERT INTO patients (nom, prenom, sexe, telephone, date_naissance, adresse, motif) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		nom, prenom, sexe, telephone, dateNaissance, adresse, motif,
@@ -123,6 +130,11 @@ func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, m
 
 // Mises à jour d'un patient pour modification
 func (a *App) UpdatePatient(id int, nom, prenom, sexe, telephone, dateNaissance, adresse, motif string) string {
+		matched, _ := regexp.MatchString(`^\d{9}$`, telephone)
+
+	if !matched {
+		return "Le numéro de téléphone doit contenir exactement 9 chiffres."
+	}
 	_, err := db.Exec(
 		"UPDATE patients SET nom=?, prenom=?, sexe=?, telephone=?, date_naissance=?, adresse=?, motif=? WHERE id=?",
 		nom, prenom, sexe, telephone, dateNaissance, adresse, motif, id,
@@ -163,7 +175,23 @@ func (a *App) GetMedecins() []Medecin {
 
 // Ajout d'un medecin
 func (a *App) AddMedecin(matricule, nom, prenom, specialite, telephone, email string) string {
-	_, err := db.Exec(
+
+		var count int
+
+		err := db.QueryRow(
+			"SELECT COUNT(*) FROM medecins WHERE matricule = ?",
+			matricule,
+		).Scan(&count)
+
+		if err != nil {
+			return "Erreur : " + err.Error()
+		}
+
+		if count > 0 {
+			return "Un médecin avec ce matricule existe déjà."
+		}
+
+	_, err = db.Exec(
 		"INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
 		matricule, nom, prenom, specialite, telephone, email,
 	)
@@ -215,7 +243,26 @@ func (a *App) GetRendezVous() []RendezVous {
 
 //Ajouter un rdv
 func (a *App) AddRendezVous(patientNom, medecinNom, motif, date, heure string) string {
-	_, err := db.Exec(
+		var count int
+	err := db.QueryRow(
+    `SELECT COUNT(*) FROM rendez_vous
+     WHERE date = ?
+     AND heure = ?
+     AND (medecin_nom = ? OR patient_nom = ?)`,
+    date,
+    heure,
+    medecinNom,
+    patientNom,
+	).Scan(&count)
+
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+
+	if count > 0 {
+		return "Impossible de créer ce rendez-vous : le médecin ou le patient est déjà occupé à cette date et cette heure."
+	}
+			_, err = db.Exec(
 		"INSERT INTO rendez_vous (patient_nom, medecin_nom, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
 		patientNom, medecinNom, motif, date, heure, "En attente",
 	) // le statut est par defaut en attente 
@@ -227,13 +274,44 @@ func (a *App) AddRendezVous(patientNom, medecinNom, motif, date, heure string) s
 
 // Mises à jour d'un rdv
 func (a *App) UpdateRendezVous(id int, patientNom, medecinNom, motif, date, heure string) string {
-	_, err := db.Exec(
-		"UPDATE rendez_vous SET patient_nom=?, medecin_nom=?, motif=?, date=?, heure=? WHERE id=?",
-		patientNom, medecinNom, motif, date, heure, id,
-	)
+
+	var count int
+
+	err := db.QueryRow(
+		`SELECT COUNT(*) FROM rendez_vous
+		 WHERE date = ?
+		 AND heure = ?
+		 AND id != ?
+		 AND (medecin_nom = ? OR patient_nom = ?)`,
+		date,
+		heure,
+		id,
+		medecinNom,
+		patientNom,
+	).Scan(&count)
+
 	if err != nil {
-		return "Erreur: " + err.Error()
+		return "Erreur : " + err.Error()
 	}
+
+	if count > 0 {
+		return "Impossible de modifier ce rendez-vous : le médecin ou le patient est déjà occupé à cette date et cette heure."
+	}
+
+	_, err = db.Exec(
+		"UPDATE rendez_vous SET patient_nom=?, medecin_nom=?, motif=?, date=?, heure=? WHERE id=?",
+		patientNom,
+		medecinNom,
+		motif,
+		date,
+		heure,
+		id,
+	)
+
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+
 	return "ok"
 }
 
@@ -252,11 +330,11 @@ func (a *App) GetDashboardStats() DashboardStats {
 	var stats DashboardStats
 	db.QueryRow("SELECT COUNT(*) FROM patients").Scan(&stats.TotalPatients)
 	db.QueryRow("SELECT COUNT(*) FROM medecins").Scan(&stats.TotalMedecins)
-	db.QueryRow("SELECT COUNT(*) FROM rendez_vous").Scan(&stats.TotalRdv)
+	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE date = date('now')").Scan(&stats.RdvDujour)
+	db.QueryRow("SELECT COUNT(*) FROM rendez_vous").Scan(&stats.RdvProgrammes)
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE statut = ?", "En attente").Scan(&stats.RdvEnAttente)
-	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE statut = ?", "Confirmé").Scan(&stats.RdvConfirmes)
-	db.QueryRow("SELECT COUNT(*) FROM consultations WHERE statut = ?", "En cours").Scan(&stats.ConsultationEnAttente)
-	return stats
+	db.QueryRow("SELECT COUNT(*) FROM consultations WHERE statut = ?","Terminee",).Scan(&stats.ConsultationsTerminees)	
+	       return stats
 }
 
 // ---------- CONSULTATIONS ----------
@@ -281,7 +359,34 @@ func (a *App) GetConsultations() []Consultation {
 
 //Ajout d'une consultation liée a un rdv
 func (a *App) AddConsultation(rdvID int, diagnostic, traitement, observation, dateConsultation string) string {
-	_, err := db.Exec(
+	var statut string
+	err := db.QueryRow(
+		"SELECT statut FROM rendez_vous WHERE id=?",
+		rdvID,
+	).Scan(&statut)
+
+	if err != nil {
+		return "Rendez-vous introuvable."
+	}
+
+	if statut != "Confirmé" {
+		return "Impossible de consulter un rendez-vous non confirmé."
+	}
+	
+	var count int
+	err = db.QueryRow(
+		"SELECT COUNT(*) FROM consultations WHERE rdv_id=?",
+		rdvID,
+	).Scan(&count)
+
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+
+	if count > 0 {
+		return "Une consultation existe déjà pour ce rendez-vous."
+	}
+	_, err = db.Exec(
 		"INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation, statut) VALUES (?, ?, ?, ?, ?, ?)",
 		rdvID, diagnostic, traitement, observation, dateConsultation, "En cours",
 	)

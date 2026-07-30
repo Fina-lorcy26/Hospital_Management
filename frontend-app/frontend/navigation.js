@@ -232,7 +232,8 @@ async function loadMesRdv() {
     const mesRdvs = allRdvs.filter(r => r.medecin_nom === MEDECIN_NOM_ACTUEL);
     const container = document.querySelector('#page-mes-rdv .rdv-list');
     document.querySelectorAll('#page-mes-rdv .rdv-row').forEach(row => row.remove());
-
+    console.log(allRdvs);
+    console.log(mesRdvs);
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
         row.className = 'rdv-row';
@@ -275,13 +276,20 @@ window.switchToAdmin = switchToAdmin;
 async function confirmerRdv(id) {
     await UpdateRendezVousStatut(id, 'Confirmé');
     loadMesRdv();
+    loadRendezVous();
+    loadDashboard();
 }
 async function annulerRdv(id) {
     if (confirm('Annuler ce rendez-vous ?')) {
         await UpdateRendezVousStatut(id, 'Annulé');
         loadMesRdv();
+        loadRendezVous();
+        loadDashboard();
     }
 }
+
+window.confirmerRdv = confirmerRdv;
+window.annulerRdv = annulerRdv
 function ouvrirConsultation(rdvId) {
     populateRdvSelect(rdvId);
     openModal('modal-overlay-consultation');
@@ -585,14 +593,24 @@ async function openAjoutRdv() {
 window.openAjoutRdv = openAjoutRdv;
 // Recuperations des informations en generale pour remplir les cartes du tableau de bord 
 async function loadDashboard() {
-     
     const stats = await GetDashboardStats();
-    document.getElementById('total-patients').textContent = stats.total_patients;
-    document.getElementById('total-medecins').textContent = stats.total_medecins;
-    document.getElementById('total-rdv-jour').textContent = stats.total_rdv;
-    document.getElementById('total-rdv-program').textContent = stats.rdv_en_attente;
-    document.getElementById('total-rdv-confirme').textContent = stats.rdv_confirmes;
-    document.getElementById('total-consultation-attente').textContent = stats.consultation_attente;
+    // Hero
+    document.getElementById("rdv-en-attente").textContent = stats.rdv_en_attente;
+
+    // Cartes
+    document.getElementById("total-patients").textContent =
+        stats.total_patients;
+
+    document.getElementById("total-medecins").textContent =
+        stats.total_medecins;
+
+    document.getElementById("total-rdv").textContent =
+        stats.rdv_du_jour;
+    document.getElementById("total-rdv-program").textContent =
+        stats.rdv_programmes;
+
+    document.getElementById("total-consultation").textContent =
+        stats.consultations_terminees;
 }
 
 // ---------- SUPPRESSION ----------
