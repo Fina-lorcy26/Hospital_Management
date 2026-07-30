@@ -1,0 +1,119 @@
+.main-content {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;            
+}
+
+.btn-rose {
+  background-color: #f58e8e; 
+  width: 200px;              
+  height: 45px;              
+  border-radius: 25px;      
+  border: none;              
+  cursor: pointer;           
+}
+
+
+
+body {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+
+.sidebar {
+  width: 250px;
+  background-color: #2b70b6; 
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+}
+
+
+.content-droite {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column; /* Pour empiler les éléments verticalement ↕️ */
+} 
+
+.sidebar ul li a.active {
+  background-color: #dbe5f1; 
+  color: #2b70b6;          
+  border-radius: 20px;      
+  padding: 8px 15px;        
+  display: block;           
+  font-weight: bold;        
+}
+
+.sidebar ul {
+  list-style: none; 
+  padding: 0;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none; 
+  display: block;
+  padding: 8px 15px;
+}
+
+
+.liste-consultations {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+}
+
+
+.carte-consultation {
+  background-color: white; 
+  border-radius: 12px;     
+  padding: 20px;          
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+}
+
+
+.carte-entete {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 10px; 
+}
+
+.carte-entete .date {
+  color: #666;
+  font-size: 14px;
+}
+
+.carte-entete .nom {
+  font-weight: bold;
+  color: #2b70b6;
+}
+
+.carte-corps .motif {
+  margin: 0;
+  color: #333;
+}
+
+.statut {
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+
+.statut.confirme {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.statut.annule {
+  background-color: #f8d7da; 
+  color: #721c24;           
+}
