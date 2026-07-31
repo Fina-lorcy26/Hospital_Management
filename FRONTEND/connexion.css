@@ -2,11 +2,15 @@
         /* Styles CSS */
         body {
             font-family: 'Arial', sans-serif;
+            background-image: url('image.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
             background-color: white;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             
         }
@@ -42,7 +46,7 @@
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 30px;
             box-sizing: border-box; /* Important pour le padding */
         }
 
@@ -58,7 +62,7 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -74,16 +78,23 @@
         }
 
         .footer-links a {
-            color: #0a0a09ca;
-            text-decoration: solid;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.7);
+            display: inline-block;
+            margin-top: 15px;
+            cursor: pointer;
+
         }
 
         .footer-links a:hover {
             text-decoration: underline;
+            color: #00d2ff;
         }
         .box{
-        background-image: url('image.png');
-        background-position: center;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur;
         
         
     }
