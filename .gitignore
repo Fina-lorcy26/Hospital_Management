@@ -1,0 +1,9 @@
+# Base de données locale
+frontend-app/hospital.db
+
+# Fichiers système Windows
+Thumbs.db
+Desktop.ini
+
+# Dossier VS Code
+.vscode/
