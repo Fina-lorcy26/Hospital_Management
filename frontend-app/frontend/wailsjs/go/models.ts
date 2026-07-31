@@ -146,6 +146,26 @@ export namespace main {
 	        this.statut = source["statut"];
 	    }
 	}
+	export class Utilisateur {
+	    id: number;
+	    login: string;
+	    mot_de_passe: string;
+	    role: string;
+	    nom_complet: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Utilisateur(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.login = source["login"];
+	        this.mot_de_passe = source["mot_de_passe"];
+	        this.role = source["role"];
+	        this.nom_complet = source["nom_complet"];
+	    }
+	}
 
 }
 

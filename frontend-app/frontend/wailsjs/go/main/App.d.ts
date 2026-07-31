@@ -32,6 +32,8 @@ export function GetRendezVous():Promise<Array<main.RendezVous>>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function Login(arg1:string,arg2:string):Promise<main.Utilisateur|string>;
+
 export function UpdateConsultationStatut(arg1:number,arg2:string):Promise<string>;
 
 export function UpdateMedecin(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<string>;

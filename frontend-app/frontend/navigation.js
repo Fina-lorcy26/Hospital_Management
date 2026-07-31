@@ -4,8 +4,18 @@ import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
          GetDashboardStats } from './wailsjs/go/main/App.js';
+         import { Login } from "./wailsjs/go/main/App.js";
 
  import { GetConsultations, AddConsultation, UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut, GetConsultationsByMedecin } from './wailsjs/go/main/App.js';
+
+  let UTILISATEUR_CONNECTE = null;
+    let MEDECIN_NOM_ACTUEL = "";
+
+    const badgeClass = {
+        "Confirmé": "badge-confirme",
+        "En attente": "badge-attente",
+        "Annulé": "badge-annule"
+};
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar-menu a');
 
@@ -195,15 +205,6 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
     loadDashboard();
     updateTopbarDate();
 });
-
-// filtre sur le medecin connecté actu
-const MEDECIN_NOM_ACTUEL = 'STEEVE';
-const badgeClass = {
-    "Confirmé": "badge-confirme",
-    "En attente": "badge-attente",
-    "Annulé": "badge-annule"
-};
-
 
 // Redirection vers la page de medecin, en masquant toutes les autres   
 
@@ -833,4 +834,56 @@ function createSemaineChart(rdvs) {
     });
 }
 
+// Melanger le travail de rudy
 
+const form = document.getElementById("login-form");
+
+form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    console.log("Le formulaire de connexion a été soumis");
+
+    const login = document.getElementById("login").value.trim();
+    const motDePasse = document.getElementById("password").value;
+
+    const resultat = await Login(login, motDePasse);
+
+    const utilisateur = resultat[0];
+    const message = resultat[1];
+
+    if (message !== "ok") {
+        alert(message);
+        return;
+    }
+
+    // cacher la connexion
+    document.getElementById("page-login").style.display = "none";
+
+    // afficher l'application
+    document.getElementById("app").style.display = "block";
+    UTILISATEUR_CONNECTE = utilisateur;
+
+    // appeler la fonction selon le rôle
+    initialiserApplication();
+});
+
+function initialiserApplication() {
+
+    const user = UTILISATEUR_CONNECTE;
+
+    document.querySelector(".hero-text h1").textContent =
+        "Bonjour, " + user.nom_complet;
+
+    if (user.role === "admin") {
+
+        showPage("dashboard");
+        loadDashboard();
+
+    } else if (user.role === "medecin") {
+
+        MEDECIN_NOM_ACTUEL = user.nom_complet;
+
+        showPage("page-mes-rdv");
+        loadMesRdv();
+    }
+}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"database/sql"
 )
 
 // L'appli principale, conserve le contexte d'execution de wails
@@ -72,6 +73,13 @@ type ConsultationDetail struct {
 	Statut           string `json:"statut"`
 }
 
+type Utilisateur struct {
+	ID          int    `json:"id"`
+	Login       string `json:"login"`
+	MotDePasse  string `json:"mot_de_passe"`
+	Role        string `json:"role"`
+	NomComplet  string `json:"nom_complet"`
+}
 // Constructeur de App qui va initialiser et retourner une nouvelle instance de app
 func NewApp() *App {
 	return &App{}
@@ -446,4 +454,35 @@ func (a *App) GetConsultationsByMedecin(medecinNom string) []ConsultationDetail 
 		list = append(list, c)
 	}
 	return list
+}
+
+func (a *App) Login(login, motDePasse string) (Utilisateur, string) {
+
+	var user Utilisateur
+	err := db.QueryRow(
+		`SELECT id, login, mot_de_passe, role, nom_complet
+		 FROM utilisateurs
+		 WHERE login = ?`,
+		login,
+	).Scan(
+		&user.ID,
+		&user.Login,
+		&user.MotDePasse,
+		&user.Role,
+		&user.NomComplet,
+	)
+
+	if err == sql.ErrNoRows {
+		return Utilisateur{}, "Utilisateur introuvable"
+	}
+
+	if err != nil {
+		return Utilisateur{}, err.Error()
+	}
+
+	if user.MotDePasse != motDePasse {
+		return Utilisateur{}, "Mot de passe incorrect"
+	}
+
+	return user, "ok"
 }

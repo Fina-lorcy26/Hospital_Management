@@ -38,6 +38,20 @@ func initDatabase() {
 	);`
 	db.Exec(createMedecinsTable)
 
+	createUtilisateursTable := `
+CREATE TABLE IF NOT EXISTS utilisateurs (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	login TEXT UNIQUE NOT NULL,
+	mot_de_passe TEXT NOT NULL,
+	role TEXT NOT NULL,
+	nom_complet TEXT
+);`
+
+_, err = db.Exec(createUtilisateursTable)
+if err != nil {
+	log.Println("Erreur création utilisateurs :", err)
+}
+
 	createRdvTable := `
 	CREATE TABLE IF NOT EXISTS rendez_vous (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,6 +88,12 @@ func initDatabase() {
 		insertSeedMedecins()
 	}
 
+	var countUtilisateurs int
+	db.QueryRow("SELECT COUNT(*) FROM utilisateurs").Scan(&countUtilisateurs)
+
+	if countUtilisateurs == 0 {
+		insertSeedUtilisateurs()
+	}
 	var countRdv int
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous").Scan(&countRdv)
 	if countRdv == 0 {
@@ -111,6 +131,23 @@ func insertSeedMedecins() {
 	for _, m := range medecins {
 		db.Exec("INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
 			m.Matricule, m.Nom, m.Prenom, m.Specialite, m.Telephone, m.Email)
+	}
+}
+
+func insertSeedUtilisateurs() {
+	utilisateurs := []struct {
+		Login, MotDePasse, Role, MedecinNom string
+	}{
+		{"admin", "admin123", "admin", ""},
+		{"clara", "1234", "medecin", "Clara"},
+		{"iris", "1234", "medecin", "Iris"},
+	}
+
+	for _, u := range utilisateurs {
+		db.Exec(
+			"INSERT INTO utilisateurs (login, mot_de_passe, role, medecin_nom) VALUES (?, ?, ?, ?)",
+			u.Login, u.MotDePasse, u.Role, u.MedecinNom,
+		)
 	}
 }
 
