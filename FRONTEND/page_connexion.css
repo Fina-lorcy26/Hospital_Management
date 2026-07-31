@@ -3,6 +3,13 @@ body {
     font-family: times new roman, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('Remote Healthcare.jpg');
+    background-repeat: no-repeat;  
+    background-position: center;
+    background-attachment: fixed;
+    
+    
+
 }
 .container {
     max-width: 400px;
@@ -10,7 +17,10 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 35px;
-    background-image: url('Remote Healthcare.jpg');  
+    
+    
+    
+      
      
 }
 input{
@@ -18,20 +28,34 @@ input{
     border: 2px solid #ccc;
     border-radius: 15px;
     outline: none;
+    display: flex;
+    width: 300px;
+    height: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+    
 }
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 label {
     margin-bottom: 5px;
     font-weight: bold;
-    color: #fff;
+    color: #0f0b0b;
+
+
 }
 h1 {
     text-align: center;
-    color: #fff;
+    color: #181616;
 }
 .button-container {
     text-align: center;
     margin-top: 20px;
-    color: #fff;
+    color: #0f0b0b;
     
 }
 p {
@@ -39,6 +63,7 @@ p {
 }
     
 .button-container input[type="submit"]{
-    background-color: #282f6e;
+    background-color: #1e5aae;
+    height: 30px;
 }
 
