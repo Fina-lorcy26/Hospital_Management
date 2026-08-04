@@ -66,6 +66,10 @@ export function Login(arg1, arg2) {
   return window['go']['main']['App']['Login'](arg1, arg2);
 }
 
+export function Register(arg1, arg2, arg3, arg4, arg5, arg6) {
+  return window['go']['main']['App']['Register'](arg1, arg2, arg3, arg4, arg5, arg6);
+}
+
 export function UpdateConsultationStatut(arg1, arg2) {
   return window['go']['main']['App']['UpdateConsultationStatut'](arg1, arg2);
 }

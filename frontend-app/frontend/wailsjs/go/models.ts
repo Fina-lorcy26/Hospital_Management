@@ -27,7 +27,7 @@ export namespace main {
 	export class ConsultationDetail {
 	    id: number;
 	    rdv_id: number;
-	    patient_nom: string;
+	    patient_Id: string;
 	    date_rdv: string;
 	    date_consultation: string;
 	    diagnostic: string;
@@ -43,7 +43,7 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.rdv_id = source["rdv_id"];
-	        this.patient_nom = source["patient_nom"];
+	        this.patient_Id = source["patient_Id"];
 	        this.date_rdv = source["date_rdv"];
 	        this.date_consultation = source["date_consultation"];
 	        this.diagnostic = source["diagnostic"];
@@ -124,12 +124,14 @@ export namespace main {
 	}
 	export class RendezVous {
 	    id: number;
-	    patient_nom: string;
-	    medecin_nom: string;
+	    patient_id: string;
+	    medecin_mat: string;
 	    motif: string;
 	    date: string;
 	    heure: string;
 	    statut: string;
+	    patient_nom: string;
+	    medecin_nom: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new RendezVous(source);
@@ -138,12 +140,14 @@ export namespace main {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
-	        this.patient_nom = source["patient_nom"];
-	        this.medecin_nom = source["medecin_nom"];
+	        this.patient_id = source["patient_id"];
+	        this.medecin_mat = source["medecin_mat"];
 	        this.motif = source["motif"];
 	        this.date = source["date"];
 	        this.heure = source["heure"];
 	        this.statut = source["statut"];
+	        this.patient_nom = source["patient_nom"];
+	        this.medecin_nom = source["medecin_nom"];
 	    }
 	}
 	export class Utilisateur {
@@ -152,6 +156,9 @@ export namespace main {
 	    mot_de_passe: string;
 	    role: string;
 	    nom_complet: string;
+	    medecin_mat: sql.NullString;
+	    telephone: string;
+	    email: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Utilisateur(source);
@@ -164,6 +171,46 @@ export namespace main {
 	        this.mot_de_passe = source["mot_de_passe"];
 	        this.role = source["role"];
 	        this.nom_complet = source["nom_complet"];
+	        this.medecin_mat = this.convertValues(source["medecin_mat"], sql.NullString);
+	        this.telephone = source["telephone"];
+	        this.email = source["email"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+
+}
+
+export namespace sql {
+	
+	export class NullString {
+	    String: string;
+	    Valid: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new NullString(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.String = source["String"];
+	        this.Valid = source["Valid"];
 	    }
 	}
 

@@ -12,35 +12,59 @@
 </head>
 
 <body>
+    <!-- les pages de rudy -->
     <section id="page-login">
-
-            <div class="box">
+      <div class="box">
     <div class="login-container">
         <h2>Connexion</h2>
         <form id="login-form">
             <div class="input-group">
-                <label for="username">Nom d'utilisateur:</label>
                 <input type="text" id="login" placeholder="Entrez votre nom d'utilisateur">
             </div>
             <br><br>
             <div class="input-group">
-                <label for="password">Mot de passe:</label>
             <input type="password" id="password" placeholder="Entrez votre mot de passe">
             </div>
             <br><br>
             <button type="submit">Se connecter</button>
         </form>
         <br><br>
-        <div class="footer-links">
-            <p>Avez vous un compte</p>
-            <br><br>
-            <a href="Register.html">CREER UN COMPTE</a>
-
+            <div class="footer-links">
+                <p>N'avez-vous pas de compte ?</p>
+                <br><br>
+                <a href="#" id="link-to-register">CRÉER UN COMPTE</a>
+            </div>
         </div>
-    </div>
-    </div>
-
+      </div>
    </section>
+        <div  id="modal-overlay-register" class="modal-overlay">
+          <div class="container">
+            <h1>Inscription</h1>
+            <form id="Register-form">
+                <input type="text" id="reg-nom-complet" placeholder="Nom complet" required>
+                <br><br>
+                <input type="text" id="reg-login" placeholder="Choisissez un identifiant" required>
+                <br><br>
+                <input type="email" id="reg-email" placeholder="Adresse email" required>
+                <br><br>
+                <input type="tel" id="reg-tel" placeholder="Numéro de téléphone" required>
+                <br><br>
+                <input type="text" id="reg-matricule" placeholder="Matricule (si c'est un médecin)">
+                <br><br>
+                <input type="password" id="reg-password" placeholder="Mot de passe" required>
+                <br><br>
+                <input type="password" id="reg-confirm-password" placeholder="Confirmer le mot de passe" required>
+                <br><br>
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">J'accepte les termes et conditions</label>
+                <div class="button-container">
+                   <button type="submit">M'inscrire</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    <!-- MON APPLICATION PRINCIPALE -->
     <section id="app" style="display:none;">
     <div class="app-container">
         <nav class="sidebar">
@@ -65,7 +89,7 @@
         </ul>
          
     <div class="sidebar-footer" id="sidebar-footer">
-    <p id="footer-name">ADMIN : Son nom et prenom</p>
+    <p id="footer-name">ADMIN : Son Nom </p>
     <button><i class="fa fa-sign-out"></i>Déconnexion</button>
     </div>
         </nav>
@@ -78,10 +102,12 @@
             <div class="topbar-avatar">A</div>
         </div>
     </header>
-        <div id="page-dashboard" class="page active">
+
+    <!-- TABLEAU DE BORD -->
+    <div id="page-dashboard" class="page active">
         <section class="hero">
     <div class="hero-text">
-        <h1>Bonjour, nom de l'ADMIN</h1>
+        <h1 id="dashboard-welcome">Bonjour, nom de l'ADMIN</h1>
         <p>Bienvenue sur votre tableau de bord</p>
     </div>
     <div class="hero-stat">
@@ -131,8 +157,10 @@
     </div>
 </div>
         </section>
-     </div>
+    </div>
  
+    <!-- PAGE PATIENTS -->
+
 <div id="page-patients" class="page">
     <div class="page-header">
     <h1>Liste des patients</h1>
@@ -143,14 +171,15 @@
     </div>
     <div class="patients-list">
         <div class="patients-header">
-            <span class="col-name">Nom</span>
+            <span class="col-name">Nom et prenom </span>
             <span class="col-specialty">Operations</span>
             <span class="col-actions">Actions</span>
         </div>
+        <div id="patients-list-body"></div>
     </div>
-
 </div>
 
+<!-- PAGE MEDECINS -->
 <div id="page-medecins" class="page">
     <div class="page-header">
     <h1>Liste des médecins</h1>
@@ -163,10 +192,12 @@
             <span class="col-name">Nom</span>
             <span class="col-specialty">Specialité</span>
             <span class="col-actions">Actions</span>
-        </div>        
+        </div>  
+        <div id="medecins-list-body"></div>      
      </div>
-
 </div>
+
+<!-- PAGE RENDEZ-VOUS -->
 <div id="page-rendez-vous" class="page">
      <div class="page-header">
     <h1>Rendez-vous</h1>
@@ -183,10 +214,11 @@
             <span class="col-statut">Statut</span>
             <span class="col-actions">Actions</span>
         </div>
+        <div id="rdv-list-body"></div>
     </div>
 </div>
 
-
+<!-- PROFILS DETAILLES -->
 <div id="page-profil-patient" class="page">
     <div class="page-header">
         <h1>Profil du patient</h1>
@@ -206,33 +238,16 @@
         </div>
 
         <div class="profile-details">
-            <div class="detail-item">
-                <span class="detail-label">Prenom</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Sexe</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Date de naissance</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Téléphone</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Adresse</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Motif</span>
-                <span class="detail-value"></span>
-            </div>
+                    <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-patient-prenom"></span></div>
+                    <div class="detail-item"><span class="detail-label">Sexe</span><span class="detail-value" id="profil-patient-sexe"></span></div>
+                    <div class="detail-item"><span class="detail-label">Date de naissance</span><span class="detail-value" id="profil-patient-date-naiss"></span></div>
+                    <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-patient-tel"></span></div>
+                    <div class="detail-item"><span class="detail-label">Adresse</span><span class="detail-value" id="profil-patient-adresse"></span></div>
+                    <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value" id="profil-patient-motif"></span></div>
         </div>
-    </div>
+        </div>
 </div>
+
 
 <div id="page-profil-medecin" class="page">
     <div class="page-header">
@@ -252,26 +267,11 @@
         </div>
 
         <div class="profile-details">
-            <div class="detail-item">
-                <span class="detail-label">Matricule</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Prénom</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Spécialité</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Téléphone</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Email</span>
-                <span class="detail-value"></span>
-            </div>
+                    <div class="detail-item"><span class="detail-label">Matricule</span><span class="detail-value" id="profil-medecin-mat"></span></div>
+                    <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-medecin-prenom"></span></div>
+                    <div class="detail-item"><span class="detail-label">Spécialité</span><span class="detail-value" id="profil-medecin-specialite"></span></div>
+                    <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-medecin-tel"></span></div>
+                    <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value" id="profil-medecin-email"></span></div>
         </div>
     </div>
 </div>
@@ -298,34 +298,19 @@
                 <span class="detail-label">Patient</span>
                 <span class="detail-value"></span>
             </div>
-            <div class="detail-item">
-                <span class="detail-label">Médecin</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Date</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Heure</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Motif</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Statut</span>
-                <span class="detail-value"></span>
-            </div>
+            <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value"></span></div>
+            <div class="detail-item"><span class="detail-label">Date</span><span class="detail-value"></span></div>
+            <div class="detail-item"><span class="detail-label">Heure</span><span class="detail-value"></span></div>
+            <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value"></span></div>
+            <div class="detail-item"><span class="detail-label">Statut</span><span class="detail-value"></span></div>
         </div>
     </div>
 </div>
 
-
+<!-- ESPACE DU MEDECIN -->
 <div id="page-mes-rdv" class="page">
     <div class="page-header">
-        <h1>Mes rendez-vous (médecin)</h1>
+        <h1>Mes rendez-vous </h1>
     </div>
     <div class="rdv-list">
         <div class="rdv-header">
@@ -336,6 +321,7 @@
             <span class="col-statut">Statut</span>
             <span class="col-actions">Actions</span>
         </div>
+        <div id="mes-rdv-list-body"></div>
     </div>
 </div>
 
@@ -353,6 +339,7 @@
             <span class="col-date">Date consultation</span>
             <span class="col-actions">Actions</span>
         </div>
+        <div id="consultations-list-body"></div>
     </div>
 </div>
 
@@ -366,6 +353,7 @@
             <span class="col-date">Date</span>
             <span class="col-actions">Actions</span>
         </div>
+        <div id="consultations-effectuees-list-body"></div>
     </div>
 </div>
 
@@ -394,6 +382,9 @@
     </div>
 </div>
 </main> 
+
+<!-- MODALES DES FORMULAIRES -->
+    <!-- Modal pour ajouter un Patient -->
 <div id="modal-overlay-patient" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -428,6 +419,7 @@
     </div>
 </div>
 
+<!-- Modal pour l'ajout d'un Médecin -->
 <div id="modal-overlay-medecin" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -436,7 +428,6 @@
         </div>
 
         <form class="modal-form" id="form-add-medecin">
-
             <label for="mat-medecin">Matricule Medecin</label>
             <input type="text" id="mat-medecin" placeholder=" Matricule medecin" required />
 
@@ -460,6 +451,7 @@
     </div>
 </div>
 
+<!-- Modal pour ajouter un RDV  -->
 <div id="modal-overlay-rdv" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -468,12 +460,11 @@
         </div>
 
         <form class="modal-form" id="form-add-rdv">
+            <label for="rdv-patient-id">Sélectionner Patient</label>
+                <select id="rdv-patient-id" required></select>
 
-            <label for="rdv-medecin-nom">Nom Medecin</label>
-            <select id="rdv-medecin-nom"></select>
-
-            <label for="rdv-patient-nom">Nom Patient</label>
-            <select id="rdv-patient-nom"></select>
+                <label for="rdv-medecin-mat">Sélectionner Médecin</label>
+                <select id="rdv-medecin-mat" required></select>
 
             <label for="rdv-motif"> Motif</label>
             <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
@@ -489,6 +480,7 @@
     </div>
 </div>
 
+<!-- Modal pour Modifier un Patient -->
 <div id="modal-overlay-modif-patient" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -523,6 +515,7 @@
     </div>
 </div>
 
+<!-- Modal pour Modifier un Médecin -->
 <div id="modal-overlay-modif-medecin" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -531,6 +524,8 @@
         </div>
 
         <form class="modal-form" id="form-modif-medecin">
+            <input type="hidden" id="modif-medecin-mat-hidden">
+
             <label for="modif-medecin-nom">Nom</label>
             <input type="text" id="modif-medecin-nom" placeholder="Nom du medecin" required />
 
@@ -551,6 +546,7 @@
     </div>
 </div>
 
+<!-- Modal pour Modifier un RDV -->
 <div id="modal-overlay-modif-rdv" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -559,11 +555,12 @@
         </div>
 
         <form class="modal-form" id="form-modif-rdv">
-            <label for="modif-rdv-patient-nom">Patient</label>
-            <select id="modif-rdv-patient-nom" required></select>
+            <input type="hidden" id="modif-rdv-id">
+            <label for="modif-rdv-patient-id">Patient</label>
+            <select id="modif-rdv-patient-id" required></select>
 
-            <label for="modif-rdv-medecin-nom">Médecin</label>
-            <select id="modif-rdv-medecin-nom" required></select>
+            <label for="modif-rdv-medecin-mat">Médecin</label>
+            <select id="modif-rdv-medecin-mat" required></select>
 
             <label for="modif-motif-rdv">Motif</label>
             <input type="text" id="modif-motif-rdv" placeholder="Ex: yeux enflés" required />
@@ -579,6 +576,7 @@
     </div>
 </div>
 
+<!-- Modal pour ajouter une Consultation -->
 <div id="modal-overlay-consultation" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">

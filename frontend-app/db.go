@@ -1,4 +1,5 @@
 package main
+
 import (
 	"database/sql"
 	"log"
@@ -13,6 +14,9 @@ func initDatabase() {
 	if err != nil {
 		log.Fatal("Erreur ouverture base de donnees:", err)
 	}
+
+	// Active la gestion des clés étrangères dans SQLite
+	db.Exec("PRAGMA foreign_keys = ON;")
 
 	createPatientsTable := `
 	CREATE TABLE IF NOT EXISTS patients (
@@ -44,23 +48,31 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 	login TEXT UNIQUE NOT NULL,
 	mot_de_passe TEXT NOT NULL,
 	role TEXT NOT NULL,
-	nom_complet TEXT
+	nom_complet TEXT,
+	medecin_mat TEXT,
+	telephone TEXT,
+	email TEXT,
+	FOREIGN KEY(medecin_mat) REFERENCES medecins(matricule)
 );`
 
-_, err = db.Exec(createUtilisateursTable)
-if err != nil {
-	log.Println("Erreur création utilisateurs :", err)
-}
+	_, err = db.Exec(createUtilisateursTable)
+	if err != nil {
+		log.Println("Erreur création utilisateurs :", err)
+	}
 
 	createRdvTable := `
 	CREATE TABLE IF NOT EXISTS rendez_vous (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		patient_nom TEXT,
-		medecin_nom TEXT,
+		patient_id INTEGER,
+		medecin_mat TEXT,
 		motif TEXT,
 		date TEXT,
 		heure TEXT,
-		statut TEXT
+		statut TEXT,
+		PatientNom string,
+		MedecinNom string,
+		FOREIGN KEY(patient_id) REFERENCES patients(id),
+		FOREIGN KEY(medecin_mat) REFERENCES medecins(matricule)
 	);`
 	db.Exec(createRdvTable)
 
@@ -72,10 +84,12 @@ if err != nil {
 		traitement TEXT,
 		observation TEXT,
 		date_consultation TEXT,
-		statut TEXT
+		statut TEXT,
+		FOREIGN KEY(rdv_id) REFERENCES rendez_vous(id)
 	);`
 	db.Exec(createConsultationsTable)
 
+	// Ingestion des données initiales si les tables sont vides
 	var count int
 	db.QueryRow("SELECT COUNT(*) FROM patients").Scan(&count)
 	if count == 0 {
@@ -99,7 +113,7 @@ if err != nil {
 	if countRdv == 0 {
 		insertSeedRdv()
 	}
-		var countConsultations int
+	var countConsultations int
 	db.QueryRow("SELECT COUNT(*) FROM consultations").Scan(&countConsultations)
 	if countConsultations == 0 {
 		insertSeedConsultations()
@@ -136,32 +150,37 @@ func insertSeedMedecins() {
 
 func insertSeedUtilisateurs() {
 	utilisateurs := []struct {
-		Login, MotDePasse, Role, MedecinNom string
+		Login, MotDePasse, Role, NomComplet, MedecinMat, Telephone, Email string
 	}{
-		{"admin", "admin123", "admin", ""},
-		{"clara", "1234", "medecin", "Clara"},
-		{"iris", "1234", "medecin", "Iris"},
+		{"admin", "admin123", "admin", "FINA LORCY", "", "", ""},
+		{"clara", "1234", "medecin", "Clara Sophie", "MED-001", "", ""},
+		{"iris", "1234", "medecin", "Iris Julie", "MED-002", "", ""},
 	}
 
 	for _, u := range utilisateurs {
-		db.Exec(
-			"INSERT INTO utilisateurs (login, mot_de_passe, role, medecin_nom) VALUES (?, ?, ?, ?)",
-			u.Login, u.MotDePasse, u.Role, u.MedecinNom,
-		)
+		_, err := db.Exec(
+			`INSERT INTO utilisateurs 
+				(login, mot_de_passe, role, nom_complet, medecin_mat, telephone, email) 
+			 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+			u.Login, u.MotDePasse, u.Role, u.NomComplet, u.MedecinMat, u.Telephone, u.Email)
+		if err != nil {
+			log.Println("Erreur insertion utilisateur:", err)
+		}
 	}
 }
 
 func insertSeedRdv() {
 	rdvs := []struct {
-		PatientNom, MedecinNom, Motif, Date, Heure, Statut string
+		PatientId                              int
+		MedecinMat, Motif, Date, Heure, Statut string
 	}{
-		{"Lorcy", "Dr. Clara", "Douleurs thoraciques", "22/07/2026", "09:30", "Confirmé"},
-		{"Rudy", "Dr. Iris", "Fievre", "22/07/2026", "11:00", "En attente"},
-		{"Alix", "Dr. Clara", "Controle", "21/07/2026", "15:45", "Annulé"},
+		{1, "MED-001", "Douleurs thoraciques", "22/07/2026", "09:30", "Confirmé"},
+		{2, "MED-002", "Fievre", "22/07/2026", "11:00", "En attente"},
+		{3, "MED-003", "Controle", "21/07/2026", "15:45", "Annulé"},
 	}
 	for _, r := range rdvs {
-		db.Exec("INSERT INTO rendez_vous (patient_nom, medecin_nom, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
-			r.PatientNom, r.MedecinNom, r.Motif, r.Date, r.Heure, r.Statut)
+		db.Exec("INSERT INTO rendez_vous (patient_id, medecin_mat, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
+			r.PatientId, r.MedecinMat, r.Motif, r.Date, r.Heure, r.Statut)
 	}
 }
 func insertSeedConsultations() {

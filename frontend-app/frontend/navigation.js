@@ -3,13 +3,12 @@
 import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
-         GetDashboardStats } from './wailsjs/go/main/App.js';
-         import { Login } from "./wailsjs/go/main/App.js";
-
- import { GetConsultations, AddConsultation, UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut, GetConsultationsByMedecin } from './wailsjs/go/main/App.js';
+         GetDashboardStats, Login, GetConsultations, AddConsultation,
+          UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut,
+           GetConsultationsByMedecin, Register } from './wailsjs/go/main/App.js';
 
   let UTILISATEUR_CONNECTE = null;
-    let MEDECIN_NOM_ACTUEL = "";
+  let MEDECIN_NOM_ACTUEL = "";
 
     const badgeClass = {
         "Confirmé": "badge-confirme",
@@ -19,29 +18,29 @@ import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar-menu a');
 
-// Ecouteurs d'evenement pour afficher et cacher chaque page en fonction du lien selectionné 
+// Écouteurs d'événement pour afficher et cacher chaque page en fonction du lien sélectionné 
     links.forEach(link => {
-    link.addEventListener('click', (e) => {
-        const targetPage = link.getAttribute('data-page');
-        if (!targetPage) return; 
-        e.preventDefault();
+        link.addEventListener('click', (e) => {
+            const targetPage = link.getAttribute('data-page');
+            if (!targetPage) return; 
+            e.preventDefault();
 
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById('page-' + targetPage).classList.add('active');
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-' + targetPage).classList.add('active');
 
-// Active le lien cliqué et desactive les autres 
-        links.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
+            // Active le lien cliqué et désactive les autres 
+            links.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
 
-// Afiiche les données en fonction de la page selectionnée
-        if (targetPage === 'patients') loadPatients();
-        if (targetPage === 'medecins') loadMedecins();
-        if (targetPage === 'rendez-vous') loadRendezVous();
-        if (targetPage === 'dashboard') loadDashboard();
+            // Affiche les données en fonction de la page sélectionnée
+            if (targetPage === 'patients') loadPatients();
+            if (targetPage === 'medecins') loadMedecins();
+            if (targetPage === 'rendez-vous') loadRendezVous();
+            if (targetPage === 'dashboard') loadDashboard();
 
-        loadCharts(); // mises a jour des graphiques
+            loadCharts(); // Mises à jour des graphiques
+        });
     });
-});
 
 // code du clic en dehors de la modale pour la retirer 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -54,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ---------- Formulaire Ajouter Patient ----------
 
+    // ---------- Formulaire Ajouter Patient ----------
     document.getElementById('form-add-patient').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddPatient(
@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Ajouter Médecin ----------
-
     document.getElementById('form-add-medecin').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddMedecin(
@@ -96,12 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Formulaire Ajouter Rendez-vous ----------
-
     document.getElementById('form-add-rdv').addEventListener('submit', async (e) => {
         e.preventDefault();
         const result = await AddRendezVous(
-            document.getElementById('rdv-patient-nom').value,
-            document.getElementById('rdv-medecin-nom').value,
+            document.getElementById('rdv-patient-id').value,
+            document.getElementById('rdv-medecin-mat').value,
             document.getElementById('rdv-motif').value,
             document.getElementById('rdv-date').value,
             document.getElementById('rdv-heure').value
@@ -185,8 +183,8 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
     e.preventDefault();
     const result = await UpdateRendezVous(
         currentEditRdvId,
-        document.getElementById('modif-rdv-patient-nom').value,
-        document.getElementById('modif-rdv-medecin-nom').value,
+        document.getElementById('modif-rdv-patient-id').value,
+        document.getElementById('modif-rdv-medecin-mat').value,
         document.getElementById('modif-motif-rdv').value,
         document.getElementById('modif-rdv-date').value,
         document.getElementById('modif-heure-rdv').value
@@ -207,17 +205,20 @@ document.getElementById('form-modif-rdv').addEventListener('submit', async (e) =
 });
 
 // Redirection vers la page de medecin, en masquant toutes les autres   
-
 function goToPage(targetPage) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('page-' + targetPage).classList.add('active');
+    
+    const pageTarget = document.getElementById('page-' + targetPage);
+    if (pageTarget) {
+        pageTarget.classList.add('active');
+    }
 
-// Pour la surbrillance laterale 
+    // Mise en surbrillance de la sidebar
     document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
     const activeLink = document.querySelector(`[data-page="${targetPage}"]`);
     if (activeLink) activeLink.classList.add('active');
 
-// Rechargement des données pour la page du docteur 
+    // Rechargement des données pour chaque page
     if (targetPage === 'mes-rdv') loadMesRdv();
     if (targetPage === 'mes-consultations') loadMesConsultations();
     if (targetPage === 'patients') loadPatients();
@@ -227,14 +228,19 @@ function goToPage(targetPage) {
     if (targetPage === 'consultations-effectuees') loadConsultationsEffectuees();
 }
 window.goToPage = goToPage;
+
 // fonction qui charge les rdv du medecin connecté 
 async function loadMesRdv() {
     const allRdvs = await GetRendezVous();
+    console.log("MEDECIN_NOM_ACTUEL :", MEDECIN_NOM_ACTUEL);
+    console.log("Tous les rdvs :", allRdvs);
     const mesRdvs = allRdvs.filter(r => r.medecin_nom === MEDECIN_NOM_ACTUEL);
-    const container = document.querySelector('#page-mes-rdv .rdv-list');
-    document.querySelectorAll('#page-mes-rdv .rdv-row').forEach(row => row.remove());
-    console.log(allRdvs);
-    console.log(mesRdvs);
+    console.log("Rdvs filtrés :", mesRdvs);
+    const container = document.getElementById('mes-rdv-list-body');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
         row.className = 'rdv-row';
@@ -258,15 +264,15 @@ async function loadMesRdv() {
 function switchToMedecin() {
     document.getElementById('menu-admin').style.display = 'none';
     document.getElementById('menu-medecin').style.display = 'block';
-    document.getElementById('footer-name').textContent = 'DR : STEEVE' ;
-    document.querySelector('.topbar-avatar').textContent = 'C';
+    document.getElementById('footer-name').textContent = 'DR : ' + (MEDECIN_NOM_ACTUEL || 'Médecin');
+    document.querySelector('.topbar-avatar').textContent = 'M';
     goToPage('mes-rdv');
 }
 // La fonction qui change l'interface medecin en admin  
 function switchToAdmin() {
     document.getElementById('menu-admin').style.display = 'block';
     document.getElementById('menu-medecin').style.display = 'none';
-    document.getElementById('footer-name').textContent = 'ADMIN : Son nom et prenom';
+    document.getElementById('footer-name').textContent = 'ADMIN : ' + (UTILISATEUR_CONNECTE ? UTILISATEUR_CONNECTE.nom_complet : 'Admin');
     document.querySelector('.topbar-avatar').textContent = 'A';
     goToPage('dashboard');
 }
@@ -291,6 +297,7 @@ async function annulerRdv(id) {
 
 window.confirmerRdv = confirmerRdv;
 window.annulerRdv = annulerRdv
+
 function ouvrirConsultation(rdvId) {
     populateRdvSelect(rdvId);
     openModal('modal-overlay-consultation');
@@ -320,7 +327,7 @@ async function populateRdvSelect(preselectId) {
     disponibles.forEach(r => {
         const option = document.createElement('option');
         option.value = r.id;
-        option.textContent = r.patient_nom + ' - ' + r.date;
+        option.textContent = r.patient_id + ' - ' + r.date;
         select.appendChild(option);
     });
     if (preselectId) select.value = preselectId;
@@ -330,8 +337,9 @@ async function populateRdvSelect(preselectId) {
 async function loadMesConsultations() {
     const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
     const aFaire = all.filter(c => c.statut !== 'Terminee');
-    const container = document.querySelector('#page-mes-consultations .consultations-list');
-    document.querySelectorAll('#page-mes-consultations .consultation-row').forEach(row => row.remove());
+    const container = document.getElementById('consultations-list-body');
+    if (!container) return;
+    container.innerHTML = '';
 
     aFaire.forEach(c => {
         const row = document.createElement('div');
@@ -352,8 +360,9 @@ async function loadMesConsultations() {
 async function loadConsultationsEffectuees() {
     const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
     const terminees = all.filter(c => c.statut === 'Terminee');
-    const container = document.querySelector('#page-consultations-effectuees .consultations-effectuees-list');
-    document.querySelectorAll('#page-consultations-effectuees .consultation-row').forEach(row => row.remove());
+    const container = document.getElementById('consultations-effectuees-list-body');
+    if (!container) return;
+    container.innerHTML = '';
 
     terminees.forEach(c => {
         const row = document.createElement('div');
@@ -409,13 +418,12 @@ function showPatientProfile(patient) {
     card.querySelector('.profile-title h2').textContent = patient.nom;
 
 // Remplissage de la fiche
-    const details = card.querySelectorAll('.detail-value');
-    details[0].textContent = patient.prenom;
-    details[1].textContent = patient.sexe;
-    details[2].textContent = patient.date_naissance;
-    details[3].textContent = patient.telephone;
-    details[4].textContent = patient.adresse;
-    details[5].textContent = patient.motif;
+    document.getElementById('profil-patient-prenom').textContent = patient.prenom;
+    document.getElementById('profil-patient-sexe').textContent = patient.sexe;
+    document.getElementById('profil-patient-date-naiss').textContent = patient.date_naissance;
+    document.getElementById('profil-patient-tel').textContent = patient.telephone;
+    document.getElementById('profil-patient-adresse').textContent = patient.adresse;
+    document.getElementById('profil-patient-motif').textContent = patient.motif;
 }
 
 window.showPatientProfile = showPatientProfile;
@@ -431,16 +439,20 @@ function showMedecinProfile(medecin) {
     card.querySelector('.profile-title h2').textContent = 'Dr. ' + medecin.nom;
 
     const details = card.querySelectorAll('.detail-value');
-    details[0].textContent = medecin.matricule;
-    details[1].textContent = medecin.prenom;
-    details[2].textContent = medecin.specialite;
-    details[3].textContent = medecin.telephone;
-    details[4].textContent = medecin.email;
+    document.getElementById('profil-medecin-mat').textContent = medecin.matricule;
+    document.getElementById('profil-medecin-prenom').textContent = medecin.prenom;
+    document.getElementById('profil-medecin-specialite').textContent = medecin.specialite;
+    document.getElementById('profil-medecin-tel').textContent = medecin.telephone;
+    document.getElementById('profil-medecin-email').textContent = medecin.email;
 }
 
 window.showMedecinProfile = showMedecinProfile;
+function navigateBack(targetPage) {
+    goToPage(targetPage);
+}
+window.navigateBack = navigateBack;
 
-// Affiche te rempli les informations sur un rendez-vous 
+// Affiche et rempli les informations sur un rendez-vous 
 
 function showRdvProfile(rdv) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -469,29 +481,21 @@ function showRdvProfile(rdv) {
 
 window.showRdvProfile = showRdvProfile;
 
-function navigateBack(targetPage) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('page-' + targetPage).classList.add('active');
-    document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
-    document.querySelector(`[data-page="${targetPage}"]`).classList.add('active');
-}
-
-window.navigateBack = navigateBack;
-
 // ---------- CHARGEMENT DES LISTES ----------
 //recupere les patients
 async function loadPatients() {
     const patients = await GetPatients();
-    const container = document.querySelector('.patients-list');
-    document.querySelectorAll('.patient-row').forEach(row => row.remove());
+    const container = document.getElementById('patients-list-body');
+    if (!container) return;
+    container.innerHTML = '';
 
     // injecte tous les patients dans la liste
     patients.forEach(p => {
         const row = document.createElement('div');
         row.className = 'patient-row';
         row.innerHTML = `
-            <span class="patient-name col-name">${p.nom}</span>
-            <span class="patient-specialty col-specialty">${p.motif}</span>
+            <span class="patient-name col-name">${p.nom} ${p.prenom}</span>
+            <span class="patient-specialty col-specialty">${p.telephone}</span>
             <div class="patient-actions col-actions">
                 <button class="btn-modify" onclick='openEditPatient(${JSON.stringify(p)})'>Modifier</button>
                 <button class="btn-view" onclick='showPatientProfile(${JSON.stringify(p)})'>Voir</button>
@@ -501,18 +505,19 @@ async function loadPatients() {
         container.appendChild(row);
     });
 }
-
 // recupere et injecte tous les medecins dans la liste 
 async function loadMedecins() {
     const medecins = await GetMedecins();
-    const container = document.querySelector('.medecins-list');
-    document.querySelectorAll('.medecins-row').forEach(row => row.remove());
+    const container = document.getElementById('medecins-list-body');
+    if (!container) return;
+
+    container.innerHTML = '';
 
     medecins.forEach(m => {
         const row = document.createElement('div');
         row.className = 'medecins-row';
         row.innerHTML = `
-            <span class="medecins-name col-name">${m.nom}</span>
+            <span class="medecins-name col-name">Dr. ${m.nom} ${m.prenom}</span>
             <span class="medecins-specialty col-specialty">${m.specialite}</span>
             <div class="medecins-actions col-actions">
                 <button class="btn-modify" onclick='openEditMedecin(${JSON.stringify(m)})'>Modifier</button>
@@ -528,12 +533,12 @@ async function loadMedecins() {
 async function remplirListePatients(selectId) {
     const patients = await GetPatients();
     const select = document.getElementById(selectId);
+    if (!select) return;
 
     select.innerHTML = "";
-
     patients.forEach(patient => {
         const option = document.createElement("option");
-        option.value = patient.nom;
+        option.value = patient.id; // Stocke l'ID unique
         option.textContent = `${patient.nom} ${patient.prenom}`;
         select.appendChild(option);
     });
@@ -542,26 +547,23 @@ async function remplirListePatients(selectId) {
 async function remplirListeMedecins(selectId) {
     const medecins = await GetMedecins();
     const select = document.getElementById(selectId);
+    if (!select) return;
 
     select.innerHTML = "";
-
     medecins.forEach(medecin => {
         const option = document.createElement("option");
-
-        // valeur enregistrée dans la base
-        option.value = medecin.nom;
-
-        // texte affiché à l'utilisateur
+        option.value = medecin.matricule; // Stocke le matricule unique
         option.textContent = `Dr. ${medecin.nom} ${medecin.prenom}`;
-
         select.appendChild(option);
     });
 }
 // recupere et injecte tous les rendez-vous dans leur liste
 async function loadRendezVous() {
     const rdvs = await GetRendezVous();
-    const container = document.querySelector('.rdv-list');
-    document.querySelectorAll('.rdv-row').forEach(row => row.remove());
+    const container = document.getElementById('rdv-list-body');
+    if (!container) return;
+
+    container.innerHTML = '';
 
     rdvs.forEach(r => {
         const row = document.createElement('div');
@@ -576,18 +578,15 @@ async function loadRendezVous() {
             </span>
             <div class="col-actions rdv-actions">
                 <button class="btn-modify" onclick='openEditRdv(${JSON.stringify(r)})'>Modifier</button>
-                <button class="btn-view" onclick='showRdvProfile(${JSON.stringify(r)})'>Voir</button>
                 <button class="btn-delete" onclick="deleteRdvHandler(${r.id})">Supprimer</button>
             </div>
         `;
         container.appendChild(row);
     });
 }
-
 async function openAjoutRdv() {
-    await remplirListePatients("rdv-patient-nom");
-    await remplirListeMedecins("rdv-medecin-nom");
-
+    await remplirListePatients("rdv-patient-id");
+    await remplirListeMedecins("rdv-medecin-mat");
     openModal("modal-overlay-rdv");
 }
 
@@ -599,19 +598,11 @@ async function loadDashboard() {
     document.getElementById("rdv-en-attente").textContent = stats.rdv_en_attente;
 
     // Cartes
-    document.getElementById("total-patients").textContent =
-        stats.total_patients;
-
-    document.getElementById("total-medecins").textContent =
-        stats.total_medecins;
-
-    document.getElementById("total-rdv").textContent =
-        stats.rdv_du_jour;
-    document.getElementById("total-rdv-program").textContent =
-        stats.rdv_programmes;
-
-    document.getElementById("total-consultation").textContent =
-        stats.consultations_terminees;
+    document.getElementById("total-patients").textContent = stats.total_patients;
+    document.getElementById("total-medecins").textContent = stats.total_medecins;
+    document.getElementById("total-rdv").textContent = stats.rdv_du_jour;
+    document.getElementById("total-rdv-program").textContent = stats.rdv_programmes;
+    document.getElementById("total-consultation").textContent = stats.consultations_terminees;
 }
 
 // ---------- SUPPRESSION ----------
@@ -656,7 +647,6 @@ function openEditPatient(patient) {
     document.getElementById('modif-motif-patient').value = patient.motif;
     openModal('modal-overlay-modif-patient');
 }
-
 window.openEditPatient = openEditPatient;
 
 let currentEditMedecinMatricule = null;
@@ -670,21 +660,19 @@ function openEditMedecin(medecin) {
     document.getElementById('modif-email-medecin').value = medecin.email;
     openModal('modal-overlay-modif-medecin');
 }
-
 window.openEditMedecin = openEditMedecin;
 
 let currentEditRdvId = null;
 
 async function openEditRdv(rdv) {
     currentEditRdvId = rdv.id;
-    await remplirListePatients("modif-rdv-patient-nom");
-    await remplirListeMedecins("modif-rdv-medecin-nom");
+    await remplirListePatients("modif-rdv-patient-id");
+    await remplirListeMedecins("modif-rdv-medecin-mat");
     document.getElementById('modif-motif-rdv').value = rdv.motif;
     document.getElementById('modif-rdv-date').value = rdv.date;
     document.getElementById('modif-heure-rdv').value = rdv.heure;
     openModal('modal-overlay-modif-rdv');
 }
-
 window.openEditRdv = openEditRdv;
 
 //---Gerer la date du Tableau de bord-----
@@ -835,55 +823,94 @@ function createSemaineChart(rdvs) {
 }
 
 // Melanger le travail de rudy
-
 const form = document.getElementById("login-form");
 
-form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+if (form) {
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    console.log("Le formulaire de connexion a été soumis");
+        const login = document.getElementById("login").value.trim();
+        const motDePasse = document.getElementById("password").value;
 
-    const login = document.getElementById("login").value.trim();
-    const motDePasse = document.getElementById("password").value;
-
+       try {
     const resultat = await Login(login, motDePasse);
 
-    const utilisateur = resultat[0];
-    const message = resultat[1];
+    // Si on arrive ici, la connexion a réussi et resultat = l'objet Utilisateur
+    UTILISATEUR_CONNECTE = resultat;
 
-    if (message !== "ok") {
-        alert(message);
+    document.getElementById("page-login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    initialiserApplication();
+
+} catch (err) {
+    console.error(err);
+    alert(err.message || err || "Identifiants incorrects ou utilisateur introuvable.");
+}
+    });
+}
+
+function initialiserApplication() {
+    const user = UTILISATEUR_CONNECTE;
+    if (!user) return;
+
+    const welcomeTitle = document.getElementById("dashboard-welcome");
+    if (welcomeTitle) {
+        welcomeTitle.textContent = "Bonjour, " + user.nom_complet;
+    }
+
+    if (user.role === 'admin' || user.role === 'administrateur') {
+        switchToAdmin();
+        goToPage("dashboard");
+    } else if (user.role === "medecin") {
+        MEDECIN_NOM_ACTUEL = user.nom_complet;
+        switchToMedecin();
+        goToPage("mes-rdv");
+    }
+}
+// Ouvrir la fenêtre de création de compte / inscription
+document.addEventListener('DOMContentLoaded', () => {
+    // Écouteur sur tout texte/bouton qui contient "CRÉER UN COMPTE"
+    const links = document.querySelectorAll('a, button, span, p');
+    links.forEach(el => {
+        if (el.textContent.trim().toUpperCase().includes('CRÉER UN COMPTE')) {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+         
+                const modalRegister = document.getElementById('modal-overlay-register');
+                if (modalRegister) {
+                    modalRegister.classList.add('active');
+                } else {
+                    alert("La modale d'inscription ('modal-overlay-register') n'existe pas encore dans le HTML.");
+                }
+            });
+        }
+    });
+});
+
+document.getElementById('Register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (document.getElementById('reg-password').value !== document.getElementById('reg-confirm-password').value) {
+        alert("Les mots de passe ne correspondent pas.");
         return;
     }
 
-    // cacher la connexion
-    document.getElementById("page-login").style.display = "none";
+    const result = await Register(
+    document.getElementById('reg-nom-complet').value,
+    document.getElementById('reg-login').value,        
+    document.getElementById('reg-tel').value,
+    document.getElementById('reg-matricule').value,
+    document.getElementById('reg-password').value,
+    document.getElementById('reg-email').value          
+);
 
-    // afficher l'application
-    document.getElementById("app").style.display = "block";
-    UTILISATEUR_CONNECTE = utilisateur;
-
-    // appeler la fonction selon le rôle
-    initialiserApplication();
-});
-
-function initialiserApplication() {
-
-    const user = UTILISATEUR_CONNECTE;
-
-    document.querySelector(".hero-text h1").textContent =
-        "Bonjour, " + user.nom_complet;
-
-    if (user.role === "admin") {
-
-        showPage("dashboard");
-        loadDashboard();
-
-    } else if (user.role === "medecin") {
-
-        MEDECIN_NOM_ACTUEL = user.nom_complet;
-
-        showPage("page-mes-rdv");
-        loadMesRdv();
+    if (result === 'ok') {
+        closeModal('modal-overlay-register');
+        e.target.reset();
+        alert('Compte créé avec succès. Vous pouvez vous connecter.');
+    } else {
+        alert(result);
     }
-}
+});

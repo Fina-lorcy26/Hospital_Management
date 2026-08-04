@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"regexp"
-	"database/sql"
 )
 
 // L'appli principale, conserve le contexte d'execution de wails
@@ -34,19 +35,21 @@ type Medecin struct {
 
 type RendezVous struct {
 	ID         int    `json:"id"`
-	PatientNom string `json:"patient_nom"`
-	MedecinNom string `json:"medecin_nom"`
+	PatientId  string `json:"patient_id"`
+	MedecinMat string `json:"medecin_mat"`
 	Motif      string `json:"motif"`
 	Date       string `json:"date"`
 	Heure      string `json:"heure"`
 	Statut     string `json:"statut"`
+	PatientNom string `json:"patient_nom"`
+	MedecinNom string `json:"medecin_nom"`
 }
 
 type DashboardStats struct {
-	TotalPatients         int `json:"total_patients"`
-	TotalMedecins         int `json:"total_medecins"`
+	TotalPatients          int `json:"total_patients"`
+	TotalMedecins          int `json:"total_medecins"`
 	RdvDujour              int `json:"rdv_du_jour"`
-	RdvEnAttente          int `json:"rdv_en_attente"`
+	RdvEnAttente           int `json:"rdv_en_attente"`
 	RdvProgrammes          int `json:"rdv_programmes"`
 	ConsultationsTerminees int `json:"consultations_terminees"`
 }
@@ -64,7 +67,7 @@ type Consultation struct {
 type ConsultationDetail struct {
 	ID               int    `json:"id"`
 	RdvID            int    `json:"rdv_id"`
-	PatientNom       string `json:"patient_nom"`
+	PatientId        string `json:"patient_Id"`
 	DateRdv          string `json:"date_rdv"`
 	DateConsultation string `json:"date_consultation"`
 	Diagnostic       string `json:"diagnostic"`
@@ -74,12 +77,16 @@ type ConsultationDetail struct {
 }
 
 type Utilisateur struct {
-	ID          int    `json:"id"`
-	Login       string `json:"login"`
-	MotDePasse  string `json:"mot_de_passe"`
-	Role        string `json:"role"`
-	NomComplet  string `json:"nom_complet"`
+	ID         int            `json:"id"`
+	Login      string         `json:"login"`
+	MotDePasse string         `json:"mot_de_passe"`
+	Role       string         `json:"role"`
+	NomComplet string         `json:"nom_complet"`
+	MedecinMat sql.NullString `json:"medecin_mat"`
+	Telephone  string         `json:"telephone"`
+	Email      string         `json:"email"`
 }
+
 // Constructeur de App qui va initialiser et retourner une nouvelle instance de app
 func NewApp() *App {
 	return &App{}
@@ -93,7 +100,7 @@ func (a *App) startup(ctx context.Context) {
 
 // Message de bienvenu
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	return fmt.Sprintf("Hello %s", name)
 }
 
 // ---------- GESTION DES PATIENTS ----------
@@ -109,7 +116,7 @@ func (a *App) GetPatients() []Patient {
 	defer rows.Close() //ferme la connexion aux resultats a la fin de la fonction
 
 	//recuperation des données de chaque ligne de patient
-	var patients []Patient
+	var patients []Patient = []Patient{} // Initialisé vide pour éviter `null` en JS
 	for rows.Next() {
 		var p Patient
 		rows.Scan(&p.ID, &p.Nom, &p.Prenom, &p.Sexe, &p.Telephone, &p.DateNaissance, &p.Adresse, &p.Motif)
@@ -121,7 +128,7 @@ func (a *App) GetPatients() []Patient {
 // Insertion d'un nouveau patient
 func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, motif string) string {
 
-		matched, _ := regexp.MatchString(`^\d{9}$`, telephone)
+	matched, _ := regexp.MatchString(`^\d{8,15}$`, telephone) // Validation du numero
 
 	if !matched {
 		return "Le numéro de téléphone doit contenir exactement 9 chiffres."
@@ -138,7 +145,7 @@ func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, m
 
 // Mises à jour d'un patient pour modification
 func (a *App) UpdatePatient(id int, nom, prenom, sexe, telephone, dateNaissance, adresse, motif string) string {
-		matched, _ := regexp.MatchString(`^\d{9}$`, telephone)
+	matched, _ := regexp.MatchString(`^\d{8,15}$`, telephone)
 
 	if !matched {
 		return "Le numéro de téléphone doit contenir exactement 9 chiffres."
@@ -163,7 +170,7 @@ func (a *App) DeletePatient(id int) string {
 }
 
 // ---------- GESTION DES MEDECINS ----------
-//Affiche Medecin
+// Affiche Medecin
 func (a *App) GetMedecins() []Medecin {
 	rows, err := db.Query("SELECT matricule, nom, prenom, specialite, telephone, email FROM medecins")
 	if err != nil {
@@ -171,8 +178,8 @@ func (a *App) GetMedecins() []Medecin {
 		return []Medecin{}
 	}
 	defer rows.Close()
-	//Recuperation des données 
-	var medecins []Medecin
+	//Recuperation des données
+	var medecins []Medecin = []Medecin{}
 	for rows.Next() {
 		var m Medecin
 		rows.Scan(&m.Matricule, &m.Nom, &m.Prenom, &m.Specialite, &m.Telephone, &m.Email)
@@ -184,20 +191,19 @@ func (a *App) GetMedecins() []Medecin {
 // Ajout d'un medecin
 func (a *App) AddMedecin(matricule, nom, prenom, specialite, telephone, email string) string {
 
-		var count int
+	var count int
+	err := db.QueryRow(
+		"SELECT COUNT(*) FROM medecins WHERE matricule = ?",
+		matricule,
+	).Scan(&count)
 
-		err := db.QueryRow(
-			"SELECT COUNT(*) FROM medecins WHERE matricule = ?",
-			matricule,
-		).Scan(&count)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
 
-		if err != nil {
-			return "Erreur : " + err.Error()
-		}
-
-		if count > 0 {
-			return "Un médecin avec ce matricule existe déjà."
-		}
+	if count > 0 {
+		return "Un médecin avec ce matricule existe déjà."
+	}
 
 	_, err = db.Exec(
 		"INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
@@ -209,7 +215,7 @@ func (a *App) AddMedecin(matricule, nom, prenom, specialite, telephone, email st
 	return "ok"
 }
 
-// Mises à jour 
+// Mises à jour
 func (a *App) UpdateMedecin(matricule, nom, prenom, specialite, telephone, email string) string {
 	_, err := db.Exec(
 		"UPDATE medecins SET nom=?, prenom=?, specialite=?, telephone=?, email=? WHERE matricule=?",
@@ -231,36 +237,53 @@ func (a *App) DeleteMedecin(matricule string) string {
 }
 
 // ---------- GESTION DES RENDEZ-VOUS ----------
-//liste complete de rendez-vous
+// liste complete de rendez-vous
 func (a *App) GetRendezVous() []RendezVous {
-	rows, err := db.Query("SELECT id, patient_nom, medecin_nom, motif, date, heure, statut FROM rendez_vous")
+	rows, err := db.Query(`
+		SELECT 
+			rv.id, 
+			rv.patient_id, 
+			rv.medecin_mat, 
+			rv.motif, 
+			rv.date, 
+			rv.heure, 
+			rv.statut,
+			(p.nom || ' ' || COALESCE(p.prenom, '')) AS patient_nom,
+			(m.nom || ' ' || COALESCE(m.prenom, '')) AS medecin_nom
+		FROM rendez_vous rv
+		JOIN patients p ON rv.patient_id = p.id
+		JOIN medecins m ON rv.medecin_mat = m.matricule
+	`)
 	if err != nil {
 		fmt.Println("Erreur recuperation rendez-vous:", err)
 		return []RendezVous{}
 	}
 	defer rows.Close()
-//recuperation des données
+
 	var rdvs []RendezVous
 	for rows.Next() {
 		var r RendezVous
-		rows.Scan(&r.ID, &r.PatientNom, &r.MedecinNom, &r.Motif, &r.Date, &r.Heure, &r.Statut)
-		rdvs = append(rdvs, r) // insertion
+		rows.Scan(
+			&r.ID, &r.PatientId, &r.MedecinMat, &r.Motif, &r.Date, &r.Heure, &r.Statut,
+			&r.PatientNom, &r.MedecinNom,
+		)
+		rdvs = append(rdvs, r)
 	}
 	return rdvs
 }
 
-//Ajouter un rdv
-func (a *App) AddRendezVous(patientNom, medecinNom, motif, date, heure string) string {
-		var count int
+// Ajouter un rdv
+func (a *App) AddRendezVous(PatientId, MedecinMat, motif, date, heure string) string {
+	var count int
 	err := db.QueryRow(
-    `SELECT COUNT(*) FROM rendez_vous
+		`SELECT COUNT(*) FROM rendez_vous
      WHERE date = ?
      AND heure = ?
-     AND (medecin_nom = ? OR patient_nom = ?)`,
-    date,
-    heure,
-    medecinNom,
-    patientNom,
+     AND (medecin_mat = ? OR patient_id = ?)`,
+		date,
+		heure,
+		MedecinMat,
+		PatientId,
 	).Scan(&count)
 
 	if err != nil {
@@ -270,10 +293,10 @@ func (a *App) AddRendezVous(patientNom, medecinNom, motif, date, heure string) s
 	if count > 0 {
 		return "Impossible de créer ce rendez-vous : le médecin ou le patient est déjà occupé à cette date et cette heure."
 	}
-			_, err = db.Exec(
-		"INSERT INTO rendez_vous (patient_nom, medecin_nom, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
-		patientNom, medecinNom, motif, date, heure, "En attente",
-	) // le statut est par defaut en attente 
+	_, err = db.Exec(
+		"INSERT INTO rendez_vous (patient_id, medecin_mat, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
+		PatientId, MedecinMat, motif, date, heure, "En attente",
+	) // le statut est par defaut en attente
 	if err != nil {
 		return "Erreur: " + err.Error()
 	}
@@ -281,21 +304,14 @@ func (a *App) AddRendezVous(patientNom, medecinNom, motif, date, heure string) s
 }
 
 // Mises à jour d'un rdv
-func (a *App) UpdateRendezVous(id int, patientNom, medecinNom, motif, date, heure string) string {
+func (a *App) UpdateRendezVous(id int, PatientId, medecinMat, motif, date, heure string) string {
 
 	var count int
 
 	err := db.QueryRow(
-		`SELECT COUNT(*) FROM rendez_vous
-		 WHERE date = ?
-		 AND heure = ?
-		 AND id != ?
-		 AND (medecin_nom = ? OR patient_nom = ?)`,
-		date,
-		heure,
-		id,
-		medecinNom,
-		patientNom,
+		`SELECT COUNT(*) FROM rendez_vous WHERE date = ? AND heure = ? AND id != ?
+		 AND (medecin_mat = ? OR patient_id = ?)`,
+		date, heure, id, medecinMat, PatientId,
 	).Scan(&count)
 
 	if err != nil {
@@ -307,13 +323,8 @@ func (a *App) UpdateRendezVous(id int, patientNom, medecinNom, motif, date, heur
 	}
 
 	_, err = db.Exec(
-		"UPDATE rendez_vous SET patient_nom=?, medecin_nom=?, motif=?, date=?, heure=? WHERE id=?",
-		patientNom,
-		medecinNom,
-		motif,
-		date,
-		heure,
-		id,
+		"UPDATE rendez_vous SET patient_id=?, medecin_mat=?, motif=?, date=?, heure=? WHERE id=?",
+		PatientId, medecinMat, motif, date, heure, id,
 	)
 
 	if err != nil {
@@ -323,9 +334,18 @@ func (a *App) UpdateRendezVous(id int, patientNom, medecinNom, motif, date, heur
 	return "ok"
 }
 
-//supression d'un rendez-vous
+// supression d'un rendez-vous
 func (a *App) DeleteRendezVous(id int) string {
 	_, err := db.Exec("DELETE FROM rendez_vous WHERE id=?", id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
+}
+
+// Mises a jour du statut d'un rdv
+func (a *App) UpdateRendezVousStatut(id int, statut string) string {
+	_, err := db.Exec("UPDATE rendez_vous SET statut=? WHERE id=?", statut, id)
 	if err != nil {
 		return "Erreur: " + err.Error()
 	}
@@ -341,12 +361,13 @@ func (a *App) GetDashboardStats() DashboardStats {
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE date = date('now')").Scan(&stats.RdvDujour)
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous").Scan(&stats.RdvProgrammes)
 	db.QueryRow("SELECT COUNT(*) FROM rendez_vous WHERE statut = ?", "En attente").Scan(&stats.RdvEnAttente)
-	db.QueryRow("SELECT COUNT(*) FROM consultations WHERE statut = ?","Terminee",).Scan(&stats.ConsultationsTerminees)	
-	       return stats
+	db.QueryRow("SELECT COUNT(*) FROM consultations WHERE statut = ?", "Terminee").Scan(&stats.ConsultationsTerminees)
+	return stats
 }
 
 // ---------- CONSULTATIONS ----------
-//liste les consultations
+
+// liste les consultations
 func (a *App) GetConsultations() []Consultation {
 	rows, err := db.Query("SELECT id, rdv_id, diagnostic, traitement, observation, date_consultation, statut FROM consultations")
 	if err != nil {
@@ -360,12 +381,12 @@ func (a *App) GetConsultations() []Consultation {
 	for rows.Next() {
 		var c Consultation
 		rows.Scan(&c.ID, &c.RdvID, &c.Diagnostic, &c.Traitement, &c.Observation, &c.DateConsultation, &c.Statut)
-		consultations = append(consultations, c)// insertion des données
+		consultations = append(consultations, c) // insertion des données
 	}
 	return consultations
 }
 
-//Ajout d'une consultation liée a un rdv
+// Ajout d'une consultation liée a un rdv
 func (a *App) AddConsultation(rdvID int, diagnostic, traitement, observation, dateConsultation string) string {
 	var statut string
 	err := db.QueryRow(
@@ -380,7 +401,7 @@ func (a *App) AddConsultation(rdvID int, diagnostic, traitement, observation, da
 	if statut != "Confirmé" {
 		return "Impossible de consulter un rendez-vous non confirmé."
 	}
-	
+
 	var count int
 	err = db.QueryRow(
 		"SELECT COUNT(*) FROM consultations WHERE rdv_id=?",
@@ -404,7 +425,7 @@ func (a *App) AddConsultation(rdvID int, diagnostic, traitement, observation, da
 	return "ok"
 }
 
-//Mises a jour du statut d'une consultation
+// Mises a jour du statut d'une consultation
 func (a *App) UpdateConsultationStatut(id int, statut string) string {
 	_, err := db.Exec("UPDATE consultations SET statut=? WHERE id=?", statut, id)
 	if err != nil {
@@ -413,7 +434,7 @@ func (a *App) UpdateConsultationStatut(id int, statut string) string {
 	return "ok"
 }
 
-//suppression d'une consultation
+// suppression d'une consultation
 func (a *App) DeleteConsultation(id int) string {
 	_, err := db.Exec("DELETE FROM consultations WHERE id=?", id)
 	if err != nil {
@@ -422,24 +443,14 @@ func (a *App) DeleteConsultation(id int) string {
 	return "ok"
 }
 
-//Mises a jour du statut d'un rdv
-func (a *App) UpdateRendezVousStatut(id int, statut string) string {
-	_, err := db.Exec("UPDATE rendez_vous SET statut=? WHERE id=?", statut, id)
-	if err != nil {
-		return "Erreur: " + err.Error()
-	}
-	return "ok"
-}
-
-
-// Jointure SQL entre consultation et rendez-vous pourn'afficher que les consultations concernant un medecin en particulier  
-func (a *App) GetConsultationsByMedecin(medecinNom string) []ConsultationDetail {
+// Jointure SQL entre consultation et rendez-vous pourn'afficher que les consultations concernant un medecin en particulier
+func (a *App) GetConsultationsByMedecin(medecinMat string) []ConsultationDetail {
 	rows, err := db.Query(`
-        SELECT c.id, c.rdv_id, r.patient_nom, r.date, c.date_consultation, c.diagnostic, c.traitement, c.observation, c.statut
+        SELECT c.id, c.rdv_id, r.patient_id, r.date, c.date_consultation, c.diagnostic, c.traitement, c.observation, c.statut
         FROM consultations c
         JOIN rendez_vous r ON c.rdv_id = r.id
-        WHERE r.medecin_nom = ?
-    `, medecinNom)
+        WHERE r.medecin_mat = ?
+    `, medecinMat)
 
 	if err != nil {
 		fmt.Println("Erreur recuperation consultations detaillees:", err)
@@ -450,17 +461,18 @@ func (a *App) GetConsultationsByMedecin(medecinNom string) []ConsultationDetail 
 	var list []ConsultationDetail
 	for rows.Next() {
 		var c ConsultationDetail
-		rows.Scan(&c.ID, &c.RdvID, &c.PatientNom, &c.DateRdv, &c.DateConsultation, &c.Diagnostic, &c.Traitement, &c.Observation, &c.Statut)
+		rows.Scan(&c.ID, &c.RdvID, &c.PatientId, &c.DateRdv, &c.DateConsultation, &c.Diagnostic, &c.Traitement, &c.Observation, &c.Statut)
 		list = append(list, c)
 	}
 	return list
 }
 
-func (a *App) Login(login, motDePasse string) (Utilisateur, string) {
+// AUTHENTIFICATION--------------
+func (a *App) Login(login, password string) (Utilisateur, error) {
 
 	var user Utilisateur
 	err := db.QueryRow(
-		`SELECT id, login, mot_de_passe, role, nom_complet
+		`SELECT id, login, mot_de_passe, role, nom_complet, medecin_mat, telephone, email
 		 FROM utilisateurs
 		 WHERE login = ?`,
 		login,
@@ -470,19 +482,54 @@ func (a *App) Login(login, motDePasse string) (Utilisateur, string) {
 		&user.MotDePasse,
 		&user.Role,
 		&user.NomComplet,
+		&user.MedecinMat,
+		&user.Telephone,
+		&user.Email,
 	)
 
 	if err == sql.ErrNoRows {
-		return Utilisateur{}, "Utilisateur introuvable"
+		return Utilisateur{}, errors.New("Utilisateur introuvable")
 	}
 
 	if err != nil {
-		return Utilisateur{}, err.Error()
+		return Utilisateur{}, err
 	}
 
-	if user.MotDePasse != motDePasse {
-		return Utilisateur{}, "Mot de passe incorrect"
+	if user.MotDePasse != password {
+		return Utilisateur{}, errors.New("Mot de passe incorrect")
 	}
 
-	return user, "ok"
+	return user, nil
+}
+func (a *App) Register(nomComplet, login, telephone, matricule, motDePasse, email string) string {
+
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM utilisateurs WHERE login = ?", login).Scan(&count)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+	if count > 0 {
+		return "Ce login existe déjà."
+	}
+
+	// 2. Déterminer le rôle selon si matricule fourni et valide
+	role := "admin"
+	if matricule != "" {
+		var medCount int
+		db.QueryRow("SELECT COUNT(*) FROM medecins WHERE matricule = ?", matricule).Scan(&medCount)
+		if medCount == 0 {
+			return "Matricule médecin introuvable."
+		}
+		role = "medecin"
+	}
+
+	// 3. Insertion
+	_, err = db.Exec(
+		"INSERT INTO utilisateurs (login, mot_de_passe, role, nom_complet, medecin_mat, telephone, email) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		login, motDePasse, role, nomComplet, matricule, telephone, email,
+	)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
 }
