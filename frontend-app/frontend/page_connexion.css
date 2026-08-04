@@ -1,44 +1,45 @@
-/* Styles for the registration page */
-body {
-    font-family: times new roman, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-.container {
+/* Styles scoping pour la modale d'inscription */
+
+#modal-overlay-register .modal-box {
     max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 35px;
-    background-image: url('Remote Healthcare.jpg');  
-     
+    font-family: "Times New Roman", serif;
+    background-image: url('Remote Healthcare.jpg');
+    background-size: cover;
+    background-position: center;
 }
-input{
+
+#modal-overlay-register input {
     padding: 5px;
     border: 2px solid #ccc;
     border-radius: 15px;
     outline: none;
 }
-label {
+
+#modal-overlay-register label {
     margin-bottom: 5px;
     font-weight: bold;
     color: #fff;
 }
-h1 {
+
+#modal-overlay-register h1 {
     text-align: center;
     color: #fff;
-}
-.button-container {
-    text-align: center;
-    margin-top: 20px;
-    color: #fff;
-    
-}
-p {
-    color: white;
-}
-    
-.button-container input[type="submit"]{
-    background-color: #282f6e;
 }
 
+#modal-overlay-register .button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#modal-overlay-register p {
+    color: white;
+}
+
+#modal-overlay-register .button-container button {
+    background-color: #282f6e;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+}

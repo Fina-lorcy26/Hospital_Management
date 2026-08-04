@@ -1,89 +1,90 @@
+#page-login {
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, rgba(26, 47, 110, 0.55), rgba(15, 26, 66, 0.7)),
+                url('image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
 
-        /* Styles CSS */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            
-        }
+.box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 
-        .login-container {
-            background: transparent;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
-            
-        }
+.login-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    width: 340px;
+    text-align: center;
+}
 
-        h2 {
-            margin-bottom: 25px;
-            color: #333;
-        }
+#page-login h2 {
+    margin-bottom: 30px;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+}
 
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
+#page-login .input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
 
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #0f0e05;
-            font-size: 14px;
-        }
+#page-login .input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+    font-size: 14px;
+}
 
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box; /* Important pour le padding */
-        }
+#page-login .input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(77, 159, 255, 0.5);
+}
 
-        .input-group input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-        }
+#page-login button {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #1a2f6e, #4d9fff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+#page-login button:hover {
+    opacity: 0.9;
+}
 
-        button:hover {
-            background-color: #0056b3;
-        }
+#page-login .footer-links {
+    margin-top: 20px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+}
 
-        .footer-links {
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        .footer-links a {
-            color: #0a0a09ca;
-            text-decoration: solid;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-        .box{
-        background-image: url('image.png');
-        background-position: center;
-        
-        
-    }
+#page-login .footer-links a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+}

@@ -914,3 +914,18 @@ document.getElementById('Register-form').addEventListener('submit', async (e) =>
         alert(result);
     }
 });
+function deconnexion() {
+    UTILISATEUR_CONNECTE = null;
+    MEDECIN_NOM_ACTUEL = null;
+
+    document.getElementById('login').value = '';
+    document.getElementById('password').value = '';
+
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('page-login').style.display = 'block';
+}
+
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', deconnexion);
+}

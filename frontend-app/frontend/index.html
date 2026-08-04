@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="./src/assets/fonts/FontAwesome/font-awesome.css" /> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="page_connexion.css">
 <link rel="stylesheet" href="connexion.css">
 <script type="module" src="navigation.js"></script>
 </head>
@@ -38,7 +39,7 @@
       </div>
    </section>
         <div  id="modal-overlay-register" class="modal-overlay">
-          <div class="container">
+          <div class="modal-box">
             <h1>Inscription</h1>
             <form id="Register-form">
                 <input type="text" id="reg-nom-complet" placeholder="Nom complet" required>
@@ -90,18 +91,18 @@
          
     <div class="sidebar-footer" id="sidebar-footer">
     <p id="footer-name">ADMIN : Son Nom </p>
-    <button><i class="fa fa-sign-out"></i>Déconnexion</button>
+    <button id="btn-logout"><i class="fa fa-sign-out"></i>Déconnexion</button>
     </div>
         </nav>
     
      <main class="content">
-        <header class="topbar">
+     <header class="topbar">
         <span class="topbar-date"></span>
         <div class="topbar-right">
             <i class="fa fa-bell"></i>
             <div class="topbar-avatar">A</div>
         </div>
-    </header>
+     </header>
 
     <!-- TABLEAU DE BORD -->
     <div id="page-dashboard" class="page active">
@@ -156,7 +157,7 @@
         <canvas id="chart-semaine"></canvas>
     </div>
 </div>
-        </section>
+    </section>
     </div>
  
     <!-- PAGE PATIENTS -->
