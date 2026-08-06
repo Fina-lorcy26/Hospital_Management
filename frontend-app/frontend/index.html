@@ -79,14 +79,12 @@
             <li><a href="#" data-page="patients"><i class="fa fa-users"></i>Mes patients</a></li>
             <li><a href="#" data-page="medecins"><i class="fa fa-stethoscope"></i>Mes médecins</a></li>
             <li><a href="#" data-page="rendez-vous"><i class="fa fa-calendar"></i>Rendez-vous</a></li>
-            <li><a href="#" onclick="switchToMedecin(); return false;"><i class="fa fa-user-md"></i>Espace médecin (test)</a></li>
         </ul>
 
         <ul class="sidebar-menu" id="menu-medecin" style="display: none;">
-            <li><a href="#" class="active" onclick="goToPage('mes-rdv'); return false;"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
-            <li><a href="#" onclick="goToPage('mes-consultations'); return false;"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
-            <li><a href="#" onclick="goToPage('consultations-effectuees'); return false;"><i class="fa fa-check-circle"></i>Consultations effectuées</a></li>
-            <li><a href="#" onclick="switchToAdmin(); return false;"><i class="fa fa-arrow-left"></i>Retour espace admin</a></li>
+            <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
+            <li><a href="#" data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
+            <li><a href="#" data-page="consultations-effectuees"><i class="fa fa-check-circle"></i>Consultations effectuées</a></li>
         </ul>
          
     <div class="sidebar-footer" id="sidebar-footer">
@@ -212,8 +210,8 @@
             <span class="col-medecin">Médecin</span>
             <span class="col-date">Date</span>
             <span class="col-heure">Heure</span>
-            <span class="col-statut">Statut</span>
-            <span class="col-actions">Actions</span>
+           <span class="col-statut">Statut</span>            
+           <span class="col-actions">Actions</span> 
         </div>
         <div id="rdv-list-body"></div>
     </div>
@@ -480,7 +478,23 @@
         </form>
     </div>
 </div>
-
+<!-- Modal pour annuler un RDV  -->
+<div id="modal-annuler-rdv" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Annuler le rendez-vous</h2>
+            <button class="modal-close" onclick="fermerModalAnnulation()">&times;</button>
+        </div>
+        <div class="modal-form">
+            <label for="motif-annulation">Motif de l'annulation</label>
+            <textarea id="motif-annulation" rows="3" placeholder="Précisez la raison..." style="padding:10px; margin-bottom:1rem; border:1px solid #E5E5E5; border-radius:8px; font-size:14px; resize:vertical; font-family:inherit;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn-secondary" onclick="fermerModalAnnulation()">Retour</button>
+                <button class="btn-delete" onclick="confirmerAnnulation()">Confirmer l'annulation</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal pour Modifier un Patient -->
 <div id="modal-overlay-modif-patient" class="modal-overlay">
     <div class="modal-box">

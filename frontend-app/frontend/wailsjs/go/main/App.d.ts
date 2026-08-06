@@ -10,6 +10,8 @@ export function AddPatient(arg1:string,arg2:string,arg3:string,arg4:string,arg5:
 
 export function AddRendezVous(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<string>;
 
+export function AnnulerRendezVous(arg1:number,arg2:string):Promise<string>;
+
 export function DeleteConsultation(arg1:number):Promise<string>;
 
 export function DeleteMedecin(arg1:string):Promise<string>;

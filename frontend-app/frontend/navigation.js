@@ -5,10 +5,11 @@ import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
          GetDashboardStats, Login, GetConsultations, AddConsultation,
           UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut,
-           GetConsultationsByMedecin, Register } from './wailsjs/go/main/App.js';
+           GetConsultationsByMedecin, Register, AnnulerRendezVous } from './wailsjs/go/main/App.js';
 
   let UTILISATEUR_CONNECTE = null;
   let MEDECIN_NOM_ACTUEL = "";
+  let MEDECIN_MAT_ACTUEL = "";
 
     const badgeClass = {
         "Confirmé": "badge-confirme",
@@ -50,8 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    // ---------- Formulaire Ajouter Patient ----------
 
     // ---------- Formulaire Ajouter Patient ----------
     document.getElementById('form-add-patient').addEventListener('submit', async (e) => {
@@ -234,7 +233,7 @@ async function loadMesRdv() {
     const allRdvs = await GetRendezVous();
     console.log("MEDECIN_NOM_ACTUEL :", MEDECIN_NOM_ACTUEL);
     console.log("Tous les rdvs :", allRdvs);
-    const mesRdvs = allRdvs.filter(r => r.medecin_nom === MEDECIN_NOM_ACTUEL);
+    const mesRdvs = allRdvs.filter(r => r.medecin_mat === MEDECIN_MAT_ACTUEL);
     console.log("Rdvs filtrés :", mesRdvs);
     const container = document.getElementById('mes-rdv-list-body');
     if (!container) return;
@@ -252,7 +251,6 @@ async function loadMesRdv() {
             <span class="col-statut"><span class="badge ${badgeClass[r.statut] || ''}">${r.statut}</span></span>
             <div class="col-actions rdv-actions">
                 <button class="btn-view" onclick="confirmerRdv(${r.id})">Confirmer</button>
-                <button class="btn-modify" onclick="ouvrirConsultation(${r.id})">Consulter</button>
                 <button class="btn-delete" onclick="annulerRdv(${r.id})">Annuler</button>
             </div>
         `;
@@ -265,16 +263,16 @@ function switchToMedecin() {
     document.getElementById('menu-admin').style.display = 'none';
     document.getElementById('menu-medecin').style.display = 'block';
     document.getElementById('footer-name').textContent = 'DR : ' + (MEDECIN_NOM_ACTUEL || 'Médecin');
-    document.querySelector('.topbar-avatar').textContent = 'M';
-    goToPage('mes-rdv');
+    document.querySelector('.topbar-avatar').textContent = MEDECIN_NOM_ACTUEL.trim().charAt(0).toUpperCase();   
+     goToPage('mes-rdv');
 }
 // La fonction qui change l'interface medecin en admin  
 function switchToAdmin() {
     document.getElementById('menu-admin').style.display = 'block';
     document.getElementById('menu-medecin').style.display = 'none';
     document.getElementById('footer-name').textContent = 'ADMIN : ' + (UTILISATEUR_CONNECTE ? UTILISATEUR_CONNECTE.nom_complet : 'Admin');
-    document.querySelector('.topbar-avatar').textContent = 'A';
-    goToPage('dashboard');
+    document.querySelector('.topbar-avatar').textContent = UTILISATEUR_CONNECTE.nom_complet.trim().charAt(0).toUpperCase();   
+  goToPage('dashboard');
 }
 
 window.switchToMedecin = switchToMedecin;
@@ -286,17 +284,7 @@ async function confirmerRdv(id) {
     loadRendezVous();
     loadDashboard();
 }
-async function annulerRdv(id) {
-    if (confirm('Annuler ce rendez-vous ?')) {
-        await UpdateRendezVousStatut(id, 'Annulé');
-        loadMesRdv();
-        loadRendezVous();
-        loadDashboard();
-    }
-}
-
 window.confirmerRdv = confirmerRdv;
-window.annulerRdv = annulerRdv
 
 function ouvrirConsultation(rdvId) {
     populateRdvSelect(rdvId);
@@ -318,10 +306,10 @@ async function populateRdvSelect(preselectId) {
 
     //Les rdv du medecin n'ayant pas encore de eu de consultations
     const disponibles = allRdvs.filter(r =>
-        r.medecin_nom === MEDECIN_NOM_ACTUEL &&
-        r.statut === 'Confirmé' &&
-        (!rdvIdsAvecConsultation.includes(r.id) || r.id === preselectId)
-    );
+    r.medecin_mat === MEDECIN_MAT_ACTUEL &&
+    r.statut === 'Confirmé' &&
+    (!rdvIdsAvecConsultation.includes(r.id) || r.id === preselectId)
+   );
     const select = document.getElementById('consult-rdv-select');
     select.innerHTML = '';
     disponibles.forEach(r => {
@@ -335,7 +323,7 @@ async function populateRdvSelect(preselectId) {
 
 // Fonction pour charger les consultations en cours d'un medecin
 async function loadMesConsultations() {
-    const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
+    const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
     const aFaire = all.filter(c => c.statut !== 'Terminee');
     const container = document.getElementById('consultations-list-body');
     if (!container) return;
@@ -358,8 +346,10 @@ async function loadMesConsultations() {
 
 // charge les consultations déja éffectuées  
 async function loadConsultationsEffectuees() {
-    const all = await GetConsultationsByMedecin(MEDECIN_NOM_ACTUEL);
+    const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
+    console.log('Consultations reçues :', all);
     const terminees = all.filter(c => c.statut === 'Terminee');
+    
     const container = document.getElementById('consultations-effectuees-list-body');
     if (!container) return;
     container.innerHTML = '';
@@ -495,7 +485,7 @@ async function loadPatients() {
         row.className = 'patient-row';
         row.innerHTML = `
             <span class="patient-name col-name">${p.nom} ${p.prenom}</span>
-            <span class="patient-specialty col-specialty">${p.telephone}</span>
+            <span class="patient-specialty col-specialty">${p.motif}</span>
             <div class="patient-actions col-actions">
                 <button class="btn-modify" onclick='openEditPatient(${JSON.stringify(p)})'>Modifier</button>
                 <button class="btn-view" onclick='showPatientProfile(${JSON.stringify(p)})'>Voir</button>
@@ -575,6 +565,7 @@ async function loadRendezVous() {
             <span class="col-heure">${r.heure}</span>
             <span class="col-statut">
                 <span class="badge ${badgeClass[r.statut] || ''}">${r.statut}</span>
+                ${r.statut === 'Annulé' && r.motif_annulation ? `<div class="motif-annulation-note">${r.motif_annulation}</div>` : ''}
             </span>
             <div class="col-actions rdv-actions">
                 <button class="btn-modify" onclick='openEditRdv(${JSON.stringify(r)})'>Modifier</button>
@@ -837,6 +828,8 @@ if (form) {
 
     // Si on arrive ici, la connexion a réussi et resultat = l'objet Utilisateur
     UTILISATEUR_CONNECTE = resultat;
+    window.UTILISATEUR_CONNECTE = resultat; // ligne temporaire de debug
+    console.log('Utilisateur connecté :', resultat);
 
     document.getElementById("page-login").style.display = "none";
     document.getElementById("app").style.display = "block";
@@ -863,7 +856,8 @@ function initialiserApplication() {
         switchToAdmin();
         goToPage("dashboard");
     } else if (user.role === "medecin") {
-        MEDECIN_NOM_ACTUEL = user.nom_complet;
+         MEDECIN_MAT_ACTUEL = user.medecin_mat;
+         MEDECIN_NOM_ACTUEL = user.nom_complet;
         switchToMedecin();
         goToPage("mes-rdv");
     }
@@ -929,3 +923,37 @@ const btnLogout = document.getElementById('btn-logout');
 if (btnLogout) {
     btnLogout.addEventListener('click', deconnexion);
 }
+
+let rdvIdEnCoursAnnulation = null;
+
+function annulerRdv(id) {
+    rdvIdEnCoursAnnulation = id;
+    document.getElementById('motif-annulation').value = '';
+    document.getElementById('modal-annuler-rdv').classList.add('active');
+}
+
+function fermerModalAnnulation() {
+    rdvIdEnCoursAnnulation = null;
+    document.getElementById('modal-annuler-rdv').classList.remove('active');
+}
+
+async function confirmerAnnulation() {
+    const motif = document.getElementById('motif-annulation').value.trim();
+    if (!motif) {
+        alert('Merci de préciser un motif.');
+        return;
+    }
+    const res = await AnnulerRendezVous(rdvIdEnCoursAnnulation, motif);
+    if (res !== 'ok') {
+        alert(res);
+        return;
+    }
+    fermerModalAnnulation();
+    loadMesRdv();
+    loadRendezVous();
+    loadDashboard();
+}
+
+window.annulerRdv = annulerRdv;
+window.fermerModalAnnulation = fermerModalAnnulation;
+window.confirmerAnnulation = confirmerAnnulation;

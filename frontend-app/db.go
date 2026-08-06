@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 		FOREIGN KEY(medecin_mat) REFERENCES medecins(matricule)
 	);`
 	db.Exec(createRdvTable)
+	db.Exec(`ALTER TABLE rendez_vous ADD COLUMN motif_annulation TEXT DEFAULT ''`)
 
 	createConsultationsTable := `
 	CREATE TABLE IF NOT EXISTS consultations (
@@ -119,7 +120,6 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 		insertSeedConsultations()
 	}
 }
-
 func insertSeedData() {
 	patients := []struct {
 		Nom, Prenom, Sexe, Telephone, DateNaissance, Adresse, Motif string

@@ -28,6 +28,7 @@ export namespace main {
 	    id: number;
 	    rdv_id: number;
 	    patient_Id: string;
+	    patient_nom: string;
 	    date_rdv: string;
 	    date_consultation: string;
 	    diagnostic: string;
@@ -44,6 +45,7 @@ export namespace main {
 	        this.id = source["id"];
 	        this.rdv_id = source["rdv_id"];
 	        this.patient_Id = source["patient_Id"];
+	        this.patient_nom = source["patient_nom"];
 	        this.date_rdv = source["date_rdv"];
 	        this.date_consultation = source["date_consultation"];
 	        this.diagnostic = source["diagnostic"];
@@ -132,6 +134,7 @@ export namespace main {
 	    statut: string;
 	    patient_nom: string;
 	    medecin_nom: string;
+	    motif_annulation: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new RendezVous(source);
@@ -148,6 +151,7 @@ export namespace main {
 	        this.statut = source["statut"];
 	        this.patient_nom = source["patient_nom"];
 	        this.medecin_nom = source["medecin_nom"];
+	        this.motif_annulation = source["motif_annulation"];
 	    }
 	}
 	export class Utilisateur {
@@ -156,7 +160,7 @@ export namespace main {
 	    mot_de_passe: string;
 	    role: string;
 	    nom_complet: string;
-	    medecin_mat: sql.NullString;
+	    medecin_mat: string;
 	    telephone: string;
 	    email: string;
 	
@@ -171,46 +175,9 @@ export namespace main {
 	        this.mot_de_passe = source["mot_de_passe"];
 	        this.role = source["role"];
 	        this.nom_complet = source["nom_complet"];
-	        this.medecin_mat = this.convertValues(source["medecin_mat"], sql.NullString);
+	        this.medecin_mat = source["medecin_mat"];
 	        this.telephone = source["telephone"];
 	        this.email = source["email"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice && a.map) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-
-}
-
-export namespace sql {
-	
-	export class NullString {
-	    String: string;
-	    Valid: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new NullString(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.String = source["String"];
-	        this.Valid = source["Valid"];
 	    }
 	}
 

@@ -34,15 +34,16 @@ type Medecin struct {
 }
 
 type RendezVous struct {
-	ID         int    `json:"id"`
-	PatientId  string `json:"patient_id"`
-	MedecinMat string `json:"medecin_mat"`
-	Motif      string `json:"motif"`
-	Date       string `json:"date"`
-	Heure      string `json:"heure"`
-	Statut     string `json:"statut"`
-	PatientNom string `json:"patient_nom"`
-	MedecinNom string `json:"medecin_nom"`
+	ID              int    `json:"id"`
+	PatientId       string `json:"patient_id"`
+	MedecinMat      string `json:"medecin_mat"`
+	Motif           string `json:"motif"`
+	Date            string `json:"date"`
+	Heure           string `json:"heure"`
+	Statut          string `json:"statut"`
+	PatientNom      string `json:"patient_nom"`
+	MedecinNom      string `json:"medecin_nom"`
+	MotifAnnulation string `json:"motif_annulation"`
 }
 
 type DashboardStats struct {
@@ -68,6 +69,7 @@ type ConsultationDetail struct {
 	ID               int    `json:"id"`
 	RdvID            int    `json:"rdv_id"`
 	PatientId        string `json:"patient_Id"`
+	PatientNom       string `json:"patient_nom"`
 	DateRdv          string `json:"date_rdv"`
 	DateConsultation string `json:"date_consultation"`
 	Diagnostic       string `json:"diagnostic"`
@@ -82,7 +84,7 @@ type Utilisateur struct {
 	MotDePasse string         `json:"mot_de_passe"`
 	Role       string         `json:"role"`
 	NomComplet string         `json:"nom_complet"`
-	MedecinMat sql.NullString `json:"medecin_mat"`
+	MedecinMat string         `json:"medecin_mat"`
 	Telephone  string         `json:"telephone"`
 	Email      string         `json:"email"`
 }
@@ -248,6 +250,7 @@ func (a *App) GetRendezVous() []RendezVous {
 			rv.date, 
 			rv.heure, 
 			rv.statut,
+			rv.motif_annulation,
 			(p.nom || ' ' || COALESCE(p.prenom, '')) AS patient_nom,
 			(m.nom || ' ' || COALESCE(m.prenom, '')) AS medecin_nom
 		FROM rendez_vous rv
@@ -265,6 +268,7 @@ func (a *App) GetRendezVous() []RendezVous {
 		var r RendezVous
 		rows.Scan(
 			&r.ID, &r.PatientId, &r.MedecinMat, &r.Motif, &r.Date, &r.Heure, &r.Statut,
+			&r.MotifAnnulation,
 			&r.PatientNom, &r.MedecinNom,
 		)
 		rdvs = append(rdvs, r)
@@ -346,6 +350,14 @@ func (a *App) DeleteRendezVous(id int) string {
 // Mises a jour du statut d'un rdv
 func (a *App) UpdateRendezVousStatut(id int, statut string) string {
 	_, err := db.Exec("UPDATE rendez_vous SET statut=? WHERE id=?", statut, id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
+}
+
+func (a *App) AnnulerRendezVous(id int, motif string) string {
+	_, err := db.Exec("UPDATE rendez_vous SET statut=?, motif_annulation=? WHERE id=?", "Annulé", motif, id)
 	if err != nil {
 		return "Erreur: " + err.Error()
 	}
@@ -446,9 +458,20 @@ func (a *App) DeleteConsultation(id int) string {
 // Jointure SQL entre consultation et rendez-vous pourn'afficher que les consultations concernant un medecin en particulier
 func (a *App) GetConsultationsByMedecin(medecinMat string) []ConsultationDetail {
 	rows, err := db.Query(`
-        SELECT c.id, c.rdv_id, r.patient_id, r.date, c.date_consultation, c.diagnostic, c.traitement, c.observation, c.statut
+        SELECT 
+            c.id, 
+            c.rdv_id, 
+            r.patient_id, 
+            (p.nom || ' ' || COALESCE(p.prenom, '')) AS patient_nom,
+            r.date AS date_rdv, 
+            c.date_consultation, 
+            c.diagnostic, 
+            c.traitement, 
+            c.observation, 
+            c.statut
         FROM consultations c
         JOIN rendez_vous r ON c.rdv_id = r.id
+        JOIN patients p ON r.patient_id = p.id
         WHERE r.medecin_mat = ?
     `, medecinMat)
 
@@ -461,7 +484,7 @@ func (a *App) GetConsultationsByMedecin(medecinMat string) []ConsultationDetail 
 	var list []ConsultationDetail
 	for rows.Next() {
 		var c ConsultationDetail
-		rows.Scan(&c.ID, &c.RdvID, &c.PatientId, &c.DateRdv, &c.DateConsultation, &c.Diagnostic, &c.Traitement, &c.Observation, &c.Statut)
+		rows.Scan(&c.ID, &c.RdvID, &c.PatientId, &c.PatientNom, &c.DateRdv, &c.DateConsultation, &c.Diagnostic, &c.Traitement, &c.Observation, &c.Statut)
 		list = append(list, c)
 	}
 	return list
@@ -472,7 +495,7 @@ func (a *App) Login(login, password string) (Utilisateur, error) {
 
 	var user Utilisateur
 	err := db.QueryRow(
-		`SELECT id, login, mot_de_passe, role, nom_complet, medecin_mat, telephone, email
+		`SELECT id, login, mot_de_passe, role, nom_complet, COALESCE(medecin_mat, '') AS medecin_mat, telephone, email
 		 FROM utilisateurs
 		 WHERE login = ?`,
 		login,
