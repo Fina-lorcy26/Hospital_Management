@@ -21,28 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Écouteurs d'événement pour afficher et cacher chaque page en fonction du lien sélectionné 
     links.forEach(link => {
-        link.addEventListener('click', (e) => {
-            const targetPage = link.getAttribute('data-page');
-            if (!targetPage) return; 
-            e.preventDefault();
-
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById('page-' + targetPage).classList.add('active');
-
-            // Active le lien cliqué et désactive les autres 
-            links.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-
-            // Affiche les données en fonction de la page sélectionnée
-            if (targetPage === 'patients') loadPatients();
-            if (targetPage === 'medecins') loadMedecins();
-            if (targetPage === 'rendez-vous') loadRendezVous();
-            if (targetPage === 'dashboard') loadDashboard();
-
-            loadCharts(); // Mises à jour des graphiques
-        });
+    link.addEventListener('click', (e) => {
+        const targetPage = link.getAttribute('data-page');
+        if (!targetPage) return;
+        e.preventDefault();
+        goToPage(targetPage);
+        loadCharts(); // si toujours nécessaire pour le dashboard
     });
-
+});
 // code du clic en dehors de la modale pour la retirer 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
@@ -324,9 +310,10 @@ async function populateRdvSelect(preselectId) {
 // Fonction pour charger les consultations en cours d'un medecin
 async function loadMesConsultations() {
     const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
+    console.log('MEDECIN_MAT_ACTUEL utilisé :', MEDECIN_MAT_ACTUEL);
+    console.log('Consultations reçues (à faire) :', all);
     const aFaire = all.filter(c => c.statut !== 'Terminee');
-    const container = document.getElementById('consultations-list-body');
-    if (!container) return;
+     if (!container) return;
     container.innerHTML = '';
 
     aFaire.forEach(c => {
@@ -347,6 +334,7 @@ async function loadMesConsultations() {
 // charge les consultations déja éffectuées  
 async function loadConsultationsEffectuees() {
     const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
+    console.log('MEDECIN_MAT_ACTUEL utilisé :', MEDECIN_MAT_ACTUEL);
     console.log('Consultations reçues :', all);
     const terminees = all.filter(c => c.statut === 'Terminee');
     
