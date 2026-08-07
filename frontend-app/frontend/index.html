@@ -83,8 +83,7 @@
 
         <ul class="sidebar-menu" id="menu-medecin" style="display: none;">
             <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
-            <li><a href="#" data-page="mes-consultations"><i class="fa fa-stethoscope"></i>Mes consultations</a></li>
-            <li><a href="#" data-page="consultations-effectuees"><i class="fa fa-check-circle"></i>Consultations effectuées</a></li>
+            <li><a href="#" data-page="consultations-effectuees"><i class="fa fa-check-circle"></i>Consultations effectuées<i class="fa fa-stethoscope"></i></a></li>
         </ul>
          
     <div class="sidebar-footer" id="sidebar-footer">
@@ -324,24 +323,6 @@
     </div>
 </div>
 
-<div id="page-mes-consultations" class="page">
-    <div class="page-header">
-        <h1>Consultations à faire</h1>
-        <button class="btn-primary" onclick="openAjoutConsultation()">
-            <i class="fa fa-plus"></i> Ajouter une consultation
-        </button>
-    </div>
-    <div class="consultations-list">
-        <div class="consultations-header">
-            <span class="col-patient">Patient</span>
-            <span class="col-date-rdv">Date du rdv</span>
-            <span class="col-date">Date consultation</span>
-            <span class="col-actions">Actions</span>
-        </div>
-        <div id="consultations-list-body"></div>
-    </div>
-</div>
-
 <div id="page-consultations-effectuees" class="page">
     <div class="page-header">
         <h1>Consultations effectuées</h1>
@@ -359,7 +340,7 @@
 <div id="page-profil-consultation" class="page">
     <div class="page-header">
         <h1>Détails de la consultation</h1>
-        <button class="btn-secondary" onclick="goToPage('mes-consultations')">
+        <button class="btn-secondary" onclick="goToPage('consultations-effectuees')">
             <i class="fa fa-arrow-left"></i> Retour
         </button>
     </div>
@@ -368,12 +349,10 @@
             <div class="profile-avatar"><i class="fa fa-stethoscope"></i></div>
             <div class="profile-title">
                 <h2 id="consult-detail-patient"></h2>
-                <span class="badge badge-confirme" id="consult-detail-statut"></span>
             </div>
         </div>
         <div class="profile-details">
             <div class="detail-item"><span class="detail-label">Date du rendez-vous</span><span class="detail-value" id="consult-detail-date-rdv"></span></div>
-            <div class="detail-item"><span class="detail-label">Date de consultation</span><span class="detail-value" id="consult-detail-date"></span></div>
             <div class="detail-item"><span class="detail-label">Diagnostic</span><span class="detail-value" id="consult-detail-diagnostic"></span></div>
             <div class="detail-item"><span class="detail-label">Traitement</span><span class="detail-value" id="consult-detail-traitement"></span></div>
             <div class="detail-item"><span class="detail-label">Observation</span><span class="detail-value" id="consult-detail-observation"></span></div>
@@ -591,32 +570,30 @@
     </div>
 </div>
 
-<!-- Modal pour ajouter une Consultation -->
-<div id="modal-overlay-consultation" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Enregistrer une consultation</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-consultation')">&times;</button>
-        </div>
-        <form class="modal-form" id="form-add-consultation">
-            <label for="consult-rdv-select">Rendez-vous</label>
-            <select id="consult-rdv-select" required></select>
-
-            <label for="consult-diagnostic">Diagnostic</label>
-            <input type="text" id="consult-diagnostic" placeholder="Ex: Angine de poitrine" required />
-
-            <label for="consult-traitement">Traitement prescrit</label>
-            <input type="text" id="consult-traitement" placeholder="Ex: Repos, examens" required />
-
-            <label for="consult-observation">Observation</label>
-            <input type="text" id="consult-observation" placeholder="Ex: Patient stable" required />
-
-            <label for="consult-date">Date de consultation</label>
-            <input type="date" id="consult-date" required />
-
-            <button type="submit" class="btn-primary">Enregistrer</button>
-        </form>
+<!-- Modal pour terminer un rdv et ajouter une Consultation -->
+<div id="modal-overlay-terminer" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Terminer le rendez-vous</h2>
+      <button class="modal-close" onclick="closeModal('modal-overlay-terminer')">&times;</button>
     </div>
+    <form class="modal-form" id="form-terminer">
+      <input type="hidden" id="terminer-rdv-id" />
+
+      <label for="terminer-diagnostic">Diagnostic *</label>
+      <textarea id="terminer-diagnostic" required></textarea>
+
+      <label for="terminer-traitement">Traitement</label>
+      <textarea id="terminer-traitement"></textarea>
+
+      <label for="terminer-observation">Observation</label>
+      <textarea id="terminer-observation"></textarea>
+
+      <button type="submit" class="btn-primary">Enregistrer la consultation</button>
+    </form>
+  </div>
+</div>
+
 </div>
 </section>
 </body>

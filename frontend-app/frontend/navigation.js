@@ -3,9 +3,9 @@
 import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
-         GetDashboardStats, Login, GetConsultations, AddConsultation,
-          UpdateConsultationStatut, DeleteConsultation, UpdateRendezVousStatut,
+         GetDashboardStats, Login, DeleteConsultation, UpdateRendezVousStatut,
            GetConsultationsByMedecin, Register, AnnulerRendezVous } from './wailsjs/go/main/App.js';
+           import { TerminerRendezVous } from './wailsjs/go/main/App.js';
 
   let UTILISATEUR_CONNECTE = null;
   let MEDECIN_NOM_ACTUEL = "";
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!targetPage) return;
         e.preventDefault();
         goToPage(targetPage);
-        loadCharts(); // si toujours nécessaire pour le dashboard
+        loadCharts(); 
     });
 });
 // code du clic en dehors de la modale pour la retirer 
@@ -140,27 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ----------Ajouter une consultation-------------
-
-document.getElementById('form-add-consultation').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const rdvId = parseInt(document.getElementById('consult-rdv-select').value);
-    const result = await AddConsultation(
-        rdvId,
-        document.getElementById('consult-diagnostic').value,
-        document.getElementById('consult-traitement').value,
-        document.getElementById('consult-observation').value,
-        document.getElementById('consult-date').value
-    );
-    if (result === 'ok') {
-        closeModal('modal-overlay-consultation');
-        e.target.reset();
-        loadMesConsultations();
-        alert('Consultation enregistrée');
-    } else {
-        alert(result);
-    }
-});
 
 // -----------------Modifier un rendez-vous---------------
 
@@ -205,7 +184,6 @@ function goToPage(targetPage) {
 
     // Rechargement des données pour chaque page
     if (targetPage === 'mes-rdv') loadMesRdv();
-    if (targetPage === 'mes-consultations') loadMesConsultations();
     if (targetPage === 'patients') loadPatients();
     if (targetPage === 'medecins') loadMedecins();
     if (targetPage === 'rendez-vous') loadRendezVous();
@@ -217,10 +195,7 @@ window.goToPage = goToPage;
 // fonction qui charge les rdv du medecin connecté 
 async function loadMesRdv() {
     const allRdvs = await GetRendezVous();
-    console.log("MEDECIN_NOM_ACTUEL :", MEDECIN_NOM_ACTUEL);
-    console.log("Tous les rdvs :", allRdvs);
     const mesRdvs = allRdvs.filter(r => r.medecin_mat === MEDECIN_MAT_ACTUEL);
-    console.log("Rdvs filtrés :", mesRdvs);
     const container = document.getElementById('mes-rdv-list-body');
     if (!container) return;
     
@@ -229,16 +204,25 @@ async function loadMesRdv() {
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
         row.className = 'rdv-row';
+
+        let actionsHtml = '';
+        if (r.statut === 'En attente') {
+            actionsHtml += `<button class="btn-view" onclick="confirmerRdv(${r.id})">Confirmer</button>`;
+        }
+        if (r.statut === 'Confirmé') {
+            actionsHtml += `<button class="btn-view" onclick="window.ouvrirModalTerminer(${r.id})">Terminer</button>`;
+        }
+        if (r.statut === 'En attente' || r.statut === 'Confirmé') {
+            actionsHtml += `<button class="btn-delete" onclick="annulerRdv(${r.id})">Annuler</button>`;
+        }
+
         row.innerHTML = `
             <span class="col-patient">${r.patient_nom}</span>
             <span class="col-date">${r.date}</span>
             <span class="col-heure">${r.heure}</span>
             <span class="col-motif">${r.motif}</span>
             <span class="col-statut"><span class="badge ${badgeClass[r.statut] || ''}">${r.statut}</span></span>
-            <div class="col-actions rdv-actions">
-                <button class="btn-view" onclick="confirmerRdv(${r.id})">Confirmer</button>
-                <button class="btn-delete" onclick="annulerRdv(${r.id})">Annuler</button>
-            </div>
+            <div class="col-actions rdv-actions">${actionsHtml}</div>
         `;
         container.appendChild(row);
     });
@@ -272,105 +256,99 @@ async function confirmerRdv(id) {
 }
 window.confirmerRdv = confirmerRdv;
 
-function ouvrirConsultation(rdvId) {
-    populateRdvSelect(rdvId);
-    openModal('modal-overlay-consultation');
-}
-window.ouvrirConsultation = ouvrirConsultation;
+window.ouvrirModalTerminer = function(rdvId) {
+  document.getElementById('terminer-rdv-id').value = rdvId;
+  openModal('modal-overlay-terminer');
+};
 
-async function openAjoutConsultation() {
-    await populateRdvSelect(null);
-    openModal('modal-overlay-consultation');
-}
-window.openAjoutConsultation = openAjoutConsultation;
+window.fermerModalTerminer = function() {
+  closeModal('modal-overlay-terminer');
+  document.getElementById('form-terminer').reset();
+};
 
-// Remplit la liste déroulante des RDV(confirmés et non consultés)
-async function populateRdvSelect(preselectId) {
-    const allRdvs = await GetRendezVous();
-    const consultations = await GetConsultations();
-    const rdvIdsAvecConsultation = consultations.map(c => c.rdv_id);
+document.getElementById('form-terminer').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-    //Les rdv du medecin n'ayant pas encore de eu de consultations
-    const disponibles = allRdvs.filter(r =>
-    r.medecin_mat === MEDECIN_MAT_ACTUEL &&
-    r.statut === 'Confirmé' &&
-    (!rdvIdsAvecConsultation.includes(r.id) || r.id === preselectId)
-   );
-    const select = document.getElementById('consult-rdv-select');
-    select.innerHTML = '';
-    disponibles.forEach(r => {
-        const option = document.createElement('option');
-        option.value = r.id;
-        option.textContent = r.patient_id + ' - ' + r.date;
-        select.appendChild(option);
-    });
-    if (preselectId) select.value = preselectId;
-}
+  const rdvId = parseInt(document.getElementById('terminer-rdv-id').value);
+  const diagnostic = document.getElementById('terminer-diagnostic').value.trim();
+  const traitement = document.getElementById('terminer-traitement').value.trim();
+  const observation = document.getElementById('terminer-observation').value.trim();
 
-// Fonction pour charger les consultations en cours d'un medecin
-async function loadMesConsultations() {
-    const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
-    console.log('MEDECIN_MAT_ACTUEL utilisé :', MEDECIN_MAT_ACTUEL);
-    console.log('Consultations reçues (à faire) :', all);
-    const aFaire = all.filter(c => c.statut !== 'Terminee');
-     if (!container) return;
-    container.innerHTML = '';
+  if (!diagnostic) {
+    alert('Le diagnostic est obligatoire.');
+    return;
+  }
 
-    aFaire.forEach(c => {
-        const row = document.createElement('div');
-        row.className = 'consultation-row';
-        row.innerHTML = `
-            <span class="col-patient">${c.patient_nom}</span>
-            <span class="col-date-rdv">${c.date_rdv}</span>
-            <span class="col-date">${c.date_consultation}</span>
-            <div class="col-actions">
-                <button class="btn-view" onclick='showConsultationDetail(${JSON.stringify(c)})'>Voir</button>
-            </div>
-        `;
-        container.appendChild(row);
-    });
-}
+  try {
+    await TerminerRendezVous(rdvId, diagnostic, traitement, observation);
+    window.fermerModalTerminer();
+    await loadMesRdv();
+    await loadRendezVous();
+    await loadDashboard();
+  } catch (err) {
+    alert('Erreur lors de la clôture du rdv : ' + err);
+  }
+});
+
 
 // charge les consultations déja éffectuées  
+let CONSULTATIONS_ACTUELLES = [];
+
 async function loadConsultationsEffectuees() {
     const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
-    console.log('MEDECIN_MAT_ACTUEL utilisé :', MEDECIN_MAT_ACTUEL);
-    console.log('Consultations reçues :', all);
-    const terminees = all.filter(c => c.statut === 'Terminee');
-    
+    CONSULTATIONS_ACTUELLES = all;
+
     const container = document.getElementById('consultations-effectuees-list-body');
     if (!container) return;
     container.innerHTML = '';
 
-    terminees.forEach(c => {
+    all.forEach(c => {
         const row = document.createElement('div');
         row.className = 'consultation-row';
         row.innerHTML = `
             <span class="col-patient">${c.patient_nom}</span>
             <span class="col-date">${c.date_consultation}</span>
             <div class="col-actions">
-                <button class="btn-view" onclick='showConsultationDetail(${JSON.stringify(c)})'>Voir</button>
+                <button class="btn-view" onclick="showConsultationDetailById(${c.id})">Voir</button>
+                <button class="btn-delete" onclick="deleteConsultationHandler(${c.id}, ${c.rdv_id})">Supprimer</button>
             </div>
         `;
         container.appendChild(row);
     });
 }
+
+function showConsultationDetailById(id) {
+    const c = CONSULTATIONS_ACTUELLES.find(item => item.id === id);
+    if (c) showConsultationDetail(c);
+}
+window.showConsultationDetailById = showConsultationDetailById;
+
+async function deleteConsultationHandler(id, rdvId) {
+    if (confirm('Supprimer cette consultation ? Le rendez-vous redeviendra "Confirmé" pour permettre une nouvelle saisie.')) {
+        const result = await DeleteConsultation(id);
+        if (result === 'ok') {
+            await UpdateRendezVousStatut(rdvId, 'Confirmé');
+            loadConsultationsEffectuees();
+            loadMesRdv();
+            loadDashboard();
+        } else {
+            alert(result);
+        }
+    }
+}
+window.deleteConsultationHandler = deleteConsultationHandler;
 
 // Fonction pour avoir le compte rendu d'une consultation(voir)
 function showConsultationDetail(c) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById('page-profil-consultation').classList.add('active');
     document.getElementById('consult-detail-patient').textContent = c.patient_nom;
-    document.getElementById('consult-detail-statut').textContent = c.statut;
     document.getElementById('consult-detail-date-rdv').textContent = c.date_rdv;
-    document.getElementById('consult-detail-date').textContent = c.date_consultation;
     document.getElementById('consult-detail-diagnostic').textContent = c.diagnostic;
     document.getElementById('consult-detail-traitement').textContent = c.traitement;
     document.getElementById('consult-detail-observation').textContent = c.observation;
 }
 window.showConsultationDetail = showConsultationDetail;
-
-
 
 // Gestion des ouvertures et fermetures des modals
 function openModal(modalId) {
@@ -595,8 +573,12 @@ async function deletePatientHandler(id) {
 
 async function deleteMedecinHandler(matricule) {
     if (confirm('Supprimer ce médecin ?')) {
-        await DeleteMedecin(matricule);
-        loadMedecins();
+        const result = await DeleteMedecin(matricule);
+        if (result === 'ok') {
+            loadMedecins();
+        } else {
+            alert(result);
+        }
     }
 }
 

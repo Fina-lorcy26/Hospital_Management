@@ -85,10 +85,16 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 		traitement TEXT,
 		observation TEXT,
 		date_consultation TEXT,
-		statut TEXT,
 		FOREIGN KEY(rdv_id) REFERENCES rendez_vous(id)
 	);`
 	db.Exec(createConsultationsTable)
+
+//Protection de la base de données. 
+	db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_patients_telephone ON patients(telephone) WHERE telephone != ''`)
+	db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_medecins_email ON medecins(email) WHERE email != ''`)
+	db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_medecins_telephone ON medecins(telephone) WHERE telephone != ''`)
+	db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_utilisateurs_email ON utilisateurs(email) WHERE email != ''`)
+	db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_utilisateurs_telephone ON utilisateurs(telephone) WHERE telephone != ''`)
 
 	// Ingestion des données initiales si les tables sont vides
 	var count int
@@ -179,7 +185,7 @@ func insertSeedRdv() {
 		{3, "MED-003", "Controle", "21/07/2026", "15:45", "Annulé"},
 	}
 	for _, r := range rdvs {
-		db.Exec("INSERT INTO rendez_vous (patient_id, medecin_mat, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?, ?)",
+		db.Exec("INSERT INTO rendez_vous (patient_id, medecin_mat, motif, date, heure, statut) VALUES (?, ?, ?, ?, ?)",
 			r.PatientId, r.MedecinMat, r.Motif, r.Date, r.Heure, r.Statut)
 	}
 }
@@ -190,14 +196,13 @@ func insertSeedConsultations() {
 		Traitement  string
 		Observation string
 		Date        string
-		Statut      string
 	}{
-		{1, "Angine de poitrine suspectée", "Repos, examens complementaires", "Patient stable", "22/07/2026", "Terminee"},
+		{1, "Angine de poitrine suspectée", "Repos, examens complementaires", "Patient stable", "22/07/2026"},
 	}
 	for _, c := range consultations {
 		db.Exec(
-			"INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation, statut) VALUES (?, ?, ?, ?, ?, ?)",
-			c.RdvID, c.Diagnostic, c.Traitement, c.Observation, c.Date, c.Statut,
+			"INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation) VALUES (?, ?, ?, ?, ?)",
+			c.RdvID, c.Diagnostic, c.Traitement, c.Observation, c.Date,
 		)
 	}
 }
