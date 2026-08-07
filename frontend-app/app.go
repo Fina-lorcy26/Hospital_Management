@@ -65,7 +65,6 @@ type Consultation struct {
 	Observation      string `json:"observation"`
 	DateConsultation string `json:"date_consultation"`
 }
-
 type ConsultationDetail struct {
 	ID               int    `json:"id"`
 	RdvID            int    `json:"rdv_id"`
@@ -77,16 +76,15 @@ type ConsultationDetail struct {
 	Traitement       string `json:"traitement"`
 	Observation      string `json:"observation"`
 }
-
 type Utilisateur struct {
-	ID         int            `json:"id"`
-	Login      string         `json:"login"`
-	MotDePasse string         `json:"mot_de_passe"`
-	Role       string         `json:"role"`
-	NomComplet string         `json:"nom_complet"`
-	MedecinMat string         `json:"medecin_mat"`
-	Telephone  string         `json:"telephone"`
-	Email      string         `json:"email"`
+	ID         int    `json:"id"`
+	Login      string `json:"login"`
+	MotDePasse string `json:"mot_de_passe"`
+	Role       string `json:"role"`
+	NomComplet string `json:"nom_complet"`
+	MedecinMat string `json:"medecin_mat"`
+	Telephone  string `json:"telephone"`
+	Email      string `json:"email"`
 }
 
 // Constructeur de App qui va initialiser et retourner une nouvelle instance de app
@@ -431,13 +429,12 @@ func (a *App) GetDashboardStats() DashboardStats {
 
 // suppression d'une consultation
 func (a *App) DeleteConsultation(id int) string {
-    _, err := db.Exec("DELETE FROM consultations WHERE id=?", id)
-    if err != nil {
-        return "Erreur: " + err.Error()
-    }
-    return "ok"
+	_, err := db.Exec("DELETE FROM consultations WHERE id=?", id)
+	if err != nil {
+		return "Erreur: " + err.Error()
+	}
+	return "ok"
 }
-
 
 // Jointure SQL entre consultation et rendez-vous pourn'afficher que les consultations concernant un medecin en particulier
 func (a *App) GetConsultationsByMedecin(medecinMat string) []ConsultationDetail {
