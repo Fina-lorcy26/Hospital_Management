@@ -4,8 +4,8 @@ import { GetPatients, AddPatient, UpdatePatient, DeletePatient,
          GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin,
          GetRendezVous, AddRendezVous, UpdateRendezVous, DeleteRendezVous,
          GetDashboardStats, Login, DeleteConsultation, UpdateRendezVousStatut,
-           GetConsultationsByMedecin, Register, AnnulerRendezVous } from './wailsjs/go/main/App.js';
-           import { TerminerRendezVous } from './wailsjs/go/main/App.js';
+           GetConsultationsByMedecin, Register, AnnulerRendezVous } from './frontend/wailsjs/go/main/App.js';
+           import { TerminerRendezVous } from './frontend/wailsjs/go/main/App.js';
 
   let UTILISATEUR_CONNECTE = null;
   let MEDECIN_NOM_ACTUEL = "";

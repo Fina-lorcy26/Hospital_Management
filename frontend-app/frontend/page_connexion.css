@@ -1,45 +1,123 @@
 /* Styles scoping pour la modale d'inscription */
 
+#modal-overlay-register {
+    font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 #modal-overlay-register .modal-box {
-    max-width: 400px;
-    font-family: "Times New Roman", serif;
-    background-image: url('Remote Healthcare.jpg');
+    max-width: 420px;
+    width: 90%;
+    padding: 35px 30px;
+    border-radius: 20px;
+    background-image: linear-gradient(135deg, rgba(51, 55, 67, 0.88), rgba(58, 90, 219, 0.85)), url('Remote Healthcare.jpg');
     background-size: cover;
     background-position: center;
-}
-
-#modal-overlay-register input {
-    padding: 5px;
-    border: 2px solid #ccc;
-    border-radius: 15px;
-    outline: none;
-}
-
-#modal-overlay-register label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #fff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 #modal-overlay-register h1 {
     text-align: center;
     color: #fff;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#modal-overlay-register label {
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 14px;
+    font-weight: 500;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#modal-overlay-register input {
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a2e;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#modal-overlay-register input::placeholder {
+    color: #8a8fa3;
+}
+
+#modal-overlay-register input:focus {
+    border-color: #4d6fd4;
+    box-shadow: 0 0 0 3px rgba(77, 111, 212, 0.25);
+}
+
+#modal-overlay-register p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 #modal-overlay-register .button-container {
     text-align: center;
-    margin-top: 20px;
-}
-
-#modal-overlay-register p {
-    color: white;
+    margin-top: 25px;
 }
 
 #modal-overlay-register .button-container button {
-    background-color: #282f6e;
+    width: 100%;
+    background: linear-gradient(135deg, #282f6e, #1a2050);
     color: #fff;
     border: none;
-    padding: 10px 20px;
-    border-radius: 15px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#modal-overlay-register .button-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 47, 110, 0.4);
+}
+#modal-overlay-register .checkbox-container,
+#modal-overlay-register .terms-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+#modal-overlay-register input#terms {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    vertical-align: middle;
+    margin: 0 8px 0 0;
+    accent-color: #4d6fd4;
+    cursor: pointer;
+}
+
+#modal-overlay-register label[for="terms"] {
+    display: inline;
+    vertical-align: middle;
+    margin: 0;
+    font-weight: 600;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     cursor: pointer;
 }
