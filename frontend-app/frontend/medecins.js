@@ -4,12 +4,23 @@ import { GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin } from './wailsjs
 import { openModal, closeModal } from './modal-utils.js';
 
 // recupere et injecte tous les medecins dans la liste
+let allMedecins = [];
+
 export async function loadMedecins() {
-    const medecins = await GetMedecins();
+    allMedecins = await GetMedecins();
+    renderMedecins(allMedecins);
+    setupMedecinsSearch();
+}
+
+function renderMedecins(medecins) {
     const container = document.getElementById('medecins-list-body');
     if (!container) return;
-
     container.innerHTML = '';
+
+    if (medecins.length === 0) {
+        container.innerHTML = '<div class="no-results">Aucun médecin trouvé.</div>';
+        return;
+    }
 
     medecins.forEach(m => {
         const row = document.createElement('div');
@@ -24,6 +35,21 @@ export async function loadMedecins() {
             </div>
         `;
         container.appendChild(row);
+    });
+}
+
+function setupMedecinsSearch() {
+    const searchInput = document.getElementById('medecins-search');
+    if (!searchInput || searchInput.dataset.bound) return;
+    searchInput.dataset.bound = 'true';
+
+    searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        const filtered = allMedecins.filter(m =>
+            `${m.nom} ${m.prenom}`.toLowerCase().includes(q) ||
+            (m.specialite || '').toLowerCase().includes(q)
+        );
+        renderMedecins(filtered);
     });
 }
 

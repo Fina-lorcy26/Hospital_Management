@@ -5,13 +5,24 @@ import { openModal, closeModal } from './modal-utils.js';
 
 // ---------- CHARGEMENT DES LISTES ----------
 //recupere les patients
+let allPatients = [];
+
 export async function loadPatients() {
-    const patients = await GetPatients();
+    allPatients = await GetPatients();
+    renderPatients(allPatients);
+    setupPatientsSearch();
+}
+
+function renderPatients(patients) {
     const container = document.getElementById('patients-list-body');
     if (!container) return;
     container.innerHTML = '';
 
-    // injecte tous les patients dans la liste
+    if (patients.length === 0) {
+        container.innerHTML = '<div class="no-results">Aucun patient trouvé.</div>';
+        return;
+    }
+
     patients.forEach(p => {
         const row = document.createElement('div');
         row.className = 'patient-row';
@@ -25,6 +36,21 @@ export async function loadPatients() {
             </div>
         `;
         container.appendChild(row);
+    });
+}
+
+function setupPatientsSearch() {
+    const searchInput = document.getElementById('patients-search');
+    if (!searchInput || searchInput.dataset.bound) return; // évite les doublons d'écouteur
+    searchInput.dataset.bound = 'true';
+
+    searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        const filtered = allPatients.filter(p =>
+            `${p.nom} ${p.prenom}`.toLowerCase().includes(q) ||
+            (p.telephone || '').toLowerCase().includes(q)
+        );
+        renderPatients(filtered);
     });
 }
 
@@ -47,8 +73,12 @@ export async function remplirListePatients(selectId) {
 
 async function deletePatientHandler(id) {
     if (confirm('Supprimer ce patient ?')) {
-        await DeletePatient(id);
-        loadPatients();
+        const result = await DeletePatient(id);
+        if (result === 'ok') {
+            loadPatients();
+        } else {
+            alert(result);
+        }
     }
 }
 window.deletePatientHandler = deletePatientHandler;

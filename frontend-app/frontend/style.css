@@ -309,7 +309,7 @@ h1 {
 }
 
 .patient-actions button, .medecins-actions button,
-.rdv-actions button{
+.rdv-actions button, .consult-actions button{
     border: none;
     padding: 6px 12px;
     border-radius: 6px;
@@ -679,7 +679,6 @@ table{
         grid-template-columns: 1fr;
     }
 }
-
 .motif-annulation-note {
     font-size: 11px;
     color: #993556;
@@ -688,4 +687,79 @@ table{
     white-space: normal;
     line-height: 1.3;
     overflow: visible;
+}
+.ts-wrapper {
+    width: 100%;
+}
+
+.ts-control {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    min-height: 42px;
+}
+
+.ts-control.focus,
+.ts-wrapper.focus .ts-control {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+.ts-dropdown {
+    background: #fff;
+    opacity: 1;
+    border: 1px solid #1e3a8a;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 99999; /* doit être supérieur au z-index de ton .modal-box */
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.ts-dropdown .option {
+    background: #fff;
+    color: #1f2937;
+    padding: 8px 12px;
+}
+
+.ts-dropdown .active {
+    background-color: #1e3a8a;
+    color: #fff;
+}
+
+.search-bar-container {
+    margin-bottom: 12px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+.no-results {
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.btn-view:hover {
+    background-color: #c8e6c9;
+    transform: translateY(-1px);
+}
+
+.btn-delete:hover {
+    background-color: #ffcdd2;
+    transform: translateY(-1px);
 }

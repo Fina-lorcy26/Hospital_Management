@@ -74,6 +74,10 @@ export function TerminerRendezVous(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['TerminerRendezVous'](arg1, arg2, arg3, arg4);
 }
 
+export function UpdateConsultation(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['UpdateConsultation'](arg1, arg2, arg3, arg4);
+}
+
 export function UpdateMedecin(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['UpdateMedecin'](arg1, arg2, arg3, arg4, arg5, arg6);
 }

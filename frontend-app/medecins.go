@@ -1,12 +1,12 @@
 package main
-
 import "fmt"
 
 // ---------- GESTION DES MEDECINS ----------
+
 // Affiche Medecin
 func (a *App) GetMedecins() []Medecin {
-	rows, err := db.Query("SELECT matricule, nom, prenom, specialite, telephone, email FROM medecins")
-	if err != nil {
+    rows, err := db.Query("SELECT matricule, nom, prenom, specialite, telephone, email FROM medecins ORDER BY rowid DESC")
+		if err != nil {
 		fmt.Println("Erreur recuperation medecins:", err)
 		return []Medecin{}
 	}
@@ -29,27 +29,22 @@ func (a *App) AddMedecin(matricule, nom, prenom, specialite, telephone, email st
 		"SELECT COUNT(*) FROM medecins WHERE matricule = ?",
 		matricule,
 	).Scan(&count)
-
 	if err != nil {
 		return "Erreur : " + err.Error()
 	}
-
 	if count > 0 {
 		return "Un médecin avec ce matricule existe déjà."
 	}
-
 	var countTel int
 	db.QueryRow("SELECT COUNT(*) FROM medecins WHERE telephone = ?", telephone).Scan(&countTel)
 	if countTel > 0 {
 		return "Ce numéro de téléphone est déjà utilisé par un autre médecin."
 	}
-
 	var countEmail int
 	db.QueryRow("SELECT COUNT(*) FROM medecins WHERE email = ?", email).Scan(&countEmail)
 	if countEmail > 0 {
 		return "Cet email est déjà utilisé par un autre médecin."
 	}
-
 	_, err = db.Exec(
 		"INSERT INTO medecins (matricule, nom, prenom, specialite, telephone, email) VALUES (?, ?, ?, ?, ?, ?)",
 		matricule, nom, prenom, specialite, telephone, email,
@@ -73,7 +68,6 @@ func (a *App) UpdateMedecin(matricule, nom, prenom, specialite, telephone, email
 	if countEmail > 0 {
 		return "Cet email est déjà utilisé par un autre médecin."
 	}
-
 	_, err := db.Exec(
 		"UPDATE medecins SET nom=?, prenom=?, specialite=?, telephone=?, email=? WHERE matricule=?",
 		nom, prenom, specialite, telephone, email, matricule,

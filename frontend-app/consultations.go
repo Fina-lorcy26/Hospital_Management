@@ -16,7 +16,6 @@ func (a *App) DeleteConsultation(id int) string {
 
 // Jointure SQL entre consultation et rendez-vous pourn'afficher que les consultations concernant un medecin en particulier
 func (a *App) GetConsultationsByMedecin(medecinMat string) []ConsultationDetail {
-
 	rows, err := db.Query(`
         SELECT c.id, c.rdv_id, r.patient_id,
             (p.nom || ' ' || COALESCE(p.prenom, '')) AS patient_nom,
@@ -56,13 +55,11 @@ func (a *App) TerminerRendezVous(rdvID int, diagnostic string, traitement string
 	if err != nil {
 		return err
 	}
-
 	_, err = tx.Exec(`UPDATE rendez_vous SET statut = 'Terminée' WHERE id = ?`, rdvID)
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
-
 	dateConsultation := time.Now().Format("2006-01-02 15:04:05")
 	_, err = tx.Exec(`
 		INSERT INTO consultations (rdv_id, diagnostic, traitement, observation, date_consultation)
@@ -110,4 +107,18 @@ func (a *App) GetToutesLesConsultations() []ConsultationDetail {
 		fmt.Println("Erreur parcours consultations :", err)
 	}
 	return list
+}
+
+func (a *App) UpdateConsultation(id int, diagnostic string, traitement string, observation string) string {
+	_, err := db.Exec(`
+		UPDATE consultations
+		SET diagnostic = ?,
+		    traitement = ?,
+		    observation = ?
+		WHERE id = ?
+	`, diagnostic, traitement, observation, id)
+	if err != nil {
+		return err.Error()
+	}
+	return "ok"
 }

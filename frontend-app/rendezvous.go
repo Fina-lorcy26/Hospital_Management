@@ -20,13 +20,13 @@ func (a *App) GetRendezVous() []RendezVous {
 		FROM rendez_vous rv
 		JOIN patients p ON rv.patient_id = p.id
 		JOIN medecins m ON rv.medecin_mat = m.matricule
+		ORDER BY rv.id DESC
 	`)
 	if err != nil {
 		fmt.Println("Erreur recuperation rendez-vous:", err)
 		return []RendezVous{}
 	}
 	defer rows.Close()
-
 	var rdvs []RendezVous
 	for rows.Next() {
 		var r RendezVous

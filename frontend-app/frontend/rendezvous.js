@@ -16,15 +16,13 @@ const badgeClass = {
 
 // recupere et injecte tous les rendez-vous dans leur liste
 //   - "jour"       => uniquement les RDV du jour
+let allRdvsFiltresJour = [];
+
 export async function loadRendezVous(filtre = null) {
     const rdvs = await GetRendezVous();
-    const container = document.getElementById('rdv-list-body');
-    if (!container) return;
-
-    container.innerHTML = '';
-    let rdvsFiltres = rdvs;
 
   // FILTRE : RDV DU JOUR
+    let rdvsFiltres = rdvs;
     if (filtre === 'jour') {
 
         const aujourdHui = new Date();
@@ -46,6 +44,47 @@ export async function loadRendezVous(filtre = null) {
             }
             return false;
         });
+    }
+
+    allRdvsFiltresJour = rdvsFiltres;
+    applyRdvSearch();
+    setupRdvSearch();
+}
+
+function applyRdvSearch() {
+    const searchInput = document.getElementById('rdv-search');
+    const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+    const rdvsAffiches = q
+        ? allRdvsFiltresJour.filter(r =>
+            (r.patient_nom || '').toLowerCase().includes(q) ||
+            (r.medecin_nom || '').toLowerCase().includes(q) ||
+            (r.statut || '').toLowerCase().includes(q) ||
+            (r.date || '').toLowerCase().includes(q)
+          )
+        : allRdvsFiltresJour;
+
+    renderRdv(rdvsAffiches);
+}
+
+function setupRdvSearch() {
+    const searchInput = document.getElementById('rdv-search');
+    if (!searchInput || searchInput.dataset.bound) return;
+    searchInput.dataset.bound = 'true';
+
+    searchInput.addEventListener('input', () => {
+        applyRdvSearch();
+    });
+}
+
+function renderRdv(rdvsFiltres) {
+    const container = document.getElementById('rdv-list-body');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (rdvsFiltres.length === 0) {
+        container.innerHTML = '<div class="no-results">Aucun rendez-vous trouvé.</div>';
+        return;
     }
 
 // AFFICHAGE
@@ -91,12 +130,25 @@ export async function loadRendezVous(filtre = null) {
 }
 
 // fonction qui charge les rdv du medecin connecté
+let MES_RDV_ACTUELS = [];
+
 export async function loadMesRdv() {
     const allRdvs = await GetRendezVous();
-    const mesRdvs = allRdvs.filter(r => r.medecin_mat === MEDECIN_MAT_ACTUEL);
+    MES_RDV_ACTUELS = allRdvs.filter(r => r.medecin_mat === MEDECIN_MAT_ACTUEL);
+    renderMesRdv(MES_RDV_ACTUELS);
+    setupMesRdvSearch();
+}
+
+function renderMesRdv(mesRdvs) {
     const container = document.getElementById('mes-rdv-list-body');
     if (!container) return;
     container.innerHTML = '';
+
+    if (mesRdvs.length === 0) {
+        container.innerHTML = '<div class="no-results">Aucun rendez-vous trouvé.</div>';
+        return;
+    }
+
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
         row.className = 'rdv-row';
@@ -123,6 +175,23 @@ export async function loadMesRdv() {
     });
 }
 
+function setupMesRdvSearch() {
+    const searchInput = document.getElementById('mes-rdv-search');
+    if (!searchInput || searchInput.dataset.bound) return;
+    searchInput.dataset.bound = 'true';
+
+    searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        const filtered = MES_RDV_ACTUELS.filter(r =>
+            (r.patient_nom || '').toLowerCase().includes(q) ||
+            (r.date || '').toLowerCase().includes(q) ||
+            (r.motif || '').toLowerCase().includes(q) ||
+            (r.statut || '').toLowerCase().includes(q)
+        );
+        renderMesRdv(filtered);
+    });
+}
+
 async function confirmerRdv(id) {
     await UpdateRendezVousStatut(id, 'Confirmé');
     loadMesRdv();
@@ -131,9 +200,28 @@ async function confirmerRdv(id) {
 }
 window.confirmerRdv = confirmerRdv;
 
+let tsPatientRdv = null;
+let tsMedecinRdv = null;
+
 export async function openAjoutRdv() {
+    // Détruit les instances précédentes pour éviter les doublons au ré-ouvertures
+    if (tsPatientRdv) { tsPatientRdv.destroy(); tsPatientRdv = null; }
+    if (tsMedecinRdv) { tsMedecinRdv.destroy(); tsMedecinRdv = null; }
     await remplirListePatients("rdv-patient-id");
     await remplirListeMedecins("rdv-medecin-mat");
+    tsPatientRdv = new TomSelect("#rdv-patient-id", {
+        create: false,
+        sortField: { field: "text", direction: "asc" },
+        placeholder: "Rechercher un patient...",
+        allowEmptyOption: true,
+    });
+    tsMedecinRdv = new TomSelect("#rdv-medecin-mat", {
+        create: false,
+        sortField: { field: "text", direction: "asc" },
+        placeholder: "Rechercher un médecin...",
+        allowEmptyOption: true,
+    });
+
     openModal("modal-overlay-rdv");
 }
 window.openAjoutRdv = openAjoutRdv;
@@ -163,10 +251,8 @@ window.openEditRdv = openEditRdv;
 function showRdvProfile(rdv) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById('page-profil-rdv').classList.add('active');
-
     const card = document.querySelector('#page-profil-rdv .profile-card');
     card.querySelector('.profile-title h2').textContent = rdv.patient_nom + ' — ' + rdv.medecin_nom;
-
     const badge = card.querySelector('.profile-header .badge');
     const badgeClass = {
         'Confirmé': 'badge-confirme',
@@ -175,7 +261,6 @@ function showRdvProfile(rdv) {
     };
     badge.className = 'badge ' + (badgeClass[rdv.statut] || '');
     badge.textContent = rdv.statut;
-
     const details = card.querySelectorAll('.detail-value');
     details[0].textContent = rdv.patient_nom;
     details[1].textContent = rdv.medecin_nom;

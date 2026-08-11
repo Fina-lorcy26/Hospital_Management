@@ -38,6 +38,8 @@ export function Register(arg1:string,arg2:string,arg3:string,arg4:string,arg5:st
 
 export function TerminerRendezVous(arg1:number,arg2:string,arg3:string,arg4:string):Promise<void>;
 
+export function UpdateConsultation(arg1:number,arg2:string,arg3:string,arg4:string):Promise<string>;
+
 export function UpdateMedecin(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<string>;
 
 export function UpdatePatient(arg1:number,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string,arg7:string,arg8:string):Promise<string>;
