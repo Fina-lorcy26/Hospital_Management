@@ -28,6 +28,8 @@ export function GetPatients():Promise<Array<main.Patient>>;
 
 export function GetRendezVous():Promise<Array<main.RendezVous>>;
 
+export function GetToutesLesConsultations():Promise<Array<main.ConsultationDetail>>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function Login(arg1:string,arg2:string):Promise<main.Utilisateur>;

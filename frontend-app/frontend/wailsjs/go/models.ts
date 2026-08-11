@@ -10,6 +10,7 @@ export namespace main {
 	    diagnostic: string;
 	    traitement: string;
 	    observation: string;
+	    medecin_nom: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ConsultationDetail(source);
@@ -26,6 +27,7 @@ export namespace main {
 	        this.diagnostic = source["diagnostic"];
 	        this.traitement = source["traitement"];
 	        this.observation = source["observation"];
+	        this.medecin_nom = source["medecin_nom"];
 	    }
 	}
 	export class DashboardStats {

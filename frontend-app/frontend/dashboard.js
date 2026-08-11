@@ -1,6 +1,4 @@
-// ============================================
 // TABLEAU DE BORD & GRAPHIQUES
-// ============================================
 import { GetDashboardStats, GetPatients, GetRendezVous } from './wailsjs/go/main/App.js';
 
 // Recuperations des informations en generale pour remplir les cartes du tableau de bord

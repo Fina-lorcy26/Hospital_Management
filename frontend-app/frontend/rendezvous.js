@@ -15,20 +15,42 @@ const badgeClass = {
 };
 
 // recupere et injecte tous les rendez-vous dans leur liste
-export async function loadRendezVous() {
+//   - "jour"       => uniquement les RDV du jour
+export async function loadRendezVous(filtre = null) {
     const rdvs = await GetRendezVous();
     const container = document.getElementById('rdv-list-body');
-
     if (!container) return;
 
     container.innerHTML = '';
+    let rdvsFiltres = rdvs;
 
-    rdvs.forEach(r => {
+  // FILTRE : RDV DU JOUR
+    if (filtre === 'jour') {
 
-        // Le bouton Modifier n'est pas disponible
-        // pour les rendez-vous confirmés ou terminés
+        const aujourdHui = new Date();
+        const annee = aujourdHui.getFullYear();
+        const mois = String(aujourdHui.getMonth() + 1).padStart(2, '0');
+        const jour = String(aujourdHui.getDate()).padStart(2, '0');
+        const dateAujourdHui = `${annee}-${mois}-${jour}`;
+        rdvsFiltres = rdvs.filter(r => {
+
+            // Si la date reçue est déjà au format YYYY-MM-DD
+            if (r.date === dateAujourdHui) {
+                return true;
+            }
+
+            // Si elle est au format DD/MM/YYYY
+            if (r.date && r.date.includes('/')) {
+                const [j, m, a] = r.date.split('/');
+                return `${a}-${m}-${j}` === dateAujourdHui;
+            }
+            return false;
+        });
+    }
+
+// AFFICHAGE
+    rdvsFiltres.forEach(r => {
         let boutonModifier = '';
-
         if (r.statut !== 'Confirmé' && r.statut !== 'Terminée') {
             boutonModifier = `
                 <button 
@@ -38,24 +60,17 @@ export async function loadRendezVous() {
                 </button>
             `;
         }
-
         const row = document.createElement('div');
-
         row.className = 'rdv-row';
-
         row.innerHTML = `
             <span class="col-patient">${r.patient_nom}</span>
-
             <span class="col-medecin">${r.medecin_nom}</span>
-
             <span class="col-date">${r.date}</span>
-
             <span class="col-heure">${r.heure}</span>
-
             <span class="col-statut">
                 <span class="badge ${badgeClass[r.statut] || ''}">
                     ${r.statut}
-                </span>
+                 </span>
 
                 ${
                     r.statut === 'Annulé' && r.motif_annulation
@@ -68,15 +83,9 @@ export async function loadRendezVous() {
 
             <div class="col-actions rdv-actions">
                 ${boutonModifier}
-
-                <button 
-                    class="btn-delete" 
-                    onclick="deleteRdvHandler(${r.id})">
-                    Supprimer
-                </button>
+                <button class="btn-delete" onclick="deleteRdvHandler(${r.id})"> Supprimer </button>
             </div>
         `;
-
         container.appendChild(row);
     });
 }
@@ -87,13 +96,10 @@ export async function loadMesRdv() {
     const mesRdvs = allRdvs.filter(r => r.medecin_mat === MEDECIN_MAT_ACTUEL);
     const container = document.getElementById('mes-rdv-list-body');
     if (!container) return;
-
     container.innerHTML = '';
-
     mesRdvs.forEach(r => {
         const row = document.createElement('div');
         row.className = 'rdv-row';
-
         let actionsHtml = '';
         if (r.statut === 'En attente') {
             actionsHtml += `<button class="btn-view" onclick="confirmerRdv(${r.id})">Confirmer</button>`;
@@ -218,6 +224,7 @@ window.confirmerAnnulation = confirmerAnnulation;
 
 // ---------- FORMULAIRES ----------
 document.addEventListener('DOMContentLoaded', () => {
+    
     // ---------- Formulaire Ajouter Rendez-vous ----------
     document.getElementById('form-add-rdv').addEventListener('submit', async (e) => {
         e.preventDefault();

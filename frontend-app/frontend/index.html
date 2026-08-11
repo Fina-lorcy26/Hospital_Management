@@ -78,6 +78,7 @@
             <li><a href="#" data-page="patients"><i class="fa fa-users"></i>Mes patients</a></li>
             <li><a href="#" data-page="medecins"><i class="fa fa-stethoscope"></i>Mes médecins</a></li>
             <li><a href="#" data-page="rendez-vous"><i class="fa fa-calendar"></i>Rendez-vous</a></li>
+            <li><a href="#" data-page="consultations"><i class="fa fa-check-circle"></i>Consultations</a></li>
         </ul>
 
         <ul class="sidebar-menu" id="menu-medecin" style="display: none;">
@@ -114,27 +115,27 @@
         </section>
 
        <section class="dashboard-cards">
-    <div class="stat-card">
+    <div class="stat-card" onclick="goToPage('patients')">
         <i class="fa fa-users"></i>
         <span class="stat-value" id="total-patients"> </span>
         <span class="stat-title">Nombre total de Patients</span>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" onclick="goToPage('medecins')">
         <i class="fa fa-stethoscope"></i>
         <span class="stat-value" id="total-medecins"> </span>
         <span class="stat-title">Nombre total de Medecins</span>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" onclick="goToPage('rendez-vous','jour')">
         <i class="fa fa-calendar"></i>
         <span class="stat-value" id="total-rdv"> </span>
         <span class="stat-title">Nombre total de Rendez-vous du jour </span>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" onclick="goToPage('rendez-vous')">
         <i class="fa fa-clock-o"></i>
         <span class="stat-value" id="total-rdv-program"> </span>
         <span class="stat-title">Nombre total de Rendez-vous programmés</span>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" onclick="goToPage('consultations')">
         <i class="fa fa-check-circle"></i>
         <span class="stat-value" id="total-consultation"> </span>
         <span class="stat-title">Nombre total de Consultations</span>
@@ -215,6 +216,27 @@
     </div>
 </div>
 
+<!-- PAGE CONSULTATIONS ADMIN -->
+<div id="page-consultations" class="page">
+
+    <div class="page-header">
+        <h1>Consultations</h1>
+    </div>
+
+    <div class="consultations-effectuees-list">
+
+    <div class="consultations-header">
+        <span class="col-patient">Patient</span>
+        <span class="col-medecin">Médecin</span>
+        <span class="col-date">Date</span>
+        <span class="col-actions">Actions</span>
+    </div>
+
+        <div id="consultations-list-body"></div>
+
+    </div>
+
+</div>
 <!-- PROFILS DETAILLES -->
 <div id="page-profil-patient" class="page">
     <div class="page-header">
@@ -339,9 +361,9 @@
 <div id="page-profil-consultation" class="page">
     <div class="page-header">
         <h1>Détails de la consultation</h1>
-        <button class="btn-secondary" onclick="goToPage('consultations-effectuees')">
-            <i class="fa fa-arrow-left"></i> Retour
-        </button>
+    <button class="btn-secondary" onclick="retourConsultation()">
+       <i class="fa fa-arrow-left"></i> Retour
+    </button>
     </div>
     <div class="profile-card">
         <div class="profile-header">
@@ -352,6 +374,7 @@
         </div>
         <div class="profile-details">
             <div class="detail-item"><span class="detail-label">Date du rendez-vous</span><span class="detail-value" id="consult-detail-date-rdv"></span></div>
+            <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value" id="consult-detail-medecin"></span></div>
             <div class="detail-item"><span class="detail-label">Diagnostic</span><span class="detail-value" id="consult-detail-diagnostic"></span></div>
             <div class="detail-item"><span class="detail-label">Traitement</span><span class="detail-value" id="consult-detail-traitement"></span></div>
             <div class="detail-item"><span class="detail-label">Observation</span><span class="detail-value" id="consult-detail-observation"></span></div>

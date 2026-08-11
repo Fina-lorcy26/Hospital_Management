@@ -1,7 +1,6 @@
-// ============================================
 // GESTION DES CONSULTATIONS
-// ============================================
-import { GetConsultationsByMedecin, DeleteConsultation, TerminerRendezVous,
+
+import { GetConsultationsByMedecin, GetToutesLesConsultations, DeleteConsultation, TerminerRendezVous,
          UpdateRendezVousStatut } from './wailsjs/go/main/App.js';
 import { openModal, closeModal } from './modal-utils.js';
 import { loadMesRdv, loadRendezVous } from './rendezvous.js';
@@ -10,6 +9,8 @@ import { MEDECIN_MAT_ACTUEL } from './state.js';
 
 // charge les consultations déja éffectuées
 let CONSULTATIONS_ACTUELLES = [];
+let CONSULTATIONS_ADMIN = [];
+let origineConsultation = null;
 
 export async function loadConsultationsEffectuees() {
     const all = await GetConsultationsByMedecin(MEDECIN_MAT_ACTUEL);
@@ -36,7 +37,10 @@ export async function loadConsultationsEffectuees() {
 
 function showConsultationDetailById(id) {
     const c = CONSULTATIONS_ACTUELLES.find(item => item.id === id);
-    if (c) showConsultationDetail(c);
+    if (c) {
+        origineConsultation = 'consultations-effectuees';
+        showConsultationDetail(c);
+    }
 }
 window.showConsultationDetailById = showConsultationDetailById;
 
@@ -64,6 +68,7 @@ function showConsultationDetail(c) {
     document.getElementById('consult-detail-diagnostic').textContent = c.diagnostic;
     document.getElementById('consult-detail-traitement').textContent = c.traitement;
     document.getElementById('consult-detail-observation').textContent = c.observation;
+    document.getElementById('consult-detail-medecin').textContent = c.medecin_nom;
 }
 window.showConsultationDetail = showConsultationDetail;
 
@@ -100,3 +105,47 @@ document.getElementById('form-terminer').addEventListener('submit', async functi
     alert('Erreur lors de la clôture du rdv : ' + err);
   }
 });
+
+
+//Consultations de tous les medecins pour l'admin
+export async function loadConsultationsAdmin() {
+    const all = await GetToutesLesConsultations();
+    CONSULTATIONS_ADMIN = all;
+    const container = document.getElementById('consultations-list-body');
+    if (!container) return;
+    container.innerHTML = '';
+    all.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'consultation-row';
+        row.innerHTML = `
+            <span class="col-patient">${c.patient_nom}</span>
+            <span class="col-medecin">${c.medecin_nom}</span>
+            <span class="col-date">${c.date_consultation}</span>
+            <div class="col-actions">
+                <button
+                    class="btn-view"
+                    onclick="showConsultationDetailByIdAdmin(${c.id})">
+                    Voir
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+// Le voir de l'admin 
+function showConsultationDetailByIdAdmin(id) {
+    const c = CONSULTATIONS_ADMIN.find(item => item.id === id);
+    if (c) {
+        origineConsultation = 'consultations';
+        showConsultationDetail(c);
+    }
+}
+window.showConsultationDetailByIdAdmin = showConsultationDetailByIdAdmin;
+window.retourConsultation = function () {
+    if (origineConsultation) {
+        goToPage(origineConsultation);
+    } else {
+        goToPage('dashboard');
+    }
+};;

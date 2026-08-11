@@ -62,6 +62,7 @@ type ConsultationDetail struct {
 	Diagnostic       string `json:"diagnostic"`
 	Traitement       string `json:"traitement"`
 	Observation      string `json:"observation"`
+	MedecinNom       string `json:"medecin_nom"`
 }
 
 type Utilisateur struct {

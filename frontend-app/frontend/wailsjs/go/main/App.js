@@ -54,6 +54,10 @@ export function GetRendezVous() {
   return window['go']['main']['App']['GetRendezVous']();
 }
 
+export function GetToutesLesConsultations() {
+  return window['go']['main']['App']['GetToutesLesConsultations']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
