@@ -18,6 +18,10 @@ export function AnnulerRendezVous(arg1, arg2) {
   return window['go']['main']['App']['AnnulerRendezVous'](arg1, arg2);
 }
 
+export function ChangerMotDePasse(arg1, arg2, arg3) {
+  return window['go']['main']['App']['ChangerMotDePasse'](arg1, arg2, arg3);
+}
+
 export function DeleteConsultation(arg1) {
   return window['go']['main']['App']['DeleteConsultation'](arg1);
 }
@@ -92,4 +96,8 @@ export function UpdateRendezVous(arg1, arg2, arg3, arg4, arg5, arg6) {
 
 export function UpdateRendezVousStatut(arg1, arg2) {
   return window['go']['main']['App']['UpdateRendezVousStatut'](arg1, arg2);
+}
+
+export function UpdateUtilisateur(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['UpdateUtilisateur'](arg1, arg2, arg3, arg4, arg5);
 }

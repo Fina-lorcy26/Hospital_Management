@@ -42,34 +42,34 @@
    </section>
         <div  id="modal-overlay-register" class="modal-overlay">
           <div class="modal-box">
-            <h1>Inscription</h1>
+            <h1>
+                <button type="button" id="btn-back-login" class="btn-back-arrow" aria-label="Retour à la connexion">←</button>
+                Inscription
+            </h1>
             <form id="Register-form">
                 <input type="text" id="reg-nom-complet" placeholder="Nom complet" required>
-                <br><br>
                 <input type="text" id="reg-login" placeholder="Choisissez un identifiant" required>
-                <br><br>
                 <input type="email" id="reg-email" placeholder="Adresse email" required>
-                <br><br>
                 <input type="tel" id="reg-tel" placeholder="Numéro de téléphone" required>
-                <br><br>
                 <input type="text" id="reg-matricule" placeholder="Matricule (si c'est un médecin)">
-                <br><br>
                 <input type="password" id="reg-password" placeholder="Mot de passe" required>
-                <br><br>
                 <input type="password" id="reg-confirm-password" placeholder="Confirmer le mot de passe" required>
-                <br><br>
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">J'accepte les termes et conditions</label>
                 <div class="button-container">
                    <button type="submit">M'inscrire</button>
+                </div>
+                <div class="footer-links">
+                <p>Avez-vous dejà un compte ?</p>
+                <a href="#" id="link-to-login">ME CONNNECTER</a>
                 </div>
             </form>
             </div>
         </div>
 
     <!-- MON APPLICATION PRINCIPALE -->
-    <section id="app" style="display:none;">
-    <div class="app-container">
+<section id="app" style="display:none;">
+<div class="app-container">
         <nav class="sidebar">
             <div class="sidebar-logo">
                 <i class="fa fa-hospital-o"></i>
@@ -86,7 +86,7 @@
 
         <ul class="sidebar-menu" id="menu-medecin" style="display: none;">
             <li><a href="#" class="active" data-page="mes-rdv"><i class="fa fa-calendar"></i>Mes rendez-vous</a></li>
-            <li><a href="#" data-page="consultations-effectuees"><i class="fa fa-check-circle"></i>Consultations effectuées<i class="fa fa-stethoscope"></i></a></li>
+            <li><a href="#" data-page="consultations-effectuees"><i class="fa fa-check-circle"></i>Consultations effectuées</i></a></li>
         </ul>
          
     <div class="sidebar-footer" id="sidebar-footer">
@@ -95,7 +95,7 @@
     </div>
         </nav>
     
-     <main class="content">
+<main class="content">
      <header class="topbar">
         <span class="topbar-date"></span>
         <div class="topbar-right">
@@ -107,561 +107,564 @@
     <!-- TABLEAU DE BORD -->
     <div id="page-dashboard" class="page active">
         <section class="hero">
-    <div class="hero-text">
-        <h1 id="dashboard-welcome">Bonjour, nom de l'ADMIN</h1>
-        <p>Bienvenue sur votre tableau de bord</p>
-    </div>
-    <div class="hero-stat">
-        <span class="stat-number" id="rdv-en-attente"> </span>
-        <span class="stat-label">Nombre total de rendez-vous en attente</span>
-    </div>
+            <div class="hero-text">
+                <h1 id="dashboard-welcome">Bonjour, nom de l'ADMIN</h1>
+                <p>Bienvenue sur votre tableau de bord</p>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number" id="rdv-en-attente"> </span>
+                <span class="stat-label">Nombre total de rendez-vous en attente</span>
+            </div>
         </section>
 
        <section class="dashboard-cards">
-    <div class="stat-card" onclick="goToPage('patients')">
-        <i class="fa fa-users"></i>
-        <span class="stat-value" id="total-patients"> </span>
-        <span class="stat-title">Nombre total de Patients</span>
-    </div>
-    <div class="stat-card" onclick="goToPage('medecins')">
-        <i class="fa fa-stethoscope"></i>
-        <span class="stat-value" id="total-medecins"> </span>
-        <span class="stat-title">Nombre total de Medecins</span>
-    </div>
-    <div class="stat-card" onclick="goToPage('rendez-vous','jour')">
-        <i class="fa fa-calendar"></i>
-        <span class="stat-value" id="total-rdv"> </span>
-        <span class="stat-title">Nombre total de Rendez-vous du jour </span>
-    </div>
-    <div class="stat-card" onclick="goToPage('rendez-vous')">
-        <i class="fa fa-clock-o"></i>
-        <span class="stat-value" id="total-rdv-program"> </span>
-        <span class="stat-title">Nombre total de Rendez-vous programmés</span>
-    </div>
-    <div class="stat-card" onclick="goToPage('consultations')">
-        <i class="fa fa-check-circle"></i>
-        <span class="stat-value" id="total-consultation"> </span>
-        <span class="stat-title">Nombre total de Consultations</span>
-    </div>
-
-    <div class="chart-grid">
-    <!-- Graphique 1 : Évolution des patients -->
-    <div class="chart-container">
-        <h3>📈 Évolution des patients</h3>
-        <canvas id="chart-patients"></canvas>
-    </div>
-    
-    <!-- Graphique 2 : Activité de la semaine -->
-    <div class="chart-container">
-        <h3>📅 Rendez-vous de la semaine</h3>
-        <canvas id="chart-semaine"></canvas>
-    </div>
-</div>
-    </section>
+            <div class="stat-card" onclick="goToPage('patients')">
+                <i class="fa fa-users"></i>
+                <span class="stat-value" id="total-patients"> </span>
+                <span class="stat-title">Nombre total de Patients</span>
+            </div>
+            <div class="stat-card" onclick="goToPage('medecins')">
+                <i class="fa fa-stethoscope"></i>
+                <span class="stat-value" id="total-medecins"> </span>
+                <span class="stat-title">Nombre total de Medecins</span>
+            </div>
+            <div class="stat-card" onclick="goToPage('rendez-vous','jour')">
+                <i class="fa fa-calendar"></i>
+                <span class="stat-value" id="total-rdv"> </span>
+                <span class="stat-title">Nombre total de Rendez-vous du jour </span>
+            </div>
+            <div class="stat-card" onclick="goToPage('rendez-vous')">
+                <i class="fa fa-clock-o"></i>
+                <span class="stat-value" id="total-rdv-program"> </span>
+                <span class="stat-title">Nombre total de Rendez-vous programmés</span>
+            </div>
+            <div class="stat-card" onclick="goToPage('consultations')">
+                <i class="fa fa-check-circle"></i>
+                <span class="stat-value" id="total-consultation"> </span>
+                <span class="stat-title">Nombre total de Consultations</span>
+            </div>
+                <!-- Graphiques -->
+            <div class="chart-grid">
+                <!-- Graphique 1 : Évolution des patients -->
+                <div class="chart-container">
+                    <h3>📈 Repartition par tranches d'âges</h3>
+                    <canvas id="chart-patients"></canvas>
+                </div>
+                    
+                    <!-- Graphique 2 : Activité de la semaine -->
+                <div class="chart-container">
+                    <h3>📅 Rendez-vous de la semaine</h3>
+                    <canvas id="chart-semaine"></canvas>
+                </div>
+            </div>
+        </section>
     </div>
  
     <!-- PAGE PATIENTS -->
-
-<div id="page-patients" class="page">
-    <div class="page-header">
-    <h1>Liste des patients</h1>
-     <button class="btn-primary" onclick="openModal('modal-overlay-patient')">
-        <i class="fa fa-plus"></i>
-         Ajouter un patient
-     </button>
-    </div>
-   <div class="search-bar-container">
-        <input type="search" id="patients-search" class="search-bar" placeholder="Rechercher par nom, prénom ou téléphone..." />
-    </div>
-    <div class="patients-list">
-        <div class="patients-header">
-            <span class="col-name">Nom et prenom </span>
-            <span class="col-specialty">Operations</span>
-            <span class="col-actions">Actions</span>
+    <div id="page-patients" class="page">
+        <div class="page-header">
+        <h1>Liste des patients</h1>
+        <button class="btn-primary" onclick="openModal('modal-overlay-patient')">
+            <i class="fa fa-plus"></i>
+            Ajouter un patient
+        </button>
         </div>
-        <div id="patients-list-body"></div>
+    <div class="search-bar-container">
+            <input type="search" id="patients-search" class="search-bar" placeholder="Rechercher par nom, prénom ou téléphone..." />
+        </div>
+        <div class="patients-list">
+            <div class="patients-header">
+                <span class="col-name">Nom et prenom </span>
+                <span class="col-specialty">Operations</span>
+                <span class="col-actions">Actions</span>
+            </div>
+            <div id="patients-list-body"></div>
+        </div>
     </div>
-</div>
 
 <!-- PAGE MEDECINS -->
-<div id="page-medecins" class="page">
-    <div class="page-header">
-    <h1>Liste des médecins</h1>
-    <button class="btn-primary" onclick="openModal('modal-overlay-medecin')">
-        <i class="fa fa-plus"></i> Ajouter un médecin
-    </button>
+    <div id="page-medecins" class="page">
+        <div class="page-header">
+        <h1>Liste des médecins</h1>
+        <button class="btn-primary" onclick="openModal('modal-overlay-medecin')">
+            <i class="fa fa-plus"></i> Ajouter un médecin
+        </button>
+        </div>
+        <div class="search-bar-container">
+            <input type="search" id="medecins-search" class="search-bar" placeholder="Rechercher par nom ou spécialité..." />
+        </div>
+        <div class="medecins-list">
+            <div class="medecins-header">
+                <span class="col-name">Nom</span>
+                <span class="col-specialty">Specialité</span>
+                <span class="col-actions">Actions</span>
+            </div>  
+            <div id="medecins-list-body"></div>      
+        </div>
     </div>
-    <div class="search-bar-container">
-        <input type="search" id="medecins-search" class="search-bar" placeholder="Rechercher par nom ou spécialité..." />
-    </div>
-    <div class="medecins-list">
-        <div class="medecins-header">
-            <span class="col-name">Nom</span>
-            <span class="col-specialty">Specialité</span>
-            <span class="col-actions">Actions</span>
-        </div>  
-        <div id="medecins-list-body"></div>      
-     </div>
-</div>
 
 <!-- PAGE RENDEZ-VOUS -->
-<div id="page-rendez-vous" class="page">
-     <div class="page-header">
-    <h1>Rendez-vous</h1>
-    <button class="btn-primary" onclick="openAjoutRdv()">
-        <i class="fa fa-plus"></i> Ajouter un rendez-vous
-    </button>
+    <div id="page-rendez-vous" class="page">
+        <div class="page-header">
+        <h1>Rendez-vous</h1>
+        <button class="btn-primary" onclick="openAjoutRdv()">
+            <i class="fa fa-plus"></i> Ajouter un rendez-vous
+        </button>
+        </div>
+        <div class="search-bar-container">
+            <input type="search" id="rdv-search" class="search-bar" placeholder="Rechercher par patient, médecin ou statut..." />
+        </div>
+        <div class="rdv-list">
+            <div class="rdv-header">
+                <span class="col-patient">Patient</span>
+                <span class="col-medecin">Médecin</span>
+                <span class="col-date">Date</span>
+                <span class="col-heure">Heure</span>
+            <span class="col-statut">Statut</span>            
+            <span class="col-actions">Actions</span> 
+            </div>
+            <div id="rdv-list-body"></div>
+        </div>
     </div>
-    <div class="search-bar-container">
-        <input type="search" id="rdv-search" class="search-bar" placeholder="Rechercher par patient, médecin ou statut..." />
-    </div>
-    <div class="rdv-list">
-        <div class="rdv-header">
+
+<!-- PAGE CONSULTATIONS ADMIN -->
+    <div id="page-consultations" class="page">
+        <div class="page-header">
+            <h1>Consultations</h1>
+        </div>
+        <div class="search-bar-container">
+            <input type="search" id="consultations-search" class="search-bar" placeholder="Rechercher par patient, médecin ou date..." />
+        </div>
+        <div class="consultations-effectuees-list">
+        <div class="consultations-header">
             <span class="col-patient">Patient</span>
             <span class="col-medecin">Médecin</span>
             <span class="col-date">Date</span>
-            <span class="col-heure">Heure</span>
-           <span class="col-statut">Statut</span>            
-           <span class="col-actions">Actions</span> 
+            <span class="col-actions">Actions</span>
         </div>
-        <div id="rdv-list-body"></div>
+            <div id="consultations-list-body"></div>
+        </div>
     </div>
-</div>
 
-<!-- PAGE CONSULTATIONS ADMIN -->
-<div id="page-consultations" class="page">
-    <div class="page-header">
-        <h1>Consultations</h1>
-    </div>
-    <div class="search-bar-container">
-        <input type="search" id="consultations-search" class="search-bar" placeholder="Rechercher par patient, médecin ou date..." />
-    </div>
-    <div class="consultations-effectuees-list">
-      <div class="consultations-header">
-        <span class="col-patient">Patient</span>
-        <span class="col-medecin">Médecin</span>
-        <span class="col-date">Date</span>
-        <span class="col-actions">Actions</span>
-      </div>
-        <div id="consultations-list-body"></div>
-    </div>
-</div>
 <!-- PROFILS DETAILLES -->
-<div id="page-profil-patient" class="page">
-    <div class="page-header">
-        <h1>Profil du patient</h1>
-        <button class="btn-secondary" onclick="navigateBack('patients')">
-            <i class="fa fa-arrow-left"></i> 
-            Retour à la liste
-        </button>
-    </div>
-
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar">L</div>
-            <div class="profile-title">
-                <h2></h2>
-                <span class="badge badge-confirme">Actif</span>
+ <!-- PROFILS patient -->
+    <div id="page-profil-patient" class="page">
+        <div class="page-header">
+            <h1>Profil du patient</h1>
+            <button class="btn-secondary" onclick="navigateBack('patients')">
+                <i class="fa fa-arrow-left"></i> 
+                Retour à la liste
+            </button>
+        </div>
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">L</div>
+                <div class="profile-title">
+                    <h2></h2>
+                    <span class="badge badge-confirme">Actif</span>
+                </div>
+            </div>
+            <div class="profile-details">
+                        <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-patient-prenom"></span></div>
+                        <div class="detail-item"><span class="detail-label">Sexe</span><span class="detail-value" id="profil-patient-sexe"></span></div>
+                        <div class="detail-item"><span class="detail-label">Date de naissance</span><span class="detail-value" id="profil-patient-date-naiss"></span></div>
+                        <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-patient-tel"></span></div>
+                        <div class="detail-item"><span class="detail-label">Adresse</span><span class="detail-value" id="profil-patient-adresse"></span></div>
+                        <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value" id="profil-patient-motif"></span></div>
             </div>
         </div>
-
-        <div class="profile-details">
-                    <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-patient-prenom"></span></div>
-                    <div class="detail-item"><span class="detail-label">Sexe</span><span class="detail-value" id="profil-patient-sexe"></span></div>
-                    <div class="detail-item"><span class="detail-label">Date de naissance</span><span class="detail-value" id="profil-patient-date-naiss"></span></div>
-                    <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-patient-tel"></span></div>
-                    <div class="detail-item"><span class="detail-label">Adresse</span><span class="detail-value" id="profil-patient-adresse"></span></div>
-                    <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value" id="profil-patient-motif"></span></div>
-        </div>
-        </div>
-</div>
-
-
-<div id="page-profil-medecin" class="page">
-    <div class="page-header">
-        <h1>Profil du médecin</h1>
-        <button class="btn-secondary" onclick="navigateBack('medecins')">
-            <i class="fa fa-arrow-left"></i> Retour à la liste
-        </button>
     </div>
 
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar"></div>
-            <div class="profile-title">
-                <h2></h2>
-                <span class="badge badge-confirme">En service</span>
+<!-- PROFILS medecin -->
+    <div id="page-profil-medecin" class="page">
+        <div class="page-header">
+            <h1>Profil du médecin</h1>
+            <button class="btn-secondary" onclick="navigateBack('medecins')">
+                <i class="fa fa-arrow-left"></i> Retour à la liste
+            </button>
+        </div>
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar"></div>
+                <div class="profile-title">
+                    <h2></h2>
+                    <span class="badge badge-confirme">En service</span>
+                </div>
+            </div>
+            <div class="profile-details">
+                        <div class="detail-item"><span class="detail-label">Matricule</span><span class="detail-value" id="profil-medecin-mat"></span></div>
+                        <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-medecin-prenom"></span></div>
+                        <div class="detail-item"><span class="detail-label">Spécialité</span><span class="detail-value" id="profil-medecin-specialite"></span></div>
+                        <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-medecin-tel"></span></div>
+                        <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value" id="profil-medecin-email"></span></div>
             </div>
         </div>
+    </div>
 
-        <div class="profile-details">
-                    <div class="detail-item"><span class="detail-label">Matricule</span><span class="detail-value" id="profil-medecin-mat"></span></div>
-                    <div class="detail-item"><span class="detail-label">Prénom</span><span class="detail-value" id="profil-medecin-prenom"></span></div>
-                    <div class="detail-item"><span class="detail-label">Spécialité</span><span class="detail-value" id="profil-medecin-specialite"></span></div>
-                    <div class="detail-item"><span class="detail-label">Téléphone</span><span class="detail-value" id="profil-medecin-tel"></span></div>
-                    <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value" id="profil-medecin-email"></span></div>
+<!-- PROFILS Rendez-vous -->
+    <div id="page-profil-rdv" class="page">
+        <div class="page-header">
+            <h1>Détails du rendez-vous</h1>
+            <button class="btn-secondary" onclick="navigateBack('rendez-vous')">
+                <i class="fa fa-arrow-left"></i> Retour à la liste
+            </button>
         </div>
-    </div>
-</div>
-
-<div id="page-profil-rdv" class="page">
-    <div class="page-header">
-        <h1>Détails du rendez-vous</h1>
-        <button class="btn-secondary" onclick="navigateBack('rendez-vous')">
-            <i class="fa fa-arrow-left"></i> Retour à la liste
-        </button>
-    </div>
-
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar"><i class="fa fa-calendar"></i></div>
-            <div class="profile-title">
-                <h2></h2>
-                <span class="badge badge-confirme"></span>
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fa fa-calendar"></i></div>
+                <div class="profile-title">
+                    <h2></h2>
+                    <span class="badge badge-confirme"></span>
+                </div>
+            </div>
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Patient</span>
+                    <span class="detail-value"></span>
+                </div>
+                <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value"></span></div>
+                <div class="detail-item"><span class="detail-label">Date</span><span class="detail-value"></span></div>
+                <div class="detail-item"><span class="detail-label">Heure</span><span class="detail-value"></span></div>
+                <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value"></span></div>
+                <div class="detail-item"><span class="detail-label">Statut</span><span class="detail-value"></span></div>
             </div>
         </div>
-
-        <div class="profile-details">
-            <div class="detail-item">
-                <span class="detail-label">Patient</span>
-                <span class="detail-value"></span>
-            </div>
-            <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value"></span></div>
-            <div class="detail-item"><span class="detail-label">Date</span><span class="detail-value"></span></div>
-            <div class="detail-item"><span class="detail-label">Heure</span><span class="detail-value"></span></div>
-            <div class="detail-item"><span class="detail-label">Motif</span><span class="detail-value"></span></div>
-            <div class="detail-item"><span class="detail-label">Statut</span><span class="detail-value"></span></div>
-        </div>
     </div>
-</div>
 
 <!-- ESPACE DU MEDECIN -->
-<div id="page-mes-rdv" class="page">
-    <div class="page-header">
-        <h1>Mes rendez-vous </h1>
-    </div>
-    <div class="search-bar-container">
-        <input type="search" id="mes-rdv-search" class="search-bar" placeholder="Rechercher par patient, date, motif ou statut..." />
-    </div>
-    <div class="rdv-list">
-        <div class="rdv-header">
-            <span class="col-patient">Patient</span>
-            <span class="col-date">Date</span>
-            <span class="col-heure">Heure</span>
-            <span class="col-motif">Motif</span>
-            <span class="col-statut">Statut</span>
-            <span class="col-actions">Actions</span>
+ <!-- Pages de rendez-vous -->
+    <div id="page-mes-rdv" class="page">
+        <div class="page-header">
+            <h1>Mes rendez-vous </h1>
         </div>
-        <div id="mes-rdv-list-body"></div>
-    </div>
-</div>
-
-<div id="page-consultations-effectuees" class="page">
-    <div class="page-header">
-        <h1>Consultations effectuées</h1>
-    </div>
-    <div class="search-bar-container">
-        <input type="search" id="consultations-effectuees-search" class="search-bar" placeholder="Rechercher par patient ou date..." />
-    </div>
-    <div class="consultations-effectuees-list">
-        <div class="consultations-header">
-            <span class="col-patient">Patient</span>
-            <span class="col-date">Date</span>
-            <span class="col-actions">Actions</span>
+        <div class="search-bar-container">
+            <input type="search" id="mes-rdv-search" class="search-bar" placeholder="Rechercher par patient, date, motif ou statut..." />
         </div>
-        <div id="consultations-effectuees-list-body"></div>
+        <div class="rdv-list">
+            <div class="rdv-header">
+                <span class="col-patient">Patient</span>
+                <span class="col-date">Date</span>
+                <span class="col-heure">Heure</span>
+                <span class="col-motif">Motif</span>
+                <span class="col-statut">Statut</span>
+                <span class="col-actions">Actions</span>
+            </div>
+            <div id="mes-rdv-list-body"></div>
+        </div>
     </div>
-</div>
 
-<div id="page-profil-consultation" class="page">
-    <div class="page-header">
-        <h1>Détails de la consultation</h1>
-    <button class="btn-secondary" onclick="retourConsultation()">
-       <i class="fa fa-arrow-left"></i> Retour
-    </button>
+<!-- Pages consultations -->
+    <div id="page-consultations-effectuees" class="page">
+        <div class="page-header">
+            <h1>Consultations effectuées</h1>
+        </div>
+        <div class="search-bar-container">
+            <input type="search" id="consultations-effectuees-search" class="search-bar" placeholder="Rechercher par patient ou date..." />
+        </div>
+        <div class="consultations-effectuees-list">
+            <div class="consultations-header">
+                <span class="col-patient">Patient</span>
+                <span class="col-date">Date</span>
+                <span class="col-actions">Actions</span>
+            </div>
+            <div id="consultations-effectuees-list-body"></div>
+        </div>
     </div>
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar"><i class="fa fa-stethoscope"></i></div>
-            <div class="profile-title">
-                <h2 id="consult-detail-patient"></h2>
+<!-- PROFILS consultations -->
+    <div id="page-profil-consultation" class="page">
+        <div class="page-header">
+            <h1>Détails de la consultation</h1>
+        <button class="btn-secondary" onclick="retourConsultation()">
+        <i class="fa fa-arrow-left"></i> Retour
+        </button>
+        </div>
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fa fa-stethoscope"></i></div>
+                <div class="profile-title">
+                    <h2 id="consult-detail-patient"></h2>
+                </div>
+            </div>
+            <div class="profile-details">
+                <div class="detail-item"><span class="detail-label">Date du rendez-vous</span><span class="detail-value" id="consult-detail-date-rdv"></span></div>
+                <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value" id="consult-detail-medecin"></span></div>
+                <div class="detail-item"><span class="detail-label">Diagnostic</span><span class="detail-value" id="consult-detail-diagnostic"></span></div>
+                <div class="detail-item"><span class="detail-label">Traitement</span><span class="detail-value" id="consult-detail-traitement"></span></div>
+                <div class="detail-item"><span class="detail-label">Observation</span><span class="detail-value" id="consult-detail-observation"></span></div>
             </div>
         </div>
-        <div class="profile-details">
-            <div class="detail-item"><span class="detail-label">Date du rendez-vous</span><span class="detail-value" id="consult-detail-date-rdv"></span></div>
-            <div class="detail-item"><span class="detail-label">Médecin</span><span class="detail-value" id="consult-detail-medecin"></span></div>
-            <div class="detail-item"><span class="detail-label">Diagnostic</span><span class="detail-value" id="consult-detail-diagnostic"></span></div>
-            <div class="detail-item"><span class="detail-label">Traitement</span><span class="detail-value" id="consult-detail-traitement"></span></div>
-            <div class="detail-item"><span class="detail-label">Observation</span><span class="detail-value" id="consult-detail-observation"></span></div>
-        </div>
     </div>
-</div>
 </main> 
 
 <!-- MODALES DES FORMULAIRES -->
-    <!-- Modal pour ajouter un Patient -->
-<div id="modal-overlay-patient" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Ajouter un patient</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-patient')">&times;</button>
+  <!-- Modal pour ajouter un Patient -->
+    <div id="modal-overlay-patient" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Ajouter un patient</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-patient')">&times;</button>
+            </div>
+
+            <form class="modal-form" id="form-add-patient">
+                <label for="patient-nom">Nom</label>
+                <input type="text" id="patient-nom" placeholder="Nom du patient" required />
+                <label for="patient-prenom">Prénom</label>
+                <input type="text" id="patient-prenom" placeholder="Prénom du patient" required />
+                <label for="patient-sexe">Sexe</label>
+                <select id="patient-sexe" required>
+                    <option value="" disabled selected>Sélectionner...</option>
+                    <option value="M">Masculin</option>
+                    <option value="F">Féminin</option>
+                </select>
+                <label for="patient-tel">Telephone</label>
+                <input type="text" id="patient-tel" placeholder="Ex: 69262314612" required />
+                <label for="date_Naiss_patient">Date de Naissance </label>
+                <input type="date" id="date_Naiss_patient" placeholder="Ex: 18/08/2002" required />
+                <label for="adresse_patient">Adresse </label>
+                <input type="text" id="adresse_patient" placeholder="Ex: Rue des manguiers" required />
+                <label for="motif_patient">Motif </label>
+                <input type="text" id="motif_patient" placeholder="Ex: mal de ventre" required />
+                <button type="submit" class="btn-primary">Enregistrer</button>
+            </form>
         </div>
-        <form class="modal-form" id="form-add-patient">
-            <label for="patient-nom">Nom</label>
-            <input type="text" id="patient-nom" placeholder="Nom du patient" required />
-
-            <label for="patient-prenom">Prénom</label>
-            <input type="text" id="patient-prenom" placeholder="Prénom du patient" required />
-
-            <label for="patient-sexe">Sexe</label>
-            <select id="patient-sexe" required>
-                <option value="" disabled selected>Sélectionner...</option>
-                <option value="M">Masculin</option>
-                <option value="F">Féminin</option>
-            </select>
-
-            <label for="patient-tel">Telephone</label>
-            <input type="text" id="patient-tel" placeholder="Ex: 69262314612" required />
-
-            <label for="date_Naiss_patient">Date de Naissance </label>
-            <input type="date" id="date_Naiss_patient" placeholder="Ex: 18/08/2002" required />
-
-            <label for="adresse_patient">Adresse </label>
-            <input type="text" id="adresse_patient" placeholder="Ex: Rue des manguiers" required />
-
-            <label for="motif_patient">Motif </label>
-            <input type="text" id="motif_patient" placeholder="Ex: mal de ventre" required />
-
-            <button type="submit" class="btn-primary">Enregistrer</button>
-        </form>
     </div>
-</div>
 
 <!-- Modal pour l'ajout d'un Médecin -->
-<div id="modal-overlay-medecin" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Ajouter un medecin</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-medecin')">&times;</button>
+    <div id="modal-overlay-medecin" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Ajouter un medecin</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-medecin')">&times;</button>
+            </div>
+
+            <form class="modal-form" id="form-add-medecin">
+                <label for="mat-medecin">Matricule Medecin</label>
+                <input type="text" id="mat-medecin" placeholder=" Matricule medecin" required />
+                <label for="medecin-nom">Nom</label>
+                <input type="text" id="medecin-nom" placeholder="Nom du medecin" required />
+                <label for="medecin-prenom">Prénom</label>
+                <input type="text" id="medecin-prenom" placeholder="Prénom du medecin" required />
+                <label for="medecin-specialite">Spécialité </label>
+                <input type="text" id="medecin-specialite" placeholder="Ex: Cardiologie" required />
+                <label for="medecin-telephone">Telephone</label>
+                <input type="text" id="medecin-telephone" placeholder=" 69264378489" required />
+                <label for="medecin-email">Email</label>
+                <input type="email" id="medecin-email" placeholder="email du medecin" required />
+                <button type="submit" class="btn-primary">Enregistrer</button>
+            </form>
         </div>
-
-        <form class="modal-form" id="form-add-medecin">
-            <label for="mat-medecin">Matricule Medecin</label>
-            <input type="text" id="mat-medecin" placeholder=" Matricule medecin" required />
-
-            <label for="medecin-nom">Nom</label>
-            <input type="text" id="medecin-nom" placeholder="Nom du medecin" required />
-
-            <label for="medecin-prenom">Prénom</label>
-            <input type="text" id="medecin-prenom" placeholder="Prénom du medecin" required />
-
-            <label for="medecin-specialite">Spécialité </label>
-            <input type="text" id="medecin-specialite" placeholder="Ex: Cardiologie" required />
-
-            <label for="medecin-telephone">Telephone</label>
-            <input type="text" id="medecin-telephone" placeholder=" 69264378489" required />
-
-            <label for="medecin-email">Email</label>
-            <input type="email" id="medecin-email" placeholder="email du medecin" required />
-
-            <button type="submit" class="btn-primary">Enregistrer</button>
-        </form>
     </div>
-</div>
 
 <!-- Modal pour ajouter un RDV  -->
-<div id="modal-overlay-rdv" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Ajouter un rendez-vous</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-rdv')">&times;</button>
+    <div id="modal-overlay-rdv" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Ajouter un rendez-vous</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-rdv')">&times;</button>
+            </div>
+
+            <form class="modal-form" id="form-add-rdv">
+                <label for="rdv-patient-id">Sélectionner Patient</label>
+                    <select id="rdv-patient-id" required></select>
+                    <label for="rdv-medecin-mat">Sélectionner Médecin</label>
+                    <select id="rdv-medecin-mat" required></select>
+                <label for="rdv-motif"> Motif</label>
+                <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
+                <label for="rdv-date"> Date</label>
+                <input type="date" id="rdv-date" placeholder="Ex: 12/03/2027 " required />
+                <label for="rdv-heure"> Heure</label>
+                <input type="time" id="rdv-heure" placeholder="Ex: 09H45 " required />
+                <button type="submit" class="btn-primary">Enregistrer</button>
+            </form>
         </div>
-
-        <form class="modal-form" id="form-add-rdv">
-            <label for="rdv-patient-id">Sélectionner Patient</label>
-                <select id="rdv-patient-id" required></select>
-
-                <label for="rdv-medecin-mat">Sélectionner Médecin</label>
-                <select id="rdv-medecin-mat" required></select>
-
-            <label for="rdv-motif"> Motif</label>
-            <input type="text" id="rdv-motif" placeholder="Ex: maux de tetes graves " required />
-
-            <label for="rdv-date"> Date</label>
-            <input type="date" id="rdv-date" placeholder="Ex: 12/03/2027 " required />
-
-            <label for="rdv-heure"> Heure</label>
-            <input type="time" id="rdv-heure" placeholder="Ex: 09H45 " required />
-
-            <button type="submit" class="btn-primary">Enregistrer</button>
-        </form>
     </div>
-</div>
+
 <!-- Modal pour annuler un RDV  -->
-<div id="modal-annuler-rdv" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Annuler le rendez-vous</h2>
-            <button class="modal-close" onclick="fermerModalAnnulation()">&times;</button>
-        </div>
-        <div class="modal-form">
-            <label for="motif-annulation">Motif de l'annulation</label>
-            <textarea id="motif-annulation" rows="3" placeholder="Précisez la raison..." style="padding:10px; margin-bottom:1rem; border:1px solid #E5E5E5; border-radius:8px; font-size:14px; resize:vertical; font-family:inherit;"></textarea>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn-secondary" onclick="fermerModalAnnulation()">Retour</button>
-                <button class="btn-delete" onclick="confirmerAnnulation()">Confirmer l'annulation</button>
+    <div id="modal-annuler-rdv" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Annuler le rendez-vous</h2>
+                <button class="modal-close" onclick="fermerModalAnnulation()">&times;</button>
+            </div>
+            <div class="modal-form">
+                <label for="motif-annulation">Motif de l'annulation</label>
+                <textarea id="motif-annulation" rows="3" placeholder="Précisez la raison..." style="padding:10px; margin-bottom:1rem; border:1px solid #E5E5E5; border-radius:8px; font-size:14px; resize:vertical; font-family:inherit;"></textarea>
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn-secondary" onclick="fermerModalAnnulation()">Retour</button>
+                    <button class="btn-delete" onclick="confirmerAnnulation()">Confirmer l'annulation</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
 <!-- Modal pour Modifier un Patient -->
-<div id="modal-overlay-modif-patient" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Modifier le patient</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-modif-patient')">&times;</button>
+    <div id="modal-overlay-modif-patient" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Modifier le patient</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-modif-patient')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-modif-patient">
+                <label for="modif-patient-nom">Nom</label>
+                <input type="text" id="modif-patient-nom" placeholder="Nom du patient" required />
+                <label for="modif-patient-prenom">Prénom</label>
+                <input type="text" id="modif-patient-prenom" placeholder="Prénom du patient" required />
+                <label for="modif-patient-sexe">Sexe</label>
+                <select id="modif-patient-sexe" required>
+                    <option value="" disabled selected>Sélectionner...</option>
+                    <option value="M">Masculin</option>
+                    <option value="F">Féminin</option>
+                </select>
+                <label for="modif-patient-tel">Téléphone</label>
+                <input type="tel" id="modif-patient-tel" placeholder="Ex: 692623146" required />
+                <label for="modif-date-naiss-patient">Date de naissance</label>
+                <input type="date" id="modif-date-naiss-patient" placeholder="Ex: 18/08/2002" required />
+                <label for="modif-adresse-patient">Adresse</label>
+                <input type="text" id="modif-adresse-patient" placeholder="Ex: Rue des manguiers" required />
+                <label for="modif-motif-patient">Motif</label>
+                <input type="text" id="modif-motif-patient" placeholder="Ex: mal de ventre" required />
+                <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+            </form>
         </div>
-
-        <form class="modal-form" id="form-modif-patient">
-            <label for="modif-patient-nom">Nom</label>
-            <input type="text" id="modif-patient-nom" placeholder="Nom du patient" required />
-
-            <label for="modif-patient-prenom">Prénom</label>
-            <input type="text" id="modif-patient-prenom" placeholder="Prénom du patient" required />
-
-            <label for="modif-patient-sexe">Sexe</label>
-            <select id="modif-patient-sexe" required>
-                <option value="" disabled selected>Sélectionner...</option>
-                <option value="M">Masculin</option>
-                <option value="F">Féminin</option>
-            </select>
-
-            <label for="modif-patient-tel">Téléphone</label>
-            <input type="tel" id="modif-patient-tel" placeholder="Ex: 692623146" required />
-
-            <label for="modif-date-naiss-patient">Date de naissance</label>
-            <input type="date" id="modif-date-naiss-patient" placeholder="Ex: 18/08/2002" required />
-
-            <label for="modif-adresse-patient">Adresse</label>
-            <input type="text" id="modif-adresse-patient" placeholder="Ex: Rue des manguiers" required />
-
-            <label for="modif-motif-patient">Motif</label>
-            <input type="text" id="modif-motif-patient" placeholder="Ex: mal de ventre" required />
-
-            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-        </form>
     </div>
-</div>
 
 <!-- Modal pour Modifier un Médecin -->
-<div id="modal-overlay-modif-medecin" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Modifier le medecin</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-modif-medecin')">&times;</button>
+    <div id="modal-overlay-modif-medecin" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Modifier le medecin</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-modif-medecin')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-modif-medecin">
+                <input type="hidden" id="modif-medecin-mat-hidden">
+                <label for="modif-medecin-nom">Nom</label>
+                <input type="text" id="modif-medecin-nom" placeholder="Nom du medecin" required />
+                <label for="modif-medecin-prenom">Prénom</label>
+                <input type="text" id="modif-medecin-prenom" placeholder="Prénom du medecin" required />
+                <label for="modif-medecin-specialite">Specialite</label>
+                <input type="text" id="modif-medecin-specialite" placeholder="Ex: Chirugien" required />
+                <label for="modif-medecin-tel">Téléphone</label>
+                <input type="text" id="modif-medecin-tel" placeholder="Ex: 692623146" required />
+                <label for="modif-email-medecin">E-mail</label>
+                <input type="email" id="modif-email-medecin" placeholder="Ex: med@gmail.com" required />
+                <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+            </form>
         </div>
-
-        <form class="modal-form" id="form-modif-medecin">
-            <input type="hidden" id="modif-medecin-mat-hidden">
-
-            <label for="modif-medecin-nom">Nom</label>
-            <input type="text" id="modif-medecin-nom" placeholder="Nom du medecin" required />
-
-            <label for="modif-medecin-prenom">Prénom</label>
-            <input type="text" id="modif-medecin-prenom" placeholder="Prénom du medecin" required />
-
-            <label for="modif-medecin-specialite">Specialite</label>
-            <input type="text" id="modif-medecin-specialite" placeholder="Ex: Chirugien" required />
-
-            <label for="modif-medecin-tel">Téléphone</label>
-            <input type="text" id="modif-medecin-tel" placeholder="Ex: 692623146" required />
-
-            <label for="modif-email-medecin">E-mail</label>
-            <input type="email" id="modif-email-medecin" placeholder="Ex: med@gmail.com" required />
-
-            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-        </form>
     </div>
-</div>
 
 <!-- Modal pour Modifier un RDV -->
-<div id="modal-overlay-modif-rdv" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Modifier le Rendez-vous</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-modif-rdv')">&times;</button>
+    <div id="modal-overlay-modif-rdv" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Modifier le Rendez-vous</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-modif-rdv')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-modif-rdv">
+                <input type="hidden" id="modif-rdv-id">
+                <label for="modif-rdv-patient-id">Patient</label>
+                <select id="modif-rdv-patient-id" required></select>
+                <label for="modif-rdv-medecin-mat">Médecin</label>
+                <select id="modif-rdv-medecin-mat" required></select>
+                <label for="modif-motif-rdv">Motif</label>
+                <input type="text" id="modif-motif-rdv" placeholder="Ex: yeux enflés" required />
+                <label for="modif-rdv-date">Date</label>
+                <input type="date" id="modif-rdv-date" placeholder="Ex: 24/09/2026" required />
+                <label for="modif-heure-rdv">Heure</label>
+                <input type="time" id="modif-heure-rdv" placeholder="Ex: 10h35" required />
+                <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+            </form>
         </div>
-
-        <form class="modal-form" id="form-modif-rdv">
-            <input type="hidden" id="modif-rdv-id">
-            <label for="modif-rdv-patient-id">Patient</label>
-            <select id="modif-rdv-patient-id" required></select>
-
-            <label for="modif-rdv-medecin-mat">Médecin</label>
-            <select id="modif-rdv-medecin-mat" required></select>
-
-            <label for="modif-motif-rdv">Motif</label>
-            <input type="text" id="modif-motif-rdv" placeholder="Ex: yeux enflés" required />
-
-            <label for="modif-rdv-date">Date</label>
-            <input type="date" id="modif-rdv-date" placeholder="Ex: 24/09/2026" required />
-
-            <label for="modif-heure-rdv">Heure</label>
-            <input type="time" id="modif-heure-rdv" placeholder="Ex: 10h35" required />
-
-            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-        </form>
     </div>
-</div>
 
 <!-- Modal pour terminer un rdv et ajouter une Consultation -->
-<div id="modal-overlay-terminer" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>Terminer le rendez-vous</h2>
-      <button class="modal-close" onclick="closeModal('modal-overlay-terminer')">&times;</button>
-    </div>
-    <form class="modal-form" id="form-terminer">
-      <input type="hidden" id="terminer-rdv-id" />
-
-      <label for="terminer-diagnostic">Diagnostic *</label>
-      <textarea id="terminer-diagnostic" required></textarea>
-
-      <label for="terminer-traitement">Traitement</label>
-      <textarea id="terminer-traitement"></textarea>
-
-      <label for="terminer-observation">Observation</label>
-      <textarea id="terminer-observation"></textarea>
-
-      <button type="submit" class="btn-primary">Enregistrer la consultation</button>
-    </form>
-  </div>
-</div>
-<!-- Modal pour modifier une Consultation -->
-<div id="modal-overlay-modifier-consultation" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>Modifier la consultation</h2>
-            <button class="modal-close" onclick="closeModal('modal-overlay-modifier-consultation')">&times;</button>
+    <div id="modal-overlay-terminer" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+            <h2>Terminer le rendez-vous</h2>
+            <button class="modal-close" onclick="closeModal('modal-overlay-terminer')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-terminer">
+            <input type="hidden" id="terminer-rdv-id" />
+            <label for="terminer-diagnostic">Diagnostic *</label>
+            <textarea id="terminer-diagnostic" required></textarea>
+            <label for="terminer-traitement">Traitement</label>
+            <textarea id="terminer-traitement"></textarea>
+            <label for="terminer-observation">Observation</label>
+            <textarea id="terminer-observation"></textarea>
+            <button type="submit" class="btn-primary">Enregistrer la consultation</button>
+            </form>
         </div>
-        <form class="modal-form" id="form-modifier-consultation">
-            <input type="hidden" id="modifier-consultation-id" />
-
-            <label for="modifier-diagnostic">Diagnostic *</label>
-            <textarea id="modifier-diagnostic" required></textarea>
-
-            <label for="modifier-traitement">Traitement</label>
-            <textarea id="modifier-traitement"></textarea>
-
-            <label for="modifier-observation">Observation</label>
-            <textarea id="modifier-observation"></textarea>
-
-            <button type="submit" class="btn-primary">
-                Enregistrer les modifications
-            </button>
-        </form>
     </div>
-</div>
+
+<!-- Modal pour modifier une Consultation -->
+    <div id="modal-overlay-modifier-consultation" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Modifier la consultation</h2>
+                <button class="modal-close" onclick="closeModal('modal-overlay-modifier-consultation')">&times;</button>
+            </div>
+            <form class="modal-form" id="form-modifier-consultation">
+                <input type="hidden" id="modifier-consultation-id" />
+                <label for="modifier-diagnostic">Diagnostic *</label>
+                <textarea id="modifier-diagnostic" required></textarea>
+                <label for="modifier-traitement">Traitement</label>
+                <textarea id="modifier-traitement"></textarea>
+                <label for="modifier-observation">Observation</label>
+                <textarea id="modifier-observation"></textarea>
+                <button type="submit" class="btn-primary">
+                    Enregistrer les modifications
+                </button>
+            </form>
+        </div>
+    </div>
+
+<!-- Modal pour modifier // consulter son propre profils -->   
+    <div id="modal-profil" class="modal-overlay">
+        <div class="modal-box">
+            <h1>Mon profil</h1>
+            <form id="profil-form">
+            <div class="input-group">
+                <label>Nom complet</label>
+                <input type="text" id="profil-nom-complet" disabled required>
+            </div>
+            <div class="input-group">
+                <label>Identifiant</label>
+                <input type="text" id="profil-login" disabled required>
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="profil-email" disabled required>
+            </div>
+            <div class="input-group">
+                <label>Téléphone</label>
+                <input type="tel" id="profil-tel" disabled required>
+            </div>
+            <div class="input-group" id="profil-champ-matricule" style="display:none">
+                <label>Matricule</label>
+                <input type="text" id="profil-matricule" disabled>
+            </div>
+            <div id="profil-password-section" style="display:none">
+                <hr>
+                <p>Changer le mot de passe</p>
+                <div class="input-group">
+                <input type="password" id="profil-ancien-mdp" placeholder="Mot de passe actuel">
+                </div>
+                <div class="input-group">
+                <input type="password" id="profil-nouveau-mdp" placeholder="Nouveau mot de passe">
+                </div>
+                <div class="input-group">
+                <input type="password" id="profil-confirm-mdp" placeholder="Confirmer le nouveau mot de passe">
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="button" id="btn-modifier-profil">Modifier mes infos</button>
+                <button type="submit" id="btn-sauver-profil" style="display:none">Enregistrer</button>
+                <button type="button" id="btn-annuler-profil" style="display:none">Annuler</button>
+            </div>
+            </form>
+        </div>
+    </div>
 </div>
 </section>
 </html>

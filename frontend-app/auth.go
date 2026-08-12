@@ -156,3 +156,82 @@ func (a *App) Register(nomComplet, login, telephone, matricule, motDePasse, emai
 	return "ok"
 }
 
+// Mise à jour des informations personnelles (hors mot de passe et hors matricule/role)
+func (a *App) UpdateUtilisateur(id int, nomComplet, login, telephone, email string) string {
+
+	if strings.TrimSpace(nomComplet) == "" || strings.TrimSpace(login) == "" {
+		return "Le nom complet et l'identifiant sont obligatoires."
+	}
+
+	// Unicité du login (hors soi-même)
+	var countLogin int
+	err := db.QueryRow(
+		"SELECT COUNT(*) FROM utilisateurs WHERE login = ? COLLATE NOCASE AND id != ?",
+		login, id,
+	).Scan(&countLogin)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+	if countLogin > 0 {
+		return "Ce login est déjà utilisé par un autre compte."
+	}
+
+	// Unicité du téléphone (hors soi-même)
+	var countTel int
+	err = db.QueryRow(
+		"SELECT COUNT(*) FROM utilisateurs WHERE telephone = ? AND id != ?",
+		telephone, id,
+	).Scan(&countTel)
+	if err != nil {
+		return "Erreur lors de la vérification du téléphone : " + err.Error()
+	}
+	if countTel > 0 {
+		return "Ce numéro de téléphone est déjà utilisé par un autre compte."
+	}
+
+	// Unicité de l'email (hors soi-même)
+	var countEmail int
+	err = db.QueryRow(
+		"SELECT COUNT(*) FROM utilisateurs WHERE email = ? AND id != ?",
+		email, id,
+	).Scan(&countEmail)
+	if err != nil {
+		return "Erreur lors de la vérification de l'email : " + err.Error()
+	}
+	if countEmail > 0 {
+		return "Cet email est déjà utilisé par un autre compte."
+	}
+
+	_, err = db.Exec(
+		"UPDATE utilisateurs SET nom_complet=?, login=?, telephone=?, email=? WHERE id=?",
+		nomComplet, login, telephone, email, id,
+	)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+	return "ok"
+}
+
+// Changement de mot de passe (vérifie l'ancien avant d'écrire le nouveau)
+func (a *App) ChangerMotDePasse(id int, ancienMotDePasse, nouveauMotDePasse string) string {
+
+	if len(nouveauMotDePasse) < 4 {
+		return "Le nouveau mot de passe doit contenir au moins 4 caractères."
+	}
+
+	var motDePasseActuel string
+	err := db.QueryRow("SELECT mot_de_passe FROM utilisateurs WHERE id = ?", id).Scan(&motDePasseActuel)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+
+	if motDePasseActuel != ancienMotDePasse {
+		return "Mot de passe actuel incorrect."
+	}
+
+	_, err = db.Exec("UPDATE utilisateurs SET mot_de_passe=? WHERE id=?", nouveauMotDePasse, id)
+	if err != nil {
+		return "Erreur : " + err.Error()
+	}
+	return "ok"
+}

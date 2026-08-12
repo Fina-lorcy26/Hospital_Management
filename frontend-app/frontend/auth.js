@@ -95,6 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+ 
+    // Retour vers la page de connexion depuis la modale d'inscription
+    const linkToLogin = document.getElementById('link-to-login');
+    if (linkToLogin) {
+        linkToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal('modal-overlay-register');
+        });
+    }
+    // Bouton flèche retour (en haut de la modale)
+    const btnBackLogin = document.getElementById('btn-back-login');
+    if (btnBackLogin) {
+        btnBackLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal('modal-overlay-register');
+        });
+    }
+
 });
 
 document.getElementById('Register-form').addEventListener('submit', async (e) => {

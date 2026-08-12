@@ -79,39 +79,61 @@ function createPatientChart(patients) {
     const ctx = document.getElementById('chart-patients');
     if (!ctx) return;
 
-    // Compter les patients par mois
-    const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    const counts = new Array(12).fill(0);
+    const tranches = ['0-17 ans', '18-30 ans', '31-45 ans', '46-60 ans', '61-75 ans', '76+ ans'];
+    const counts = new Array(tranches.length).fill(0);
+    const aujourdHui = new Date();
 
     patients.forEach(p => {
-        if (p.date_naissance) {
-            const date = parseDateFr(p.date_naissance);
-            const month = date.getMonth();
-            counts[month]++;
+        if (!p.date_naissance) return;
+        const naissance = parseDateFr(p.date_naissance);
+        if (!naissance || isNaN(naissance.getTime())) return;
+
+        let age = aujourdHui.getFullYear() - naissance.getFullYear();
+        const decalageMois = aujourdHui.getMonth() - naissance.getMonth();
+        if (decalageMois < 0 || (decalageMois === 0 && aujourdHui.getDate() < naissance.getDate())) {
+            age--;
         }
+
+        if (age < 18) counts[0]++;
+        else if (age <= 30) counts[1]++;
+        else if (age <= 45) counts[2]++;
+        else if (age <= 60) counts[3]++;
+        else if (age <= 75) counts[4]++;
+        else counts[5]++;
     });
 
     if (chartPatients) chartPatients.destroy();
 
     chartPatients = new Chart(ctx, {
-        type: 'line',
+        type: 'doughnut',
         data: {
-            labels: mois,
+            labels: tranches,
             datasets: [{
-                label: 'Patients',
                 data: counts,
-                borderColor: '#3498db',
-                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                tension: 0.3,
-                fill: true,
-                pointBackgroundColor: '#3498db'
+                backgroundColor: ['#3498db', '#2ecc71', '#f1c40f', '#e67e22', '#e74c3c', '#9b59b6'],
+                borderColor: '#fff',
+                borderWidth: 2,
+                hoverOffset: 10
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            maintainAspectRatio: false,
+            animation: { duration: 800, easing: 'easeOutQuart' },
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#5a6b85', boxWidth: 14, padding: 12, font: { size: 12 } }
+                },
+                tooltip: {
+                    backgroundColor: '#1a2b4c',
+                    padding: 10,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: (ctx) => `${ctx.label} : ${ctx.parsed} patient(s)`
+                    }
+                }
             }
         }
     });
@@ -120,17 +142,36 @@ function createPatientChart(patients) {
 // --------------------------------------------
 // Graphique 2 : Activité de la semaine (barres)
 // --------------------------------------------
+function getSemaineActuelle() {
+    const now = new Date();
+    const jourActuel = now.getDay(); // 0 = dimanche
+    const decalage = jourActuel === 0 ? -6 : 1 - jourActuel;
+
+    const lundi = new Date(now);
+    lundi.setDate(now.getDate() + decalage);
+    lundi.setHours(0, 0, 0, 0);
+
+    const dimanche = new Date(lundi);
+    dimanche.setDate(lundi.getDate() + 6);
+    dimanche.setHours(23, 59, 59, 999);
+
+    return { lundi, dimanche };
+}
+
 function createSemaineChart(rdvs) {
     const ctx = document.getElementById('chart-semaine');
     if (!ctx) return;
 
     const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
     const counts = new Array(7).fill(0);
+    const { lundi, dimanche } = getSemaineActuelle();
 
     rdvs.forEach(rdv => {
         if (rdv.date) {
             const date = parseDateFr(rdv.date);
             if (!date || isNaN(date.getTime())) return;
+            if (date < lundi || date > dimanche) return; // hors semaine en cours
+
             const day = date.getDay();
             const index = day === 0 ? 6 : day - 1;
             counts[index]++;
@@ -146,17 +187,40 @@ function createSemaineChart(rdvs) {
             datasets: [{
                 label: 'Rendez-vous',
                 data: counts,
-                backgroundColor: 'rgba(46, 204, 113, 0.7)',
-                borderColor: '#2ecc71',
-                borderWidth: 2,
-                borderRadius: 6
+                backgroundColor: 'rgba(46, 204, 113, 0.75)',
+                hoverBackgroundColor: 'rgba(46, 204, 113, 1)',
+                borderColor: '#27ae60',
+                borderWidth: 1.5,
+                borderRadius: 8,
+                maxBarThickness: 42
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } },
+            maintainAspectRatio: false,
+            animation: { duration: 700, easing: 'easeOutQuart' },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1a2b4c',
+                    padding: 10,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        label: (ctx) => `${ctx.parsed.y} rendez-vous`
+                    }
+                }
+            },
             scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, color: '#7a8ba3' },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                    ticks: { color: '#7a8ba3' },
+                    grid: { display: false }
+                }
             }
         }
     });

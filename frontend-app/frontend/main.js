@@ -8,6 +8,7 @@ import './modal-utils.js';
 import './router.js';
 import './auth.js';
 import './consultations.js';
+import './profil.js';
 import { loadPatients } from './patients.js';
 import { loadMedecins } from './medecins.js';
 import { loadRendezVous } from './rendezvous.js';

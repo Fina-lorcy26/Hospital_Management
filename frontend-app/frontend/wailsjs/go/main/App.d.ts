@@ -10,6 +10,8 @@ export function AddRendezVous(arg1:string,arg2:string,arg3:string,arg4:string,ar
 
 export function AnnulerRendezVous(arg1:number,arg2:string):Promise<string>;
 
+export function ChangerMotDePasse(arg1:number,arg2:string,arg3:string):Promise<string>;
+
 export function DeleteConsultation(arg1:number):Promise<string>;
 
 export function DeleteMedecin(arg1:string):Promise<string>;
@@ -47,3 +49,5 @@ export function UpdatePatient(arg1:number,arg2:string,arg3:string,arg4:string,ar
 export function UpdateRendezVous(arg1:number,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<string>;
 
 export function UpdateRendezVousStatut(arg1:number,arg2:string):Promise<string>;
+
+export function UpdateUtilisateur(arg1:number,arg2:string,arg3:string,arg4:string,arg5:string):Promise<string>;
