@@ -162,3 +162,29 @@
     margin-top: 2px;
     color: white ;
 }
+#Register-form .terms-row input[type="checkbox"] {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: #2c7fb8;
+}
+#Register-form .terms-row label {
+    width: auto;
+    margin: 0;
+    color: #d7e0f0;
+    font-size: 0.85rem;
+}
+#Register-form .footer-links a {
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: 500;
+}
+#Register-form .footer-links a:hover {
+    color: #cfe0ff;
+}
+#Register-form .terms-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}

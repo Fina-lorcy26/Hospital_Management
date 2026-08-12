@@ -763,3 +763,107 @@ table{
     background-color: #ffcdd2;
     transform: translateY(-1px);
 }
+#modal-profil .modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 36px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+#modal-profil h1 {
+    font-size: 1.4rem;
+    color: #1a2b4c;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+#modal-profil .input-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#modal-profil .input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5a6b85;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+#modal-profil .input-group input {
+    padding: 10px 14px;
+    border: 1px solid #d8dee8;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #1a2b4c;
+    background: #f7f9fc;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+#modal-profil .input-group input:disabled {
+    background: #f0f2f6;
+    color: #6b7690;
+    border-color: transparent;
+    cursor: default;
+}
+
+#modal-profil .input-group input:not(:disabled) {
+    background: #ffffff;
+    border-color: #3498db;
+}
+
+#modal-profil .input-group input:not(:disabled):focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+#modal-profil hr {
+    border: none;
+    border-top: 1px solid #e5e9f0;
+    margin: 20px 0 16px;
+}
+
+#modal-profil #profil-password-section p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a2b4c;
+    margin-bottom: 12px;
+}
+
+#modal-profil .button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#modal-profil .button-container button {
+    flex: 1;
+    padding: 11px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+#modal-profil #btn-modifier-profil,
+#modal-profil #btn-sauver-profil {
+    background: #1a2b4c;
+    color: #fff;
+}
+
+#modal-profil #btn-annuler-profil {
+    background: #f0f2f6;
+    color: #5a6b85;
+}
+
+#modal-profil .button-container button:hover {
+    opacity: 0.9;
+}
