@@ -75,3 +75,10 @@ type Utilisateur struct {
 	Telephone  string `json:"telephone"`
 	Email      string `json:"email"`
 }
+// Résultat de l'ajout d'un médecin : succès + identifiants générés à communiquer
+type AjoutMedecinResult struct {
+	Success    bool   `json:"success"`
+	Message    string `json:"message"`
+	Login      string `json:"login"`
+	MotDePasse string `json:"mot_de_passe"`
+}

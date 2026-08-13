@@ -32,11 +32,11 @@
             <button type="submit">Se connecter</button>
         </form>
         <br><br>
-            <div class="footer-links">
+            <!-- <div class="footer-links">
                 <p>N'avez-vous pas de compte ?</p>
                 <br><br>
                 <a href="#" id="link-to-register">CRÉER UN COMPTE</a>
-            </div>
+            </div> -->
         </div>
       </div>
    </section>
@@ -665,6 +665,35 @@
                 <button type="button" id="btn-annuler-profil" style="display:none">Annuler</button>
             </div>
             </form>
+        </div>
+    </div>
+
+<!-- Modal Afficher les identifiants d'un medecin/utiisateur crée -->   
+
+    <div id="modal-identifiants-medecin" class="modal-overlay">
+        <div class="modal-box">
+            <h1>✅ Compte créé avec succès</h1>
+            <p class="identifiants-intro">Communiquez ces identifiants au médecin. Il pourra les modifier après sa première connexion.</p>
+
+            <div class="identifiant-row">
+            <label>Login</label>
+            <div class="identifiant-valeur">
+                <span id="identifiant-login-valeur"></span>
+            </div>
+            </div>
+
+            <div class="identifiant-row">
+            <label>Mot de passe temporaire</label>
+            <div class="identifiant-valeur">
+                <span id="identifiant-mdp-valeur"></span>
+            </div>
+            </div>
+
+            <button type="button" id="btn-copier-identifiants" class="btn-copier">📋 Copier les identifiants</button>
+
+            <div class="button-container">
+            <button type="button" id="btn-fermer-identifiants">Fermer</button>
+            </div>
         </div>
     </div>
 </div>

@@ -867,3 +867,92 @@ table{
 #modal-profil .button-container button:hover {
     opacity: 0.9;
 }
+
+#modal-identifiants-medecin .modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 36px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+#modal-identifiants-medecin h1 {
+    font-size: 1.3rem;
+    color: #1a2b4c;
+    margin-bottom: 8px;
+}
+
+#modal-identifiants-medecin .identifiants-intro {
+    font-size: 0.85rem;
+    color: #5a6b85;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+#modal-identifiants-medecin .identifiant-row {
+    margin-bottom: 14px;
+}
+
+#modal-identifiants-medecin .identifiant-row label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #5a6b85;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+}
+
+#modal-identifiants-medecin .identifiant-valeur {
+    background: #f7f9fc;
+    border: 1px solid #d8dee8;
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+#modal-identifiants-medecin .identifiant-valeur span {
+    font-family: 'Courier New', monospace;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a2b4c;
+    letter-spacing: 0.5px;
+}
+
+#modal-identifiants-medecin .btn-copier {
+    width: 100%;
+    padding: 11px;
+    margin-top: 8px;
+    background: #eef4fc;
+    color: #2c7fb8;
+    border: 1px solid #cfe2f5;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#modal-identifiants-medecin .btn-copier:hover {
+    background: #dcebfa;
+}
+
+#modal-identifiants-medecin .btn-copier.copie {
+    background: #e3f7ea;
+    color: #27ae60;
+    border-color: #c8ecd6;
+}
+
+#modal-identifiants-medecin .button-container {
+    margin-top: 16px;
+}
+
+#modal-identifiants-medecin .button-container button {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: none;
+    background: #1a2b4c;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}

@@ -14,6 +14,33 @@ const badgeClass = {
     "Annulé": "badge-annule"
 };
 
+// Empêche de choisir une date passée, et une heure déjà passée si la date choisie est aujourd'hui
+function appliquerRestrictionsDateHeure(dateInputId, heureInputId) {
+    const dateInput = document.getElementById(dateInputId);
+    const heureInput = document.getElementById(heureInputId);
+    if (!dateInput || !heureInput) return;
+
+    const maintenant = new Date();
+    const aujourdHui = maintenant.toISOString().split('T')[0]; // aaaa-mm-jj
+    dateInput.min = aujourdHui;
+
+    function majMinHeure() {
+        if (dateInput.value === aujourdHui) {
+            const h = String(maintenant.getHours()).padStart(2, '0');
+            const m = String(maintenant.getMinutes()).padStart(2, '0');
+            heureInput.min = `${h}:${m}`;
+        } else {
+            heureInput.removeAttribute('min');
+        }
+    }
+
+    majMinHeure();
+    if (!dateInput.dataset.restrictionBound) {
+        dateInput.addEventListener('change', majMinHeure);
+        dateInput.dataset.restrictionBound = 'true';
+    }
+}
+
 // recupere et injecte tous les rendez-vous dans leur liste
 //   - "jour"       => uniquement les RDV du jour
 let allRdvsFiltresJour = [];
@@ -222,6 +249,7 @@ export async function openAjoutRdv() {
         allowEmptyOption: true,
     });
 
+    appliquerRestrictionsDateHeure("rdv-date", "rdv-heure");
     openModal("modal-overlay-rdv");
 }
 window.openAjoutRdv = openAjoutRdv;
@@ -243,6 +271,7 @@ async function openEditRdv(rdv) {
     document.getElementById('modif-motif-rdv').value = rdv.motif;
     document.getElementById('modif-rdv-date').value = rdv.date;
     document.getElementById('modif-heure-rdv').value = rdv.heure;
+    appliquerRestrictionsDateHeure("modif-rdv-date", "modif-heure-rdv");
     openModal('modal-overlay-modif-rdv');
 }
 window.openEditRdv = openEditRdv;

@@ -3,6 +3,42 @@
 import { GetMedecins, AddMedecin, UpdateMedecin, DeleteMedecin } from './wailsjs/go/main/App.js';
 import { openModal, closeModal } from './modal-utils.js';
 
+// ---------- MODALE IDENTIFIANTS GÉNÉRÉS ----------
+
+function afficherIdentifiants(login, motDePasse) {
+    document.getElementById('identifiant-login-valeur').textContent = login;
+    document.getElementById('identifiant-mdp-valeur').textContent = motDePasse;
+    openModal('modal-identifiants-medecin');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btnCopier = document.getElementById('btn-copier-identifiants');
+    if (btnCopier) {
+        btnCopier.addEventListener('click', async () => {
+            const login = document.getElementById('identifiant-login-valeur').textContent;
+            const mdp = document.getElementById('identifiant-mdp-valeur').textContent;
+            const texte = `Login : ${login}\nMot de passe : ${mdp}`;
+
+            try {
+                await navigator.clipboard.writeText(texte);
+                btnCopier.textContent = '✅ Copié !';
+                btnCopier.classList.add('copie');
+                setTimeout(() => {
+                    btnCopier.textContent = '📋 Copier les identifiants';
+                    btnCopier.classList.remove('copie');
+                }, 2000);
+            } catch (err) {
+                alert("Impossible de copier automatiquement. Identifiants :\n" + texte);
+            }
+        });
+    }
+
+    const btnFermer = document.getElementById('btn-fermer-identifiants');
+    if (btnFermer) {
+        btnFermer.addEventListener('click', () => closeModal('modal-identifiants-medecin'));
+    }
+});
+
 // recupere et injecte tous les medecins dans la liste
 let allMedecins = [];
 
@@ -128,12 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('medecin-telephone').value,
             document.getElementById('medecin-email').value
         );
-        if (result === 'ok') {
+        if (result.success) {
             closeModal('modal-overlay-medecin');
             e.target.reset();
             loadMedecins();
+            afficherIdentifiants(result.login, result.mot_de_passe);
         } else {
-            alert(result);
+            alert(result.message);
         }
     });
 

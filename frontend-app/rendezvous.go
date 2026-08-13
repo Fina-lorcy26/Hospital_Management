@@ -1,8 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // ---------- GESTION DES RENDEZ-VOUS ----------
+
+// Vérifie que la date+heure du rendez-vous n'est pas déjà passée
+func validerDateHeureRdv(date, heure string) string {
+	dateHeure, err := time.Parse("2006-01-02 15:04", date+" "+heure)
+	if err != nil {
+		return "Format de date ou d'heure invalide."
+	}
+	if dateHeure.Before(time.Now()) {
+		return "Impossible de programmer un rendez-vous à une date ou une heure déjà passée."
+	}
+	return ""
+}
+
+
 // liste complete de rendez-vous
 func (a *App) GetRendezVous() []RendezVous {
 	rows, err := db.Query(`
@@ -42,6 +59,10 @@ func (a *App) GetRendezVous() []RendezVous {
 
 // Ajouter un rdv
 func (a *App) AddRendezVous(PatientId, MedecinMat, motif, date, heure string) string {
+	if msg := validerDateHeureRdv(date, heure); msg != "" {
+		return msg
+	}
+
 	var count int
 	err := db.QueryRow(
 		`SELECT COUNT(*) FROM rendez_vous
@@ -105,6 +126,12 @@ func (a *App) UpdateRendezVous(id int, PatientId, medecinMat, motif, date, heure
 	// Un rendez-vous terminé ne peut plus être modifié
 	if ancienStatut == "Terminée" {
 		return "Impossible de modifier ce rendez-vous : il est déjà terminé."
+	}
+
+	// Vérifier si la date, l'heure, le médecin ou le patient ont changé
+      // Une nouvelle date/heure doit toujours être valide (même règle qu'à la création)
+	if msg := validerDateHeureRdv(date, heure); msg != "" {
+		return msg
 	}
 
 	// Vérifier si la date, l'heure, le médecin ou le patient ont changé

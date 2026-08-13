@@ -3,6 +3,15 @@
 import { GetPatients, AddPatient, UpdatePatient, DeletePatient } from './wailsjs/go/main/App.js';
 import { openModal, closeModal } from './modal-utils.js';
 
+// Empêche de sélectionner une date de naissance future dans le calendrier natif
+document.addEventListener('DOMContentLoaded', () => {
+    const aujourdHui = new Date().toISOString().split('T')[0]; // format aaaa-mm-jj
+    ['date_Naiss_patient', 'modif-date-naiss-patient'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.max = aujourdHui;
+    });
+});
+
 // ---------- CHARGEMENT DES LISTES ----------
 //recupere les patients
 let allPatients = [];

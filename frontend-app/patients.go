@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"time"
 )
 
 // ---------- GESTION DES PATIENTS ----------
@@ -25,6 +26,18 @@ rows, err := db.Query("SELECT id, nom, prenom, sexe, telephone, date_naissance, 
 	return patients
 }
 
+// Vérifie que la date de naissance n'est pas dans le futur
+func validerDateNaissance(dateNaissance string) string {
+	date, err := time.Parse("2006-01-02", dateNaissance)
+	if err != nil {
+		return "Format de date de naissance invalide."
+	}
+	if date.After(time.Now()) {
+		return "La date de naissance ne peut pas être dans le futur."
+	}
+	return ""
+}
+
 // Insertion d'un nouveau patient
 func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, motif string) string {
 
@@ -36,6 +49,10 @@ func (a *App) AddPatient(nom, prenom, sexe, telephone, dateNaissance, adresse, m
 
 	if sexe != "M" && sexe != "F" {
 		return "Le sexe doit être 'M' ou 'F'."
+	}
+
+	if msg := validerDateNaissance(dateNaissance); msg != "" {
+		return msg
 	}
 
 	var count int
@@ -63,6 +80,9 @@ func (a *App) UpdatePatient(id int, nom, prenom, sexe, telephone, dateNaissance,
 	}
 	if sexe != "M" && sexe != "F" {
 		return "Le sexe doit être 'M' ou 'F'."
+	}
+	if msg := validerDateNaissance(dateNaissance); msg != "" {
+		return msg
 	}
 
 	var count int

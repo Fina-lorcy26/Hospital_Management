@@ -1,5 +1,23 @@
 export namespace main {
 	
+	export class AjoutMedecinResult {
+	    success: boolean;
+	    message: string;
+	    login: string;
+	    mot_de_passe: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AjoutMedecinResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.success = source["success"];
+	        this.message = source["message"];
+	        this.login = source["login"];
+	        this.mot_de_passe = source["mot_de_passe"];
+	    }
+	}
 	export class ConsultationDetail {
 	    id: number;
 	    rdv_id: number;
